@@ -1,0 +1,26 @@
+TEMPLATE:
+    "Necesito que me ayudes en una tarea de detección de entidades.
+
+    {__LABELS__}.
+
+    {__TASK_INFO__}
+
+    {__ANSWER_FORMAT__}
+
+    {__CHAIN_OF_THOUGHTS__}"
+
+LABELS:
+    ""
+    
+TASK_INFO:
+    "Voy a darte un texto, y quiero que me devuelvas una lista con todas las
+     menciones de cáncer que encuentres en ese texto. Sólo me interesan las
+     menciones de cáncer, por favor ignora cualquier otra entidad."
+
+ANSWER_FORMAT:
+    "Puedes devolver las entidades detectadas como una secuencia de cadenas de
+    texto separadas por punto y coma: primera entidad,segunda entidad,tercera
+    entidad."
+
+CHAIN_OF_THOUGHTS:
+    ""

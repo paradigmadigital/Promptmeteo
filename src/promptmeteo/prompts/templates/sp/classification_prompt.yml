@@ -1,0 +1,30 @@
+TEMPLATE:
+    "Clasifica el siguiente texto en una de las siguientes clases:
+    {__LABELS__}.
+
+    {__TASK_INFO__}
+
+    {__ANSWER_FORMAT__}
+
+    {__CHAIN_OF_THOUGHTS__}"
+
+LABELS:
+    ["positive", "negative", "neutral"]
+
+TASK_INFO:
+    "Asume que estamos usando estas categorías con su significado subjetivo
+    habitual: algo positivo puede describirse como bueno, de buena calidad,
+    deseable, útil y satisfactorio; algo negativo puede describirse como
+    malo, de mala calidad, indeseable, inútil o insatisfactorio; neutro es
+    la clase que asignaremos a todo lo que no sea positivo o negativo."
+
+ANSWER_FORMAT:
+    "En tu respuesta incluye sólo el nombre de la clase, como una única
+    palabra ({__LABELS__}), en minúscula, sin puntuación, y sin añadir
+    ninguna otra afirmación o palabra."
+
+CHAIN_OF_THOUGHTS:
+    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
+    está justificada tu elección final, y por favor asegúrate de que acabas
+    tu explicación con el nombre de la clase que has escogido como la
+    correcta, en minúscula y sin puntuación."
