@@ -13,8 +13,8 @@ WORKDIR /home/models
 RUN git lfs install
 RUN git lfs clone https://huggingface.co/google/flan-t5-small
 RUN git lfs clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-RUN git lfs clone https://huggingface.co/hiiamsid/sentence_similarity_spanish_es
-RUN git clone https://huggingface.co/tiiuae/falcon-7b-instruct
+#RUN git lfs clone https://huggingface.co/hiiamsid/sentence_similarity_spanish_es
+#RUN git lfs clone https://huggingface.co/tiiuae/falcon-7b-instruct
 
 # Copy project
 WORKDIR /home

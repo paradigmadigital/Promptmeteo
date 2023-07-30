@@ -28,7 +28,6 @@ from typing import List
 from typing import Dict
 from typing import Optional
 
-from langchain.schema import LLMResult
 from promptmeteo.tasks import TaskBuilderFactory
 
 
@@ -175,6 +174,8 @@ class Promptmeteo():
     ) -> None:
 
         self.task.prompt.read_prompt_file(prompt_text)
+        self.task.prompt.__init__()
+
         return self
 
 
@@ -326,7 +327,7 @@ class Promptmeteo():
 
         with tempfile.TemporaryDirectory() as tmp:
 
-            tmp_path = os.path.join(tmp,model_name.removesuffix('.meteo'))
+            tmp_path = os.path.join(tmp,model_name.replace('.meteo',''))
             self.task.selector.vectorstore.save_local(tmp_path)
 
             with tarfile.open(model_path, mode="w:gz") as tar:

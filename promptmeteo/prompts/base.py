@@ -120,13 +120,14 @@ class BasePrompt():
 
         Example
         -------
-        >>> from promptmeteo.prompts.sp import BasePrompt as CP
-        >>>
-        >>> CP(
-        >>>     prompt_labels            = CP.PROMPT_LABELS,
-        >>>     prompt_task_info         = CP.PROMPT_TASK_INFO,
-        >>>     prompt_answer_format     = CP.PROMPT_ANSWER_FORMAT,
-        >>>     prompt_chain_of_thoughts = CP.PROMPT_CHAIN_OF_THOUGHTS,
+        ```
+        >>> from promptmeteo.prompts.sp import BasePrompt
+
+        >>> BasePrompt(
+        >>>     prompt_labels            = BasePrompt.PROMPT_LABELS,
+        >>>     prompt_task_info         = BasePrompt.PROMPT_TASK_INFO,
+        >>>     prompt_answer_format     = BasePrompt.PROMPT_ANSWER_FORMAT,
+        >>>     prompt_chain_of_thoughts = BasePrompt.PROMPT_CHAIN_OF_THOUGHTS,
         >>> ).build()
 
         Clasifica el siguiente texto en una de las siguientes clases:
@@ -149,6 +150,7 @@ class BasePrompt():
         la correcta, en minúscula y sin puntuación.
 
         Éste es el texto que debes clasificar: "{__INPUT__}"
+        ```
         """
 
         self._labels = prompt_labels

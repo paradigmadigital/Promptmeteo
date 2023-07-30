@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=65.0.0", "wheel >= 0.38"]
+requires = ["setuptools>=65.0.0", "wheel >= 0.38", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "promptmeteo"
-version = "0.0.0"
-description = "Label, clean and enrich text datasets with LLMs"
+dynamic = ["version"]
+description = "Enable the use of LLMs as a conventional ML model"
 readme = "README.md"
 authors = [{ name = "Angel Delgado", email = "adelgado@paradigmadigital.com" }]
 license = { file = "LICENSE" }
@@ -16,7 +16,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 dependencies = [
     "langchain == 0.0.234",
     "torch == 2.0.1",
@@ -27,23 +27,22 @@ dependencies = [
     "sentence-transformers==2.2.2"
 ]
 
+[tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["promptmeteo"]
 
 [tool.setuptools.package-data]
 "promptmeteo.prompts.templates.sp" = ["*.yml"]
-#"*" = ["*.yml"]
 
 [project.optional-dependencies]
 all = [
     "black",
+    "coverage",
     "bumpver",
     "pip-tools",
+    "pylint",
     "pytest",
+    "pytest-cov",
     "pytest-mock",
-    "openai >= 0.27.4",
-    "tiktoken >= 0.3.3",
-    "transformers >= 4.25.0",
-    "google-cloud-aiplatform>=1.25.0",
 ]

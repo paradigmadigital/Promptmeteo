@@ -1,21 +1,16 @@
-# PromptMeteo
+![python-versions](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)
+![code-lint](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/code_lint.yml/badge.svg)
+![code-testing](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/code_testing.yml/badge.svg)
+![publish-docker](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/publish_docker.yml/badge.svg)
+![publish-pypi](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/publish_package.yml/badge.svg)
+[![codecov](https://codecov.io/gh/DelgadoPanadero/PromptMeteo/branch/main/graph/badge.svg?token=KFJS6BGFH8)](https://codecov.io/gh/DelgadoPanadero/PromptMeteo)
+
+# PromptMeteo 🔥🧔
 
 **Promptmeteo** is a Python library build over LangChain to build prompts and LLMs by configuration parameters. The goal of this project is to be used as a template to industrialize LLM projects.
 
-<div align="center">
-<h1>🔥🧔</h1>
-<i>Dammed to chains for bringing humans the light</i>
 
-</div>
-
-
-## Installation
-
-```sh
-~/promptmeteo$ make setup
-```
-
-## Quick start
+# ⚡ Quick start
 
 ```python
 from promptmeteo import Promptmeteo
@@ -23,9 +18,7 @@ from promptmeteo import Promptmeteo
 model = Promptmeteo(
         task_type           = 'classification',
         model_provider_name = 'hf_pipeline',
-        model_name          = 'google/flan-t5-small',
-        selector_algorithm  = 'semantic_similarity',
-        selector_k          = 3
+        model_name          = 'google/flan-t5-small'
     )
 
 model = model.train(
@@ -35,164 +28,63 @@ model = model.train(
 
 model.predict(['que guay!!'])
 ```
-```
->>> [[positive]]
-```
 
-
-## Build project
-
-Build image and run container
-
-```sh
-$ docker build -t promptmeteo .
-$ docker run -it promptmeteo bash
+```shell
+[['positive']]
 ```
 
-Run example
+&nbsp;
 
-```sh
-$ python examples/getting_started.py --data_path data/classification_data.csv --prompt_path prompts/classification.yml
-```
+# 🤔 What is this for?
 
-Run test
+**TL;DR**: Industrialize projects powered by LLMs easily.
 
-```sh
-$ python -m pytest tests
-```
+LLMs are fine, but they are difficult to industrialize in real world problems because two main reasons:
 
-## Project Structure
+ - **Prompt Versioning**: In LLMs, prompts are not just static files as configuration data, but also they has logic that defines the results of the project. Code versioning is made through git, however, there is no standard to version prompts.
 
-```
-promptmeteo
-├── data
-│   └── classification_data.csv
-├── Dockerfile
-├── examples
-│   └── getting_started.py
-├── LICENSE
-├── Makefile
-├── prompts
-│   ├── classification.yml
-│   └── ner_prompt.yml
-├── pyproject.toml
-├── README.md
-├── requirements.txt
-├── src
-│   └── promptmeteo
-│       ├── __init__.py
-│       ├── main.py
-│       ├── models
-│       │   ├── base.py
-│       │   ├── fake_llm.py
-│       │   ├── hf_hub_api.py
-│       │   ├── hf_pipeline.py
-│       │   ├── __init__.py
-│       │   └── openai.py
-│       ├── parsers
-│       │   ├── classification_parser.py
-│       │   ├── dummy_parser.py
-│       │   └── __init__.py
-│       ├── prompts
-│       │   ├── base.py
-│       │   ├── classification_prompt.py
-│       │   ├── __init__.py
-│       │   ├── ner_prompt.py
-│       │   └── templates
-│       │       ├── en
-│       │       ├── __init__.py
-│       │       └── sp
-│       │           ├── classification_prompt.yml
-│       │           ├── __init__.py
-│       │           └── ner_prompt.yml
-│       ├── selector
-│       │   ├── __init__.py
-│       │   ├── length_selector.py
-│       │   ├── marginal_relevance_selector.py
-│       │   ├── n_gram_selector.py
-│       │   └── semantic_similarity_selector.py
-│       └── tasks
-│           ├── base.py
-│           ├── classification_task.py
-│           ├── __init__.py
-│           └── ner_task.py
-└── tests
-    ├── test_main.py
-    ├── test_models.py
-    ├── test_parsers.py
-    ├── test_prompts.py
-    ├── test_selectors.py
-    └── test_task.py
-```
+- **Model Trazability**: MLOps are used to program ML pipelines and ensure the model trazability along the pipeline. However LLMs do not usually has the same logic
 
-## Objects
+&nbsp;
 
-```mermaid
-classDiagram
+# 🚀 How is it made?
 
-Promptmeteo        ..|> TaskBuilder        : Composition
-TaskBuilder        ..|> Task               : Build
-ClassificationTask --|> Task               : Inheritance
-Task               ..|> PromptFactory      : Composition
-Task               ..|> ParserFactory      : Composition
-Task               ..|> SelectorFactory    : Composition
-Task               ..|> ModelFactory       : Composition
-Prompt             ..|> PromptFactory      : Instanciate
-Parser             ..|> ParserFactory      : Instanciate
-Selector           ..|> SelectorFactory    : Instanciate
-Model              ..|> ModelFactory       : Instanciate
+For solving the previous problems **Prompmeteo** has the following features.
 
-class Promptmeteo{
-  + builder : TaskBuilder
-  + train(examples : List[str], annotations : List[str])
-  + predict(examples : List[str])
-}
-class TaskBuilder{
-  + task : Task
-  - _build_model()
-  - _build_pormpt()
-  - _build_parser()
-  - _build_selector()
-}
-class Task{
-  + model : Model
-  + prompt : Prompt
-  + parser : Parser
-  + selector : Selector
-  + run(prompt: str)
-}
-class ClassificationTask{
-  + model : Model
-  + prompt : Prompt
-  + parser : Parser
-  + selector : Selector
-  + run(prompt: str)
-}
-class PromptFactory{
-  + factory_method() -> Prompt
-}
-class ParserFactory{
-  + factory_method() -> Parser
-}
-class ModelFactory{
-  + factory_method() -> Model
-}
-class SelectorFactory{
-  + factory_method() -> Selector
-}
-class Prompt{
-  + PROMPT_EXAMPLE
-  + run()
-}
-class Parser{
-  + run()
-}
-class Model{
-  + llm
-  + run(prompt: str)
-}
-class Selector{
-  + example_selector
-  + run(prompt: str)
-}
+#### ⚙️ MLOps Interface
+
+Defining a interface with independant methods for training and predicting as well as saving and loading the model, allows Promptmeteo to be trained in and independant pipeline from predicting. This allows to reuse the conventional ML pipeline for LLM projects. 
+
+#### 📦 Model Artifacts
+
+LLMs proyects usually require of a Vector Data Base to save and load embeddings. Prompmeteo uses FAISS as a vectorstore database that not only allow it to run Promptmeteo locally, but it also allow to store the vectordatabase as a binary file. This binary file is analogue as a model artifact in a conventional ML project.
+
+#### 📄 Prompt Formating
+
+Defining a concrete format when creating the prompt text, does not only allow to use it easily in a programatic way, but it also allows to versionate the prompts, understand where is the change when something happends and also **define code test oriented to prompt testing**
+
+```yml
+TEMPLATE:
+    "
+    Your task is to classify a text in categories:
+    {__LABELS__}
+    {__TASK_INFO__}
+    {__ANSWER_FORMAT__}
+    {__CHAIN_OF_THOUGHTS__}
+    "
+
+LABELS:
+    ["positive", "negative", "neutral"]
+
+TASK_INFO:
+    "The text is a sentence written by a human and you have to classify
+    it in according to its sentiment."
+
+ANSWER_FORMAT:
+    "Your answer must include the name of the category in a unique word
+    in lower case and without puntuation."
+
+CHAIN_OF_THOUGHTS:
+    "Please explain your answer step by step before saying the name of
+    the category"
 ```
