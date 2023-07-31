@@ -24,7 +24,8 @@ dependencies = [
     "faiss-cpu == 1.7.4",
     "transformers ==4.31.0",
     "openai==0.27.8",
-    "sentence-transformers==2.2.2"
+    "sentence-transformers==2.2.2",
+    "tiktoken==0.4.0"
 ]
 
 [tool.setuptools_scm]
@@ -41,8 +42,11 @@ all = [
     "coverage",
     "bumpver",
     "pip-tools",
+    "polars",
     "pylint",
     "pytest",
     "pytest-cov",
     "pytest-mock",
+    "seaborn",
+    "scikit-learn"
 ]

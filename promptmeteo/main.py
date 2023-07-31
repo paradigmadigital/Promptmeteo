@@ -34,6 +34,13 @@ from promptmeteo.tasks import TaskBuilderFactory
 class Promptmeteo():
 
 
+    """
+    'Sun is setting on the New Republic. It's time for the ResistencIA to rise'
+
+                                         - Padme Amidala, mother of Leia -
+    """
+
+
     def __init__(
         self,
         task_type                : str,
