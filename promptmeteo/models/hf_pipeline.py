@@ -70,6 +70,7 @@ class HFPipelineLLM(BaseModel):
     ) -> None:
 
         """
+        Make predictions using a model from HuggingFace locally. 
         """
 
         if not ModelNames.has_value(model_name):

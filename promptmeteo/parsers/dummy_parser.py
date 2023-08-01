@@ -22,19 +22,10 @@
 
 from typing import List
 
+from .base import BaseParser
 
-class DummyParser():
 
-    def __init__(
-        self,
-        prompt_labels               : List[str],
-        prompt_labels_separator     : str = ',',
-        prompt_chain_of_thoughts    : bool= False
-    ) -> None:
-
-        self._labels = prompt_labels
-        self._labels_separator = prompt_labels_separator
-        self._chain_of_thoughts = prompt_chain_of_thoughts
+class DummyParser(BaseParser):
 
 
     def run(
@@ -42,5 +33,8 @@ class DummyParser():
         text : str
     ) -> str:
 
+        """
+        Given a response string from an LLM, returns the response expected for the task.
+        """
 
         return text

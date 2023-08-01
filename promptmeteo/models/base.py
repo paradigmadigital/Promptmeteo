@@ -23,9 +23,6 @@
 from typing import List
 from abc import ABC, abstractmethod
 
-from langchain.schema import LLMResult
-from langchain.schema import Generation
-
 
 class BaseModel(ABC):
 
@@ -49,7 +46,7 @@ class BaseModel(ABC):
     def run(
         self,
         sample: str
-    ):
+    ) -> str:
 
         """
         """
@@ -58,6 +55,6 @@ class BaseModel(ABC):
             return self.llm(sample)
 
         except Exception as error:
-            raise Exception(
+            raise RuntimeError(
                 f"Error generating from LLM: with sample \"{sample}\""
             ) from error

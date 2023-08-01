@@ -23,18 +23,22 @@
 from typing import List
 from typing import Dict
 from typing import Optional
+from typing_extensions import Self
 
 from langchain.prompts.prompt import PromptTemplate
 from langchain.prompts.pipeline import PipelinePromptTemplate
 
 from promptmeteo.prompts import BasePrompt
-from promptmeteo.models import ModelFactory
-from promptmeteo.parsers import ParserFactory
-from promptmeteo.selector import SelectorFactory
+from promptmeteo.models import ModelFactory, BaseModel
+from promptmeteo.parsers import ParserFactory, BaseParser
+from promptmeteo.selector import SelectorFactory, BaseSelector
 
 
 class BaseTask():
 
+    """
+    Base Task interface.
+    """
 
     def __init__(
         self,
@@ -49,29 +53,34 @@ class BaseTask():
 
 
     @property
-    def prompt(self):
+    def prompt(self) -> BasePrompt:
         return self._prompt
 
 
     @property
-    def model(self):
+    def model(self) -> BaseModel:
         return self._model
 
 
     @property
-    def selector(self):
+    def selector(self) -> BaseSelector:
         return self._selector
 
 
     @property
-    def parser(self):
+    def parser(self) -> BaseParser:
         return self._parser
 
 
     def _get_prompt(
         self,
         example: str
-    ):
+    ) -> PipelinePromptTemplate:
+
+        """
+        Create a PipelinePromptTemplate by merging the PromptTemplate and the
+        FewShotPromptTemplate.
+        """
 
         intro_prompt  = self.prompt.run()
 
@@ -98,6 +107,10 @@ class BaseTask():
         self,
         example : str
     ) -> str:
+
+        """
+        Given a text sample, return the text predicted by Promptmeteo.
+        """
 
         prompt = self._get_prompt(example)
 
@@ -129,7 +142,7 @@ class BaseTaskBuilder():
 
 
     @property
-    def task(self):
+    def task(self) -> BaseTask:
         return self._task
 
 
@@ -139,14 +152,14 @@ class BaseTaskBuilder():
         prompt_task_info         : str,
         prompt_answer_format     : Optional[str],
         prompt_chain_of_thoughts : Optional[str]
-    ) -> None:
-
+    ) -> Self:
 
         """
+        Builds a the prompt for the task.
         """
 
         prompt_labels = []
-        if self._labels != None:
+        if self._labels is not None:
             prompt_labels = \
                 self.BASE_PROMPT.PROMPT_LABELS
 
@@ -178,7 +191,11 @@ class BaseTaskBuilder():
         annotations     : List[str],
         selector_k           : int,
         selector_algorithm   : str,
-    ) -> None:
+    ) -> Self:
+
+        """
+        Builds a the selector for the task by training a new selector.
+        """
 
         if not self._task._model:
             raise Exception(
@@ -213,7 +230,11 @@ class BaseTaskBuilder():
         model_provider_name  : str = '',
         model_provider_token : str = '',
         model_params         : Dict = {}
-    ) -> None:
+    ) -> Self:
+
+        """
+        Builds a the model for the task.
+        """
 
         self._task._model = ModelFactory.factory_method(
             model_name = model_name,
@@ -231,11 +252,14 @@ class BaseTaskBuilder():
         prompt_labels            : List[str],
         prompt_labels_separator  : str = ',',
         prompt_chain_of_thoughts : str = '',
-    ) -> None:
+    ) -> Self:
 
+        """
+        Builds a the parser for the task.
+        """
 
         prompt_labels = []
-        if self._labels != None:
+        if self._labels is not None:
             prompt_labels = \
                 self.BASE_PROMPT.PROMPT_LABELS
 
@@ -258,21 +282,22 @@ class BaseTaskBuilder():
         model_path         : str,
         selector_k         : str,
         selector_algorithm : str
-    ) -> None:
+    ) -> Self:
 
         """
+        Builds a the selector for the task by loading a pretrained selector.
         """
 
         if not self._task._model:
-            raise Exception(
-                'Selector algorithm is trying yo be built but there is no'
+            raise RuntimeError(
+                'Selector algorithm is trying to be built but there is no'
                 'LLM model or embeddings loaded. You need to call function'
                 '`build_model()` before calling `load_selector()`.'
             )
 
         if not self._task._model.embeddings:
-            raise Exception(
-                'Selector algorithm is trying yo be built but there is no'
+            raise RuntimeError(
+                'Selector algorithm is trying to be built but there is no'
                 'embeddigns for model {self._task._model.__name__}.'
             )
 

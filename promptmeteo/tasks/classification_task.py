@@ -31,9 +31,11 @@ from promptmeteo.prompts import ClassificationPrompt
 
 class ClassificationTaskBuilder(BaseTaskBuilder):
 
+    """
+    Task for the Classification problem.
+    """
 
     BASE_PROMPT = ClassificationPrompt
-
 
     def __init__(
         self,

@@ -31,15 +31,9 @@ from .base import BaseSelector
 
 class MMRSelector(BaseSelector):
 
+    """
+    Selector that uses the Maximal Relevance algorithm with the embeddings from
+    the samples texts and the new sample.
+    """
+
     SELECTOR = MaxMarginalRelevanceExampleSelector
-
-    def __init__(
-        self,
-        embeddings      : Embeddings,
-        k               : int
-    ) -> None:
-
-        super().__init__(
-            embeddings=embeddings,
-            k=k
-        )

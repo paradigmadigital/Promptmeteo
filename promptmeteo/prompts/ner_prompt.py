@@ -29,6 +29,10 @@ from .base import BasePrompt
 
 class NerPrompt(BasePrompt):
 
+    """
+    Creates the prompt text from the NER task.
+    """
+
     with open(os.path.abspath(
         os.path.join(
             __file__,

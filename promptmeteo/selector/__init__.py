@@ -27,6 +27,8 @@ from typing import Dict
 
 from langchain.embeddings.base import Embeddings
 
+from .base import BaseSelector
+
 
 class SelectorAlgorithms(str, Enum):
 
@@ -39,13 +41,23 @@ class SelectorAlgorithms(str, Enum):
 
 class SelectorFactory():
 
+
+    """
+    Factory of Selectors
+    """
+
+
     @staticmethod
     def factory_method(
         embeddings         : Embeddings,
         selector_k         : int,
         selector_algorithm : str,
-    ):
+    ) -> BaseSelector:
 
+        """
+        Returns and instance of a BaseSelector object depending on the 
+        `selector_algorithm`.
+        """
 
         if selector_algorithm == SelectorAlgorithms.SELECTOR_1.value:
             from .marginal_relevance_selector import MMRSelector

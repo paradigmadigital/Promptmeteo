@@ -42,7 +42,7 @@ class ModelFactory():
 
     """
     The ModelFactory class is used to create a BaseModel object from the given
-    AutoLabelConfig configuration.
+    configuration.
     """
 
     @staticmethod
@@ -55,13 +55,7 @@ class ModelFactory():
 
         """
         Returns a BaseModel object configured with the settings found in the
-        provided AutolabelConfig.
-
-        Args:
-            model_provider_name:
-            model_name:
-        Returns:
-            model: a fully configured BaseModel object
+        provided parameters.
         """
 
         if model_provider_name == ModelProvider.PROVIDER_0.value:

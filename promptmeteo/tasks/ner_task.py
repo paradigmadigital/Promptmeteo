@@ -31,9 +31,11 @@ from promptmeteo.prompts import NerPrompt
 
 class NerTaskBuilder(BaseTaskBuilder):
 
+    """
+    Task for the NER problem.
+    """
 
     BASE_PROMPT = NerPrompt
-
 
     def __init__(
         self,

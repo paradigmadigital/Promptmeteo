@@ -29,6 +29,10 @@ from .base import BasePrompt
 
 class ClassificationPrompt(BasePrompt):
 
+    """
+    Creates the prompt text from the classification task.
+    """
+
     with open(os.path.abspath(
         os.path.join(
             __file__,

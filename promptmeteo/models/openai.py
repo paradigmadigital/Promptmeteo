@@ -58,6 +58,7 @@ class OpenAILLM(BaseModel):
     ) -> None:
 
         """
+        Make predictions using a model from OpenAI.
         """
 
         if not ModelNames.has_value(model_name):

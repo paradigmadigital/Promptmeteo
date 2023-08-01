@@ -60,7 +60,6 @@ def _format(
 
 class BasePrompt():
 
-
     PROMPT_EXAMPLE = _format("""
         TEMPLATE:
             'Explain the main goal of the task:

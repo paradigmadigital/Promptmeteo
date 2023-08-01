@@ -27,7 +27,10 @@ import tempfile
 from typing import List
 from typing import Dict
 from typing import Optional
+from typing_extensions import Self
 
+from promptmeteo.tasks import BaseTask
+from promptmeteo.tasks import BaseTaskBuilder
 from promptmeteo.tasks import TaskBuilderFactory
 
 
@@ -161,24 +164,24 @@ class Promptmeteo():
 
 
     @property
-    def builder(self):
+    def builder(self) -> BaseTaskBuilder:
         return self._builder
 
 
     @property
-    def task(self):
+    def task(self) -> BaseTask:
         return self._builder.task
 
 
     @property
-    def is_trained(self):
+    def is_trained(self) -> bool:
         return self._builder.task.selector is not None
 
 
     def read_prompt_file(
         self,
         prompt_text : str
-    ) -> None:
+    ) -> Self:
 
         self.task.prompt.read_prompt_file(prompt_text)
         self.task.prompt.__init__()
@@ -189,7 +192,7 @@ class Promptmeteo():
     def predict(
         self,
         examples : List[str],
-    ):
+    ) -> List[str]:
 
         """
         Predicts over new text samples.
@@ -229,9 +232,9 @@ class Promptmeteo():
 
     def train(
         self,
-        examples                 : List[str],
-        annotations              : List[str]
-    ):
+        examples    : List[str],
+        annotations : List[str]
+    ) -> Self:
 
         """
         Trains the model given examples and its annotations. The training
@@ -291,7 +294,7 @@ class Promptmeteo():
     def save_model(
         self,
         model_path : str,
-    ):
+    ) -> Self:
 
         """
         Saves the training result of the model in disk.
@@ -346,7 +349,7 @@ class Promptmeteo():
     def load_model(
         self,
         model_path : str,
-    ):
+    ) -> Self:
 
         """
         Loads a model artifact to make new predictions.

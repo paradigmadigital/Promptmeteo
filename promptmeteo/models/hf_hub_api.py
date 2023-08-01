@@ -63,6 +63,7 @@ class HFHubApiLLM(BaseModel):
     ) -> None:
 
         """
+        Make predictions using a model from HuggingFace using the API.
         """
 
         if not ModelNames.has_value(model_name):

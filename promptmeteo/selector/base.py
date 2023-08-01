@@ -21,6 +21,7 @@
 #  THE SOFTWARE.
 
 from typing import List
+from typing_extensions import Self
 
 from langchain.vectorstores import FAISS
 from langchain.embeddings.base import Embeddings
@@ -31,19 +32,23 @@ from langchain.prompts import FewShotPromptTemplate
 
 class BaseSelector():
 
+    """
+    Base Selector Interface
+    """
 
     SELECTOR = None
 
 
     def __init__(
         self,
-        embeddings      : Embeddings,
-        k               : int
+        embeddings : Embeddings,
+        k          : int
     ) -> None:
 
         self._k = k
         self._selector = None
         self._embeddings = embeddings
+
 
     @property
     def vectorstore(self):
@@ -57,9 +62,13 @@ class BaseSelector():
 
     def train(
         self,
-        examples        : List[str],
-        annotations     : List[str],
-    ) -> None:
+        examples    : List[str],
+        annotations : List[str],
+    ) -> Self:
+
+        """
+        Creates the vectorstor with the training samples.
+        """
 
         examples = [{"ejemplo" : example, "respuesta" : annotation}
             for example, annotation in zip(examples,annotations)]
@@ -70,30 +79,34 @@ class BaseSelector():
             vectorstore_cls = FAISS,
             k               = self._k)
 
-
         return self
 
 
     def load_example_selector(
         self,
         model_path : str
-    ):
+    ) -> Self:
 
         """
+        Load a vectorstore database from a disk file
         """
 
         vectorstore = FAISS.load_local(model_path, self._embeddings)
 
         self._selector = self.SELECTOR(
             vectorstore=vectorstore,
-            k=self._k)
+            k=self._k
+        )
 
         return self
 
 
-    def run(self):
+    def run(
+        self
+    ) -> FewShotPromptTemplate:
 
         """
+        Creates the FewShotPromptTemplate from the samples of the vectorstore.
         """
 
         if self._selector is None:

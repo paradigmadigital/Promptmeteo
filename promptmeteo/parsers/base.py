@@ -20,53 +20,34 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from enum import Enum
+from abc import ABC
+from abc import abstractmethod
+
 from typing import List
 
-from .base import BaseParser
 
-class ParserTypes(str, Enum):
+class BaseParser(ABC):
 
-    """
-    """
-
-    PARSER_1 = "classification"
-    PARSER_2 = "ner"
-
-class ParserFactory():
-
-    """
-    Factory of Parsers
-    """
-
-    @staticmethod
-    def factory_method(
-        parser_type                 : str,
+    def __init__(
+        self,
         prompt_labels               : List[str],
         prompt_labels_separator     : str = ',',
         prompt_chain_of_thoughts    : bool= False
-    ):
+    ) -> None:
+
+        self._labels = prompt_labels
+        self._labels_separator = prompt_labels_separator
+        self._chain_of_thoughts = prompt_chain_of_thoughts
+
+
+    @abstractmethod
+    def run(
+        self,
+        text : str
+    ) -> str:
 
         """
-        Returns and instance of a BaseParser object depending on the `parser_type`.
+        Given a response string from an LLM, returns the response expected for the task.
         """
 
-        if parser_type == ParserTypes.PARSER_1.value:
-            from .classification_parser import ClassificationParser
-            parser_cls = ClassificationParser
-
-        elif parser_type == ParserTypes.PARSER_2.value:
-            from .classification_parser import ClassificationParser
-            parser_cls = ClassificationParser
-
-        else:
-            raise Exception(
-                f"{parser_type} is not in the list of supported providers: "
-                f"{[i.value for i in ParserTypes]}"
-                )
-
-        return parser_cls(
-            prompt_labels=prompt_labels,
-            prompt_labels_separator=prompt_labels_separator,
-            prompt_chain_of_thoughts=prompt_chain_of_thoughts
-        )
+        pass

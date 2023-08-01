@@ -2,6 +2,7 @@ from enum import Enum
 from typing import List
 from typing import Optional
 
+from .base import BaseTask
 from .base import BaseTaskBuilder
 
 
@@ -13,12 +14,20 @@ class TaskTypes(Enum):
 
 class TaskBuilderFactory():
 
+    """
+    Factory of TaskBuilders.
+    """
+
     @staticmethod
     def factory_method(
         task_type   : str,
         task_labels : Optional[List[str]] = [''],
         verbose     : bool = False
     ) -> BaseTaskBuilder:
+
+        """
+        Creates and instance of a BaseTask object depending on the `task_type`.
+        """
 
         if task_type == TaskTypes.TASK_1.value:
             from .classification_task import ClassificationTaskBuilder

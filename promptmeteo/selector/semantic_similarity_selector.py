@@ -31,16 +31,9 @@ from .base import BaseSelector
 
 class SimSelector(BaseSelector):
 
+    """
+    Selector that uses the Semantic Similarity algorithm with the embeddings
+    from the samples texts and the new sample.
+    """
 
     SELECTOR = SemanticSimilarityExampleSelector
-
-    def __init__(
-        self,
-        embeddings      : Embeddings,
-        k               : int
-    ) -> None:
-
-        super().__init__(
-            embeddings=embeddings,
-            k=k
-        )

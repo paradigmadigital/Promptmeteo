@@ -22,25 +22,20 @@
 
 from typing import List
 
+from .base import BaseParser
 
-class ClassificationParser():
 
-    def __init__(
-        self,
-        prompt_labels               : List[str],
-        prompt_labels_separator     : str = ',',
-        prompt_chain_of_thoughts    : bool= False
-    ) -> None:
-
-        self._labels = prompt_labels
-        self._labels_separator = prompt_labels_separator
-        self._chain_of_thoughts = prompt_chain_of_thoughts
+class ClassificationParser(BaseParser):
 
 
     def run(
         self,
         text : str
     ) -> str:
+
+        """
+        Given a response string from an LLM, returns the response expected for the task.
+        """
 
         text = text.lower()
 
