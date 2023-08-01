@@ -20,13 +20,14 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from typing import List
-
 from .base import BaseParser
 
 
 class ClassificationParser(BaseParser):
 
+    """
+    Parser for the classification task.
+    """
 
     def run(
         self,

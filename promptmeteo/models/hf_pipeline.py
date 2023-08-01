@@ -30,7 +30,11 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from .base import BaseModel
 
 
-class ModelNames(str,Enum):
+class ModelTypes(str,Enum):
+
+    """
+    Enum of available model types.
+    """
 
     MODEL_1 = 'google/flan-t5-small'
     MODEL_2 = 'tiiuae/falcon-7b-instruct'
@@ -73,13 +77,13 @@ class HFPipelineLLM(BaseModel):
         Make predictions using a model from HuggingFace locally. 
         """
 
-        if not ModelNames.has_value(model_name):
+        if not ModelTypes.has_value(model_name):
             raise ValueError(
                 f'`model_name`={model_name} not in supported model names: '
-                f'{[i.value for i in ModelNames]}')
+                f'{[i.value for i in ModelTypes]}')
 
         if not model_params:
-            model_params = ModelParams[ModelNames(model_name).name].value
+            model_params = ModelParams[ModelTypes(model_name).name].value
 
         if os.path.exists(model_params.model_path):
             model_name = model_params.model_path

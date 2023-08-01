@@ -25,13 +25,16 @@ from typing import List
 
 from .base import BaseParser
 
+
 class ParserTypes(str, Enum):
 
     """
+    Enum of availables parsers.
     """
 
     PARSER_1 = "classification"
     PARSER_2 = "ner"
+
 
 class ParserFactory():
 
@@ -60,7 +63,7 @@ class ParserFactory():
             parser_cls = ClassificationParser
 
         else:
-            raise Exception(
+            raise ValueError(
                 f"{parser_type} is not in the list of supported providers: "
                 f"{[i.value for i in ParserTypes]}"
                 )

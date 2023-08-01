@@ -52,11 +52,13 @@ class BaseSelector():
 
     @property
     def vectorstore(self):
+        """Selector Vectorstore."""
         return self._selector.vectorstore
 
 
     @property
     def template(self) -> str:
+        """Selector Template"""
         return self.run().format(__INPUT__='{__INPUT__}')
 
 
@@ -110,7 +112,7 @@ class BaseSelector():
         """
 
         if self._selector is None:
-            raise Exception(
+            raise RuntimeError(
                 f'`{self.__class__.__name__}` object has no vector store '
                 f'created when executing `run()` method. You should call '
                 f'method `load_example_selector()` `train()` befoto create '

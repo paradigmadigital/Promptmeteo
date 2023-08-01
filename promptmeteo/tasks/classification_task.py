@@ -21,12 +21,10 @@
 #  THE SOFTWARE.
 
 from typing import List
-from typing import Dict
-from typing import Optional
 
 from .base import BaseTask
 from .base import BaseTaskBuilder
-from promptmeteo.prompts import ClassificationPrompt
+from ..prompts import ClassificationPrompt
 
 
 class ClassificationTaskBuilder(BaseTaskBuilder):
@@ -42,6 +40,6 @@ class ClassificationTaskBuilder(BaseTaskBuilder):
         task_labels : List[str],
         verbose     : bool,
     ) -> None:
-
+    
         self._task   = BaseTask(verbose=verbose)
         self._labels = task_labels

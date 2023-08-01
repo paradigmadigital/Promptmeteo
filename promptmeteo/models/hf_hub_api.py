@@ -31,13 +31,25 @@ from langchain.embeddings import HuggingFaceHubEmbeddings
 from .base import BaseModel
 
 
-class ModelNames(str,Enum):
+class ModelTypes(str,Enum):
+
+    """
+    Enum of available model types.
+    """
 
     MODEL_1 = 'google/flan-t5-xxl'
     MODEL_2 = 'tiiuae/falcon-7b-instruct'
 
     @classmethod
-    def has_value(cls, value):
+    def has_value(
+        cls,
+        value : str
+    ) -> bool:
+
+        """
+        Checks if the value is in the enum or not.
+        """
+
         return value in cls._value2member_map_
 
 
@@ -66,13 +78,13 @@ class HFHubApiLLM(BaseModel):
         Make predictions using a model from HuggingFace using the API.
         """
 
-        if not ModelNames.has_value(model_name):
+        if not ModelTypes.has_value(model_name):
             raise ValueError(
                 f'`model_name`={model_name} not in supported model names: '
-                f'{[i.value for i in ModelNames]}')
+                f'{[i.value for i in ModelTypes]}')
 
         if not model_params:
-            model_params = ModelParams[ModelNames(model_name).name].value
+            model_params = ModelParams[ModelTypes(model_name).name].value
 
         self._llm = HuggingFaceHub(
             repo_id=model_name,
@@ -80,7 +92,7 @@ class HFHubApiLLM(BaseModel):
             model_kwargs=model_params.model_kwargs,
         )
 
-        self._embeddings = embeddings = HuggingFaceHubEmbeddings(
+        self._embeddings = HuggingFaceHubEmbeddings(
             repo_id='sentence-transformers/all-MiniLM-L6-v2',
             huggingfacehub_api_token=model_provider_token,
         )

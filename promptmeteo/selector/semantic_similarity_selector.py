@@ -20,9 +20,6 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from typing import List
-
-from langchain.embeddings.base import Embeddings
 from langchain.prompts.example_selector import (
     SemanticSimilarityExampleSelector)
 

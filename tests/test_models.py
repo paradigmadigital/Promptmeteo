@@ -40,10 +40,10 @@ class TestModels():
 
     def test_model_openai(self):
 
-        from promptmeteo.models.openai import ModelNames
+        from promptmeteo.models.openai import ModelTypes
         from promptmeteo.models.openai import OpenAILLM
 
-        for model_name in ModelNames:
+        for model_name in ModelTypes:
             OpenAILLM(
                 model_name = model_name.value,
                 model_params = {},
@@ -57,10 +57,10 @@ class TestModels():
 
     def test_model_fakellm(self):
 
-        from promptmeteo.models.fake_llm import ModelNames
+        from promptmeteo.models.fake_llm import ModelTypes
         from promptmeteo.models.fake_llm import FakeLLM
 
-        for model_name in ModelNames:
+        for model_name in ModelTypes:
             FakeLLM(
                 model_name = model_name.value,
                 model_params = {},
@@ -75,10 +75,10 @@ class TestModels():
 
     def test_model_hf_hub_api(self):
 
-        from promptmeteo.models.hf_hub_api import ModelNames
+        from promptmeteo.models.hf_hub_api import ModelTypes
         from promptmeteo.models.hf_hub_api import HFHubApiLLM
 
-        for model_name in ModelNames:
+        for model_name in ModelTypes:
             HFHubApiLLM(
                 model_name = model_name.value,
                 model_params = {},
@@ -93,7 +93,7 @@ class TestModels():
 
     def test_model_hf_pipeline(self):
 
-        from promptmeteo.models.hf_pipeline import ModelNames
+        from promptmeteo.models.hf_pipeline import ModelTypes
         from promptmeteo.models.hf_pipeline import HFPipelineLLM
 
         with pytest.raises(ValueError) as error:

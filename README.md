@@ -88,3 +88,101 @@ CHAIN_OF_THOUGHTS:
     "Please explain your answer step by step before saying the name of
     the category"
 ```
+
+# 🧩 Project Components
+
+```mermaid
+classDiagram
+
+Promptmeteo        ..|> TaskBuilderFactory : Composition
+TaskBuilder        ..|> TaskBuilderFactory : Instanciate
+TaskBuilder        ..|> Task               : Build
+ClassificationTask --|> Task               : Inheritance
+Task               ..|> Prompt             : Composition
+Task               ..|> ParserFactory      : Composition
+Task               ..|> SelectorFactory    : Composition
+Task               ..|> ModelFactory       : Composition
+Parser             ..|> ParserFactory      : Instanciate
+Selector           ..|> SelectorFactory    : Instanciate
+Model              ..|> ModelFactory       : Instanciate
+
+class Promptmeteo{
+  + builder : TaskBuilder
+  + task : Task
+  + is_trained : Bool
+  + train(examples : List[str], annotations : List[str])
+  + predict(examples : List[str])
+  + read_prompt(prompt_text : str)
+  + save_model(model_path : str)
+  + load_model(model_path : str)
+}
+class TaskBuilderFactory{
+  + factory_method(task_type : str, task_labels : List[str])
+}
+class TaskBuilder{
+  + task : Task
+  + build_model(model_name : str, model_provider_name : str, model_provider_token : str, model_params : Dict)
+  + build_prompt(prompt_template : str, prompt_task_info : str, prompt_answer_format : str, prompt_chain_of_thoughts : st])
+  + build_parser(parser_type : str, prompt_labels : List[str], prompt_labels_separator : str, prompt_chain_of_thoughts : str)
+  + build_selector_by_train(examples : List[str], annotations : List[str], selector_k : int, selector_algorithm : str)
+  + build_selector_by_load(model_path : str, selector_k : str, selector_algorithm : str)
+}
+class Task{
+  + model : Model
+  + prompt : Prompt
+  + parser : Parser
+  + selector : Selector
+  + run(prompt: str)
+  - _get_prompt(example: str) 
+}
+class ClassificationTask{
+  + model : Model
+  + prompt : Prompt
+  + parser : Parser
+  + selector : Selector
+  + run(prompt: str)
+  - _get_prompt(example: str) 
+}
+
+class NerTask{
+  + model : Model
+  + prompt : Prompt
+  + parser : Parser
+  + selector : Selector
+  + run(prompt: str)
+  - _get_prompt(example: str) 
+}
+
+class ParserFactory{
+  + factory_method(parser_type : str, prompt_labels : List[str], prompt_labels_separator : str, prompt_chain_of_thoughts : bool) -> Parser
+}
+class ModelFactory{
+  + factory_method(model_name: str, model_provider_name: str, model_provider_token :str, model_prams : Dict) -> Model
+}
+class SelectorFactory{
+  + factory_method(embeddings: Embeddings, selector: str, selector_algorithm :str) -> Selector
+}
+class Prompt{
+  + PROMPT_EXAMPLE
+  + template
+  + labels
+  + read_prompt_file(prompt_text : str)
+  + run()
+}
+class Parser{
+  + run(sample: str)
+}
+class Model{
+  + llm
+  + embeddings
+  + run(sample: str)
+}
+class Selector{
+  + example_selector
+  + vectorstore
+  + template
+  + train(examples: List[str], annotations : List[str])
+  + load_example_selector(model_path : str)
+  + run()
+}
+```

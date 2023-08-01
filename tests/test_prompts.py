@@ -41,7 +41,7 @@ class TestPrompts:
         Tests load prompt text format
         """
 
-        return_none = BasePrompt.read_prompt_file(
+        return_none = BasePrompt.read_prompt(
             '''
             TEMPLATE:
                 "

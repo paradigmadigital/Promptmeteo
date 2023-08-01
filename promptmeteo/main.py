@@ -21,7 +21,6 @@
 #  THE SOFTWARE.
 
 import os
-import sys
 import tarfile
 import tempfile
 from typing import List
@@ -53,7 +52,6 @@ class Promptmeteo():
         model_provider_token     : Optional[str] = None,
         prompt_labels            : List[str] = [],
         prompt_labels_separator  : str = ',',
-        prompt_template          : Optional[str] = None,
         prompt_task_info         : Optional[str] = None,
         prompt_answer_format     : Optional[str] = None,
         prompt_chain_of_thoughts : Optional[str] = None,
@@ -82,8 +80,6 @@ class Promptmeteo():
         prompt_labels : List[str]
 
         prompt_labels_separator : str
-
-        prompt_template : Optional[str]
 
         prompt_task_info : Optional[str]
 
@@ -144,7 +140,6 @@ class Promptmeteo():
 
         # Build prompt
         self.builder.build_prompt(
-            prompt_template          = prompt_template,
             prompt_task_info         = prompt_task_info,
             prompt_answer_format     = prompt_answer_format,
             prompt_chain_of_thoughts = prompt_chain_of_thoughts
@@ -165,25 +160,70 @@ class Promptmeteo():
 
     @property
     def builder(self) -> BaseTaskBuilder:
+        """Task Builder."""
         return self._builder
 
 
     @property
     def task(self) -> BaseTask:
+        """Task."""
         return self._builder.task
 
 
     @property
     def is_trained(self) -> bool:
+        """Check if Promptmeteo intance is trained."""
         return self._builder.task.selector is not None
 
 
-    def read_prompt_file(
+    def read_prompt(
         self,
         prompt_text : str
     ) -> Self:
+        
+        """
+        Reads a Promptmeteo prompt string to build the Task Prompt. Promptmeteo
+        prompts are expected to follow the following template
 
-        self.task.prompt.read_prompt_file(prompt_text)
+        ```
+        TEMPLATE:
+            "
+            Your task is to classify a text in categories:
+            {__LABELS__}
+            {__TASK_INFO__}
+            {__ANSWER_FORMAT__}
+            {__CHAIN_OF_THOUGHTS__}
+            "
+
+        LABELS:
+            ["positive", "negative", "neutral"]
+
+        TASK_INFO:
+            "The text is a sentence written by a human and you have to classify
+            it in according to its sentiment."
+
+        ANSWER_FORMAT:
+            "Your answer must include the name of the category in a unique word
+            in lower case and without puntuation."
+
+        CHAIN_OF_THOUGHTS:
+            "Please explain your answer step by step before saying the name of
+            the category"
+        ```
+
+        Parameters
+        ----------
+
+        prompt_text : str
+
+        Returns
+        -------
+
+        Self
+
+        """
+
+        self.task.prompt.read_prompt(prompt_text)
         self.task.prompt.__init__()
 
         return self
@@ -211,16 +251,16 @@ class Promptmeteo():
 
 
         if not isinstance(examples,list):
-            raise Exception(
+            raise ValueError(
                f'Arguments `examples` and `annotations` are expected to be of '
                f'type `List[str]`. Instead they got: examples {type(examples)}'
             )
 
         if not all([isinstance(val,str) for val in examples]):
 
-            raise Exception(
-               f'Arguments `examples` are expected to be of type `List[str]`. '
-               f'Some values seem no to be of type `str`.'
+            raise ValueError(
+               'Arguments `examples` are expected to be of type `List[str]`. '
+               'Some values seem no to be of type `str`.'
             )
 
         results = []
@@ -251,7 +291,7 @@ class Promptmeteo():
         Returns
         -------
 
-        self : Promptmeteo
+        self
 
         """
 
@@ -259,7 +299,7 @@ class Promptmeteo():
         if (not isinstance(examples,list) or
             not isinstance(annotations,list)):
 
-            raise Exception(
+            raise ValueError(
                f'Arguments `examples` and `annotations` are expected to be of '
                f'type `List[str]`. Instead they got: examples {type(examples)}'
                f' annotations {type(annotations)}.'
@@ -268,14 +308,14 @@ class Promptmeteo():
         if (not all([isinstance(val,str) for val in examples]) or
             not all([isinstance(val,str) for val in annotations])):
 
-            raise Exception(
+            raise ValueError(
                f'Arguments `examples` and `annotations` are expected to be of '
                f'type `List[str]`. Some values seem no to be of type `str`.'
             )
 
         if len(examples) != len(annotations):
 
-            raise Exception(
+            raise ValueError(
                f'Arguments `examples` and `annotations` are expected to have '
                f'the same length. examples=({len(examples)},) annotations= '
                f'({len(annotations)},)'
@@ -316,7 +356,7 @@ class Promptmeteo():
         model_name = os.path.basename(model_path)
 
         if not self.is_trained:
-            raise Exception(
+            raise RuntimeError(
                 f'{self.__class__.__name__} error in `save_model()`. '
                 f'You are trying to save a model that has non been trained. '
                 f'Please, call `train()` function before'

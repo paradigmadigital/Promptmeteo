@@ -21,12 +21,10 @@
 #  THE SOFTWARE.
 
 from typing import List
-from typing import Dict
-from typing import Optional
 
 from .base import BaseTask
 from .base import BaseTaskBuilder
-from promptmeteo.prompts import NerPrompt
+from ..prompts import NerPrompt
 
 
 class NerTaskBuilder(BaseTaskBuilder):

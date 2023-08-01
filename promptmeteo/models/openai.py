@@ -31,12 +31,24 @@ from langchain.embeddings import OpenAIEmbeddings
 from .base import BaseModel
 
 
-class ModelNames(str,Enum):
+class ModelTypes(str,Enum):
+
+    """
+    Enum of available model types.
+    """
 
     MODEL_1 = 'text-davinci-003'
 
     @classmethod
-    def has_value(cls, value):
+    def has_value(
+        cls,
+        value : str
+    ) -> bool:
+
+        """
+        Checks if the value is in the enum or not.
+        """
+
         return value in cls._value2member_map_
 
 
@@ -61,13 +73,13 @@ class OpenAILLM(BaseModel):
         Make predictions using a model from OpenAI.
         """
 
-        if not ModelNames.has_value(model_name):
+        if not ModelTypes.has_value(model_name):
             raise ValueError(
                 f'`model_name`={model_name} not in supported model names: '
-                f'{list(ModelNames.__members__.keys())}')
+                f'{list(ModelTypes.__members__.keys())}')
 
         if not model_params:
-            model_params = ModelParams[ModelNames(model_name).name].value
+            model_params = ModelParams[ModelTypes(model_name).name].value
 
         self._llm = OpenAI(
             model_name=model_name,

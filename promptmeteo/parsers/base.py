@@ -28,6 +28,10 @@ from typing import List
 
 class BaseParser(ABC):
 
+    """
+    Parser class interface.
+    """
+
     def __init__(
         self,
         prompt_labels               : List[str],

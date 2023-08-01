@@ -21,8 +21,6 @@
 #  THE SOFTWARE.
 
 import os
-import yaml
-from typing import List
 
 from .base import BasePrompt
 
@@ -40,22 +38,6 @@ class ClassificationPrompt(BasePrompt):
             'templates',
             'sp',
             'classification_prompt.yml')
-    )) as fin:
+    ), encoding='utf-8') as fin:
 
         PROMPT_EXAMPLE = fin.read()
-
-
-    def __init__(
-        self,
-        prompt_labels            : str = '',
-        prompt_task_info         : str = '',
-        prompt_answer_format     : str = '',
-        prompt_chain_of_thoughts : str = '',
-    ) -> None:
-
-        super().__init__(
-            prompt_labels,
-            prompt_task_info,
-            prompt_answer_format,
-            prompt_chain_of_thoughts
-        )

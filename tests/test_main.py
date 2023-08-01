@@ -21,7 +21,7 @@ class TestPromptmeteo:
             model_name='fake_static')
 
 
-    def test_minimal_init(self):
+    def test_init_with_arguments(self):
 
         """
         Tests the exepected behaviour in a normal init.
@@ -54,7 +54,7 @@ class TestPromptmeteo:
             verbose=True)
 
 
-    def test_wrong_init_parameters(self):
+    def test_read_prompt(self):
 
         """
         Tests load prompt text format
@@ -64,7 +64,7 @@ class TestPromptmeteo:
             task_type='classification',
             model_provider_name='fake_llm',
             model_name='fake_static'
-        ).read_prompt_file(
+        ).read_prompt(
             '''
             TEMPLATE:
                 "

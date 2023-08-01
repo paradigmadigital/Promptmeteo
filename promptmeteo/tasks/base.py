@@ -54,22 +54,46 @@ class BaseTask():
 
     @property
     def prompt(self) -> BasePrompt:
+        """Get Task Prompt."""
         return self._prompt
+
+    @prompt.setter
+    def prompt(self, prompt: BasePrompt) -> None:
+        """Set Task Prompt."""
+        self._prompt = prompt
 
 
     @property
     def model(self) -> BaseModel:
+        """Get Task Model."""
         return self._model
+
+    @model.setter
+    def model(self, model: BaseModel) -> None:
+        """Set Task Model."""
+        self._model = model
 
 
     @property
     def selector(self) -> BaseSelector:
+        """Get Task Selector."""
         return self._selector
+
+    @selector.setter
+    def selector(self, selector: BaseSelector) -> None:
+        """Set Task Selector."""
+        self._selector = selector
 
 
     @property
     def parser(self) -> BaseParser:
+        """Task Parser"""
         return self._parser
+
+    @parser.setter
+    def parser(self, parser: BaseParser) -> None:
+        """Task Parser"""
+        self._parser = parser
 
 
     def _get_prompt(
@@ -129,26 +153,29 @@ class BaseTask():
 
 class BaseTaskBuilder():
 
+    """
+    Builder of Tasks.
+    """
 
     BASE_PROMPT = BasePrompt
-
 
     def __init__(
         self,
         verbose     : bool,
     ) -> None:
-
+        
+        self._labels = None
         self._task = BaseTask(verbose=verbose)
 
 
     @property
     def task(self) -> BaseTask:
+        """Task to built."""
         return self._task
 
 
     def build_prompt(
         self,
-        prompt_template          : Optional[str],
         prompt_task_info         : str,
         prompt_answer_format     : Optional[str],
         prompt_chain_of_thoughts : Optional[str]
@@ -163,19 +190,19 @@ class BaseTaskBuilder():
             prompt_labels = \
                 self.BASE_PROMPT.PROMPT_LABELS
 
-        if  prompt_task_info == None:
+        if  prompt_task_info is None:
             prompt_task_info = \
                 self.BASE_PROMPT.PROMPT_TASK_INFO
 
-        if  prompt_answer_format == None:
+        if  prompt_answer_format is None:
             prompt_answer_format = \
                 self.BASE_PROMPT.PROMPT_ANSWER_FORMAT
 
-        if  prompt_chain_of_thoughts == None:
+        if  prompt_chain_of_thoughts is None:
             prompt_chain_of_thoughts = \
                 self.BASE_PROMPT.PROMPT_CHAIN_OF_THOUGHTS
 
-        self._task._prompt = self.BASE_PROMPT(
+        self._task.prompt = self.BASE_PROMPT(
             prompt_labels            = prompt_labels,
             prompt_task_info         = prompt_task_info,
             prompt_answer_format     = prompt_answer_format,
@@ -197,22 +224,22 @@ class BaseTaskBuilder():
         Builds a the selector for the task by training a new selector.
         """
 
-        if not self._task._model:
-            raise Exception(
+        if not self._task.model:
+            raise RuntimeError(
                 'Selector algorithm is trying yo be built but there is no'
                 'LLM model or embeddings loaded. You need to call function'
                 '`build_model()` before calling `build_selector()`.'
             )
 
-        if not self._task._model.embeddings:
-            raise Exception(
+        if not self._task.model.embeddings:
+            raise RuntimeError(
                 'Selector algorithm is trying yo be built but there is no'
                 'embeddigns for model {self._task._model.__name__}.'
             )
 
-        embeddings = self._task._model.embeddings
+        embeddings = self._task.model.embeddings
 
-        self._task._selector = SelectorFactory.factory_method(
+        self._task.selector = SelectorFactory.factory_method(
             embeddings           = embeddings,
             selector_k           = selector_k,
             selector_algorithm   = selector_algorithm
@@ -236,7 +263,7 @@ class BaseTaskBuilder():
         Builds a the model for the task.
         """
 
-        self._task._model = ModelFactory.factory_method(
+        self._task.model = ModelFactory.factory_method(
             model_name = model_name,
             model_provider_name = model_provider_name,
             model_provider_token = model_provider_token,
@@ -263,11 +290,11 @@ class BaseTaskBuilder():
             prompt_labels = \
                 self.BASE_PROMPT.PROMPT_LABELS
 
-        if  prompt_chain_of_thoughts == None:
+        if  prompt_chain_of_thoughts is None:
             prompt_chain_of_thoughts = \
                 self.BASE_PROMPT.PROMPT_CHAIN_OF_THOUGHTS
 
-        self._task._parser = ParserFactory.factory_method(
+        self._task.parser = ParserFactory.factory_method(
             parser_type=parser_type,
             prompt_labels=prompt_labels,
             prompt_labels_separator=prompt_labels_separator,
@@ -288,22 +315,22 @@ class BaseTaskBuilder():
         Builds a the selector for the task by loading a pretrained selector.
         """
 
-        if not self._task._model:
+        if not self._task.model:
             raise RuntimeError(
                 'Selector algorithm is trying to be built but there is no'
                 'LLM model or embeddings loaded. You need to call function'
                 '`build_model()` before calling `load_selector()`.'
             )
 
-        if not self._task._model.embeddings:
+        if not self._task.model.embeddings:
             raise RuntimeError(
                 'Selector algorithm is trying to be built but there is no'
                 'embeddigns for model {self._task._model.__name__}.'
             )
 
-        embeddings = self._task._model.embeddings
+        embeddings = self._task.model.embeddings
 
-        self._task._selector = SelectorFactory.factory_method(
+        self._task.selector = SelectorFactory.factory_method(
             embeddings           = embeddings,
             selector_k           = selector_k,
             selector_algorithm   = selector_algorithm

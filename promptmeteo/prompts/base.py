@@ -20,10 +20,9 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
-import yaml
 from typing import List
 
+import yaml
 from langchain import PromptTemplate
 from langchain.prompts.pipeline import PipelinePromptTemplate
 
@@ -59,6 +58,10 @@ def _format(
 
 
 class BasePrompt():
+
+    """
+    Prompt class interface.
+    """
 
     PROMPT_EXAMPLE = _format("""
         TEMPLATE:
@@ -178,18 +181,59 @@ class BasePrompt():
 
     @property
     def labels(self) -> List[str]:
+        """Prompt Labels."""
         return self._labels
 
 
     @property
     def template(self) -> str:
+        """Prompt Template."""
         return self._prompt.format()
 
 
     @classmethod
-    def read_prompt_file(cls, prompt_text : str) -> None:
+    def read_prompt(cls, prompt_text : str) -> None:
 
         """
+        Reads a Promptmeteo prompt string to build the Task Prompt. Promptmeteo
+        prompts are expected to follow the following template:
+
+        ```
+        TEMPLATE:
+            "
+            Your task is to classify a text in categories:
+            {__LABELS__}
+            {__TASK_INFO__}
+            {__ANSWER_FORMAT__}
+            {__CHAIN_OF_THOUGHTS__}
+            "
+
+        LABELS:
+            ["positive", "negative", "neutral"]
+
+        TASK_INFO:
+            "The text is a sentence written by a human and you have to classify
+            it in according to its sentiment."
+
+        ANSWER_FORMAT:
+            "Your answer must include the name of the category in a unique word
+            in lower case and without puntuation."
+
+        CHAIN_OF_THOUGHTS:
+            "Please explain your answer step by step before saying the name of
+            the category"
+        ```
+
+        Parameters
+        ----------
+
+        prompt_text : str
+
+        Returns
+        -------
+
+        Self
+
         """
 
         try:
@@ -216,13 +260,19 @@ class BasePrompt():
             BasePrompt.PROMPT_EXAMPLE = prompt_text
 
         except Exception as error:
-            raise Exception(
-                f'`cls.__name__ class error. `read_prompt_file` is trying '
-                f'to read prompt with a wrong prompt template format. '
-                f'The expected string input should be like this: \n\n'
-                f'{BasePrompt.PROMPT_EXAMPLE}'
+            raise ValueError(
+                f'`cls.__name__ class error. `read_prompt` is trying to read'
+                f'prompt with a wrong prompt template format. The expected '
+                f'string input should be like:\n\n{BasePrompt.PROMPT_EXAMPLE}'
                 ) from error
 
 
-    def run(self):
+    def run(
+        self
+    ) -> PromptTemplate:
+
+        """
+        Returns the prompt template for the current task.
+        """
+
         return self._prompt

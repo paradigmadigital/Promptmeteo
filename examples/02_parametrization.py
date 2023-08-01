@@ -42,7 +42,7 @@ model = Promptmeteo(
     task_type='classification',
     model_provider_name='hf_pipeline',
     model_name='google/flan-t5-small',
-).read_prompt_file(prompt)
+).read_prompt(prompt)
 
 
 # You can also make it through argument variables

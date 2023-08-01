@@ -20,13 +20,14 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from typing import List
-
 from .base import BaseParser
 
 
 class DummyParser(BaseParser):
 
+    """
+    Dummy parser, returns what it receives.
+    """
 
     def run(
         self,

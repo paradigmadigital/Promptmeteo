@@ -3,7 +3,7 @@ import pytest
 from langchain.embeddings import FakeEmbeddings
 
 from promptmeteo.selector import SelectorFactory
-from promptmeteo.selector import SelectorAlgorithms
+from promptmeteo.selector import SelectorTypes
 from promptmeteo.selector.marginal_relevance_selector import MMRSelector
 from promptmeteo.selector.semantic_similarity_selector import SimSelector
 
@@ -12,7 +12,7 @@ class TestSelectors():
 
     def test_selector_factory(self):
 
-        for algorithm in SelectorAlgorithms:
+        for algorithm in SelectorTypes:
             SelectorFactory.factory_method(
                 selector_k = 1,
                 selector_algorithm=algorithm.value,
@@ -29,7 +29,7 @@ class TestSelectors():
             assert error==(
                f'`SelectorFactory` error in `factory_method()` . '
                f'{selector_algorithm} is not in the list of supported '
-               f'providers: {[i.value for i in SelectorAlgorithms]}')
+               f'providers: {[i.value for i in SelectorTypes]}')
 
 
     def test_mmr_selector(self):

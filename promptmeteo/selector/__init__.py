@@ -30,9 +30,10 @@ from langchain.embeddings.base import Embeddings
 from .base import BaseSelector
 
 
-class SelectorAlgorithms(str, Enum):
+class SelectorTypes(str, Enum):
 
     """
+    Enum with the avaialable selector algorithms.
     """
 
     SELECTOR_1 = 'mmr'
@@ -59,11 +60,11 @@ class SelectorFactory():
         `selector_algorithm`.
         """
 
-        if selector_algorithm == SelectorAlgorithms.SELECTOR_1.value:
+        if selector_algorithm == SelectorTypes.SELECTOR_1.value:
             from .marginal_relevance_selector import MMRSelector
             selector_cls = MMRSelector
 
-        elif selector_algorithm == SelectorAlgorithms.SELECTOR_2.value:
+        elif selector_algorithm == SelectorTypes.SELECTOR_2.value:
             from .semantic_similarity_selector import SimSelector
             selector_cls = SimSelector
 
@@ -71,7 +72,7 @@ class SelectorFactory():
             raise ValueError(
                f'`SelectorFactory` error in `factory_method()` . '
                f'{selector_algorithm} is not in the list of supported '
-               f'providers: {[i.value for i in SelectorAlgorithms]}')
+               f'providers: {[i.value for i in SelectorTypes]}')
 
         return selector_cls(
             embeddings=embeddings,

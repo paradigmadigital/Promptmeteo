@@ -153,7 +153,7 @@ class FakeListLLM(LLM):
         return {}
 
 
-class ModelNames(Enum):
+class ModelTypes(Enum):
 
     MODEL_1 = 'fake_static'
     MODEL_2 = 'fake_prompt_copy'
@@ -171,18 +171,18 @@ class FakeLLM(BaseModel):
 
         self._embeddings = FakeEmbeddings(size=64)
 
-        if model_name == ModelNames.MODEL_1.value:
+        if model_name == ModelTypes.MODEL_1.value:
             self._llm = FakeStaticLLM()
 
-        elif model_name == ModelNames.MODEL_2.value:
+        elif model_name == ModelTypes.MODEL_2.value:
             self._llm = FakePromptCopyLLM()
 
-        elif model_name == ModelNames.MODEL_3.value:
+        elif model_name == ModelTypes.MODEL_3.value:
             self._llm = FakeListLLM()
 
         else:
             raise ValueError(
                 "{model_name} is not in the list of supported FakeLLMS: "
-                "[i.value for i in ModelNames]"
+                "[i.value for i in ModelTypes]"
                 )
 

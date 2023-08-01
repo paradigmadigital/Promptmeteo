@@ -20,26 +20,28 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from typing import List
-from abc import ABC, abstractmethod
-
+from abc import ABC
+from langchain.llms.base import BaseLLM
+from langchain.embeddings.base import Embeddings
 
 class BaseModel(ABC):
 
 
     def __init__(self):
 
-        self._llm = None
-        self._embeddings = None
+        self._llm = BaseLLM
+        self._embeddings = Embeddings
 
 
     @property
-    def llm(self):
+    def llm(self) -> BaseLLM:
+        """Get Model LLM."""
         return self._llm
 
 
     @property
-    def embeddings(self):
+    def embeddings(self) -> Embeddings:
+        """Get Model Embeddings."""
         return self._embeddings
 
 
@@ -49,10 +51,11 @@ class BaseModel(ABC):
     ) -> str:
 
         """
+        Executes the model LLM and return its prediction.
         """
 
         try:
-            return self.llm(sample)
+            return self._llm(sample)
 
         except Exception as error:
             raise RuntimeError(
