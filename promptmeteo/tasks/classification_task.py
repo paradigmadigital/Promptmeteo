@@ -33,13 +33,13 @@ class ClassificationTaskBuilder(BaseTaskBuilder):
     Task for the Classification problem.
     """
 
-    BASE_PROMPT = ClassificationPrompt
+    BASE_PROMPT = 'classification'
 
     def __init__(
         self,
         task_labels : List[str],
         verbose     : bool,
     ) -> None:
-    
+
         self._task   = BaseTask(verbose=verbose)
         self._labels = task_labels

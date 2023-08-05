@@ -51,7 +51,8 @@ class ParserFactory():
     ):
 
         """
-        Returns and instance of a BaseParser object depending on the `parser_type`.
+        Returns and instance of a BaseParser object depending on the
+        `parser_type`.
         """
 
         if parser_type == ParserTypes.PARSER_1.value:

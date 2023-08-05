@@ -1,12 +1,32 @@
 import pytest
-from langchain import PromptTemplate
-from langchain.prompts.pipeline import PipelinePromptTemplate
 
+from promptmeteo.prompts import PromptTypes
+from promptmeteo.prompts import PromptFactory
+
+from promptmeteo.prompts import NerPrompt
 from promptmeteo.prompts import BasePrompt
+from promptmeteo.prompts import ClassificationPrompt
 
 
 class TestPrompts:
 
+    def test_prompt_factory(self):
+
+        for prompt in PromptTypes:
+            PromptFactory.factory_method(
+                prompt_type=prompt.value,
+                prompt_domain='TEST DOMAIN',
+                prompt_labels=['true','false'],
+                prompt_detail='TEST PROMPT DETAIL'
+            )
+
+        with pytest.raises(ValueError):
+            PromptFactory.factory_method(
+                prompt_type='WRONG PARSER TYPE',
+                prompt_domain='TEST DOMAIN',
+                prompt_labels=['true','false'],
+                prompt_detail='TEST PROMPT DETAIL'
+            )
 
     def test_minimal_init(self):
 
@@ -14,7 +34,7 @@ class TestPrompts:
         Tests the exepected behaviour in a normal init.
         """
 
-        prompt = BasePrompt()
+        prompt = ClassificationPrompt()
 
 
     def test_arguments_init(self):
@@ -23,14 +43,14 @@ class TestPrompts:
         Tests the exepected behaviour in a normal init.
         """
 
-        prompt = BasePrompt(
+        prompt = ClassificationPrompt(
+            prompt_domain= 'TEST_DOMAIN',
             prompt_labels=['TEST_LABEL_1', 'TEST_LABEL_2'],
-            prompt_task_info="TASK INFO",
-            prompt_answer_format="RETURN LABELS: ({__LABELS__})",
-            prompt_chain_of_thoughts="TASK EXPLAINED"
+            prompt_detail= 'TEST_DETAIL',
         )
 
 
+        assert 'TEST_DOMAIN' in prompt.template
         assert 'TEST_LABEL_1' in prompt.template
         assert 'TEST_LABEL_2' in prompt.template
 
@@ -41,40 +61,12 @@ class TestPrompts:
         Tests load prompt text format
         """
 
-        return_none = BasePrompt.read_prompt(
-            '''
-            TEMPLATE:
-                "
-                {__LABELS__}.
+        with pytest.raises(ValueError):
+            ClassificationPrompt.read_prompt(
+                '''
+                WRONG_TEMPLATE_KEY:
+                    wrong template key
 
-                {__TASK_INFO__}
-
-                {__ANSWER_FORMAT__}
-
-                {__CHAIN_OF_THOUGHTS__}
-                "
-            LABELS:
-                ["true","false"]
-
-            TASK_INFO:
-                "TEST_TASK_INFO"
-
-            ANSWER_FORMAT:
-                "TEST_ANSWER_FORMAT"
-
-            CHAIN_OF_THOUGHTS:
-                "TEST_CHAIN_OF_THOUGHTS"
-            ''')
-
-        prompt = BasePrompt(
-            prompt_labels=['TEST_LABEL_1', 'TEST_LABEL_2'],
-            prompt_task_info="TASK INFO",
-            prompt_answer_format="RETURN LABELS: ({__LABELS__})",
-            prompt_chain_of_thoughts="TASK EXPLAINED"
-        )
-
-        assert return_none==None
-        assert prompt.template == \
-            " TEST_LABEL_1, TEST_LABEL_2.\n" + \
-            "TASK INFO\nRETURN LABELS: (TEST_LABEL_1, TEST_LABEL_2)\n" + \
-            "TASK EXPLAINED "
+                ANOTHER_WRONG_TEMPLATE_KEY:
+                    wrong template key again
+                ''')

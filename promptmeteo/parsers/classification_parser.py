@@ -40,11 +40,18 @@ class ClassificationParser(BaseParser):
 
         text = text.lower()
 
-        if not self._chain_of_thoughts:
+        if not self._chain_of_thoughts and not self._labels:
+            result = [word for word in text.split(self._labels_separator)]
+
+        if not self._chain_of_thoughts and self._labels:
             result = [word for word in text.split(self._labels_separator)
                 if word in self._labels]
 
-        if self._chain_of_thoughts:
+        if self._chain_of_thoughts  and self._labels:
             result = [label for label in self._labels if label in text]
 
+        if self._chain_of_thoughts  and  not self._labels:
+            result = text.split(self._labels_separator)[-1]
+
         return result
+

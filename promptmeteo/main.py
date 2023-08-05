@@ -45,19 +45,17 @@ class Promptmeteo():
 
     def __init__(
         self,
-        task_type                : str,
-        model_name               : str,
-        model_provider_name      : str,
-        model_params             : Optional[Dict] = {},
-        model_provider_token     : Optional[str] = None,
-        prompt_labels            : List[str] = [],
-        prompt_labels_separator  : str = ',',
-        prompt_task_info         : Optional[str] = None,
-        prompt_answer_format     : Optional[str] = None,
-        prompt_chain_of_thoughts : Optional[str] = None,
-        selector_k               : int = 10,
-        selector_algorithm       : str = 'mmr',
-        verbose                  : bool = False
+        task_type            : str,
+        model_name           : str,
+        model_provider_name  : str,
+        model_params         : Optional[Dict] = {},
+        model_provider_token : Optional[str] = None,
+        prompt_domain        : Optional[str] = '',
+        prompt_labels        : List[str] = [],
+        prompt_detail        : Optional[str] = None,
+        selector_k           : int = 10,
+        selector_algorithm   : str = 'mmr',
+        verbose              : bool = False
     ) -> None:
 
         """
@@ -77,15 +75,11 @@ class Promptmeteo():
 
         model_provider_token : Optional[str]
 
+        prompt_domain : str
+
         prompt_labels : List[str]
 
-        prompt_labels_separator : str
-
         prompt_task_info : Optional[str]
-
-        prompt_answer_format : Optional[str]
-
-        prompt_chain_of_thoughts : Optional[str]
 
         selector_k : int
 
@@ -140,17 +134,15 @@ class Promptmeteo():
 
         # Build prompt
         self.builder.build_prompt(
-            prompt_task_info         = prompt_task_info,
-            prompt_answer_format     = prompt_answer_format,
-            prompt_chain_of_thoughts = prompt_chain_of_thoughts
+            prompt_domain = prompt_domain,
+            prompt_labels = prompt_labels,
+            prompt_detail = prompt_detail,
         )
 
         # Build parser
         self.builder.build_parser(
             parser_type              = task_type,
             prompt_labels            = prompt_labels,
-            prompt_labels_separator  = prompt_labels_separator,
-            prompt_chain_of_thoughts = prompt_chain_of_thoughts
         )
 
         # Selector config

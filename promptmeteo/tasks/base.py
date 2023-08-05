@@ -28,8 +28,8 @@ from typing_extensions import Self
 from langchain.prompts.prompt import PromptTemplate
 from langchain.prompts.pipeline import PipelinePromptTemplate
 
-from promptmeteo.prompts import BasePrompt
 from promptmeteo.models import ModelFactory, BaseModel
+from promptmeteo.prompts import PromptFactory, BasePrompt
 from promptmeteo.parsers import ParserFactory, BaseParser
 from promptmeteo.selector import SelectorFactory, BaseSelector
 
@@ -57,38 +57,37 @@ class BaseTask():
         """Get Task Prompt."""
         return self._prompt
 
-    @prompt.setter
-    def prompt(self, prompt: BasePrompt) -> None:
-        """Set Task Prompt."""
-        self._prompt = prompt
-
-
+    # Getters
     @property
     def model(self) -> BaseModel:
         """Get Task Model."""
         return self._model
-
-    @model.setter
-    def model(self, model: BaseModel) -> None:
-        """Set Task Model."""
-        self._model = model
-
 
     @property
     def selector(self) -> BaseSelector:
         """Get Task Selector."""
         return self._selector
 
-    @selector.setter
-    def selector(self, selector: BaseSelector) -> None:
-        """Set Task Selector."""
-        self._selector = selector
-
-
     @property
     def parser(self) -> BaseParser:
         """Task Parser"""
         return self._parser
+
+    # Setters
+    @prompt.setter
+    def prompt(self, prompt: BasePrompt) -> None:
+        """Set Task Prompt."""
+        self._prompt = prompt
+
+    @model.setter
+    def model(self, model: BaseModel) -> None:
+        """Set Task Model."""
+        self._model = model
+
+    @selector.setter
+    def selector(self, selector: BaseSelector) -> None:
+        """Set Task Selector."""
+        self._selector = selector
 
     @parser.setter
     def parser(self, parser: BaseParser) -> None:
@@ -157,13 +156,13 @@ class BaseTaskBuilder():
     Builder of Tasks.
     """
 
-    BASE_PROMPT = BasePrompt
+    BASE_PROMPT = None
 
     def __init__(
         self,
         verbose     : bool,
     ) -> None:
-        
+
         self._labels = None
         self._task = BaseTask(verbose=verbose)
 
@@ -176,37 +175,20 @@ class BaseTaskBuilder():
 
     def build_prompt(
         self,
-        prompt_task_info         : str,
-        prompt_answer_format     : Optional[str],
-        prompt_chain_of_thoughts : Optional[str]
+        prompt_domain : str,
+        prompt_labels : List[str],
+        prompt_detail = str,
     ) -> Self:
 
         """
         Builds a the prompt for the task.
         """
 
-        prompt_labels = []
-        if self._labels is not None:
-            prompt_labels = \
-                self.BASE_PROMPT.PROMPT_LABELS
-
-        if  prompt_task_info is None:
-            prompt_task_info = \
-                self.BASE_PROMPT.PROMPT_TASK_INFO
-
-        if  prompt_answer_format is None:
-            prompt_answer_format = \
-                self.BASE_PROMPT.PROMPT_ANSWER_FORMAT
-
-        if  prompt_chain_of_thoughts is None:
-            prompt_chain_of_thoughts = \
-                self.BASE_PROMPT.PROMPT_CHAIN_OF_THOUGHTS
-
-        self._task.prompt = self.BASE_PROMPT(
-            prompt_labels            = prompt_labels,
-            prompt_task_info         = prompt_task_info,
-            prompt_answer_format     = prompt_answer_format,
-            prompt_chain_of_thoughts = prompt_chain_of_thoughts,
+        self._task.prompt = PromptFactory.factory_method(
+            prompt_type   = self.BASE_PROMPT,
+            prompt_domain = prompt_domain,
+            prompt_labels = prompt_labels,
+            prompt_detail = prompt_detail,
         )
 
         return self
@@ -277,28 +259,16 @@ class BaseTaskBuilder():
         self,
         parser_type              : str,
         prompt_labels            : List[str],
-        prompt_labels_separator  : str = ',',
-        prompt_chain_of_thoughts : str = '',
     ) -> Self:
 
         """
         Builds a the parser for the task.
         """
 
-        prompt_labels = []
-        if self._labels is not None:
-            prompt_labels = \
-                self.BASE_PROMPT.PROMPT_LABELS
-
-        if  prompt_chain_of_thoughts is None:
-            prompt_chain_of_thoughts = \
-                self.BASE_PROMPT.PROMPT_CHAIN_OF_THOUGHTS
-
         self._task.parser = ParserFactory.factory_method(
             parser_type=parser_type,
             prompt_labels=prompt_labels,
-            prompt_labels_separator=prompt_labels_separator,
-            prompt_chain_of_thoughts=prompt_chain_of_thoughts
+            prompt_labels_separator=','
         )
 
         return self

@@ -44,9 +44,9 @@ class TestTaskBuilder():
             task_builder = TaskBuilderFactory.factory_method(
                 task_type.value
             ).build_prompt(
-                prompt_task_info="TASK_INFO",
-                prompt_answer_format="ANSWER_FORMAT",
-                prompt_chain_of_thoughts="CHAIN_OF_THOUGHTS"
+                prompt_domain="TEST_DOMAIN",
+                prompt_labels=["LABELS_1", "LABEL_2"],
+                prompt_detail="TEST_DETAIL"
             )
 
             assert task_builder.task._prompt != None

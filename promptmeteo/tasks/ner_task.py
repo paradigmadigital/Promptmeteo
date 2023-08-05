@@ -33,7 +33,7 @@ class NerTaskBuilder(BaseTaskBuilder):
     Task for the NER problem.
     """
 
-    BASE_PROMPT = NerPrompt
+    BASE_PROMPT = 'ner'
 
     def __init__(
         self,

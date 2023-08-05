@@ -32,69 +32,18 @@ class TestPromptmeteo:
             model_provider_name='fake_llm',
             model_name='fake_static',
             model_provider_token='',
+            prompt_domain='reseñas',
             prompt_labels=['positive','negative','neutral'],
-            prompt_task_info="""
+            prompt_detail="""
             Asume que estamos usando estas categorías con su significado
             subjetivo habitual: algo positivo puede describirse como bueno,
             de buena calidad, deseable, útil y satisfactorio; algo negativo
             puede describirse como malo, de mala calidad, indeseable, inútil
             o insatisfactorio; neutro es la clase que asignaremos a todo lo
             que no sea positivo o negativo.""",
-            prompt_answer_format="""
-            En tu respuesta incluye sólo el nombre de la clase, como una única
-            palabra ({__LABELS__}), en minúscula, sin puntuación, y sin añadir
-            ninguna otra afirmación o palabra.""",
-            prompt_chain_of_thoughts="""
-            Por favor argumenta tu respuesta paso a paso, explica por qué crees
-            que está justificada tu elección final, y por favor asegúrate de
-            que acabas tu explicación con el nombre de la clase que has elegido
-            como la correcta, en minúscula y sin puntuación.""",
             selector_k=10,
             selector_algorithm='mmr',
             verbose=True)
-
-
-    def test_read_prompt(self):
-
-        """
-        Tests load prompt text format
-        """
-
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static'
-        ).read_prompt(
-            '''
-            TEMPLATE:
-                "
-                {__LABELS__}.
-
-                {__TASK_INFO__}
-
-                {__ANSWER_FORMAT__}
-
-                {__CHAIN_OF_THOUGHTS__}
-                "
-            LABELS:
-                ["positive", "negative"]
-
-            TASK_INFO:
-                "TEST_TASK_INFO"
-
-            ANSWER_FORMAT:
-                "TEST_ANSWER_FORMAT"
-
-            CHAIN_OF_THOUGHTS:
-                "TEST_CHAIN_OF_THOUGHTS"
-            ''')
-
-        prompt = model.task.prompt
-
-        assert prompt.PROMPT_LABELS==["positive", "negative"]
-        assert prompt.PROMPT_TASK_INFO=="TEST_TASK_INFO"
-        assert prompt.PROMPT_ANSWER_FORMAT=="TEST_ANSWER_FORMAT"
-        assert prompt.PROMPT_CHAIN_OF_THOUGHTS=="TEST_CHAIN_OF_THOUGHTS"
 
 
     def test_wrong_predict(self):
