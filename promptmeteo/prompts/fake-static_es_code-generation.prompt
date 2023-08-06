@@ -16,10 +16,10 @@ PROMPT_LABELS:
     "El objetivo del script es que haga {__LABELS__}."
 
 
-CHAIN_OF_THOUGHTS:
+CHAIN_THOUGHT:
     ""
 
 
 ANSWER_FORMAT:
-    "Quiero que en tu respuesta solamente incluyas códido. Asegurate de que
+    "Quiero que en tu respuesta solamente incluyas código. Asegurate de que
     la sintaxis es correcta."

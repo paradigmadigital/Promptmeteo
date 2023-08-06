@@ -3,10 +3,10 @@ import tempfile
 
 import pytest
 
-from promptmeteo import Promptmeteo
+from promptmeteo import DocumentClassifier
 
 
-class TestPromptmeteo:
+class TestDocumentClassifier:
 
 
     def test_minimal_init(self):
@@ -15,10 +15,9 @@ class TestPromptmeteo:
         Tests the exepected behaviour in a normal init.
         """
 
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static')
+        model = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static')
 
 
     def test_init_with_arguments(self):
@@ -27,10 +26,9 @@ class TestPromptmeteo:
         Tests the exepected behaviour in a normal init.
         """
 
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static',
+        model = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static',
             model_provider_token='',
             prompt_domain='reseñas',
             prompt_labels=['positive','negative','neutral'],
@@ -54,17 +52,15 @@ class TestPromptmeteo:
         """
 
         with pytest.raises(Exception):
-            pred = Promptmeteo(
-                task_type='classification',
-                model_provider_name='fake_llm',
-                model_name='fake_static'
+            pred = DocumentClassifier(
+                model_provider_name='fake-llm',
+                model_name='fake-static'
             ).predict("Wrong type this is expected to be a list")
 
         with pytest.raises(Exception):
-            pred = Promptmeteo(
-                task_type='classification',
-                model_provider_name='fake_llm',
-                model_name='fake_static'
+            pred = DocumentClassifier(
+                model_provider_name='fake-llm',
+                model_name='fake-static'
             ).predict([1,2,3])
 
 
@@ -75,10 +71,9 @@ class TestPromptmeteo:
         `predict()`
         """
 
-        pred = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static'
+        pred = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static'
         ).predict(['positive'])
 
         assert pred==[['positive']]
@@ -88,14 +83,13 @@ class TestPromptmeteo:
     def test_wrong_train(self):
 
         """
-        Test that the task property form Promptmeteo is trained after calling
+        Test that the task property form DocumentClassifier is trained after calling
         the method `fit()`
         """
 
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static')
+        model = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static')
 
         with pytest.raises(Exception):
 
@@ -122,14 +116,13 @@ class TestPromptmeteo:
     def test_correct_train(self):
 
         """
-        Test that the task property form Promptmeteo is trained after calling
+        Test that the task property form DocumentClassifier is trained after calling
         the method `fit()`
         """
 
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static')
+        model = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static')
 
         model = model.train(
             examples = ['estoy feliz', 'me da igual', 'no me gusta'],
@@ -147,10 +140,9 @@ class TestPromptmeteo:
         `predict()`
         """
 
-        model = Promptmeteo(
-            task_type='classification',
-            model_provider_name='fake_llm',
-            model_name='fake_static')
+        model = DocumentClassifier(
+            model_provider_name='fake-llm',
+            model_name='fake-static')
 
         model = model.train(
             examples = ['estoy feliz', 'me da igual', 'no me gusta'],
@@ -164,10 +156,9 @@ class TestPromptmeteo:
 
     def test_save_model(self):
 
-        model = Promptmeteo(
-            task_type           = 'classification',
-            model_provider_name = 'fake_llm',
-            model_name          = 'fake_static',
+        model = DocumentClassifier(
+            model_provider_name = 'fake-llm',
+            model_name          = 'fake-static',
             verbose             = True
         )
 
@@ -213,10 +204,9 @@ class TestPromptmeteo:
 
     def test_load_model(self):
 
-        model = Promptmeteo(
-            task_type           = 'classification',
-            model_provider_name = 'fake_llm',
-            model_name          = 'fake_static',
+        model = DocumentClassifier(
+            model_provider_name = 'fake-llm',
+            model_name          = 'fake-static',
             verbose             = True
         ).train(
             examples = ['estoy feliz', 'me da igual', 'no me gusta'],

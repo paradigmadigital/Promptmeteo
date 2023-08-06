@@ -35,7 +35,8 @@ class ClassificationParser(BaseParser):
     ) -> str:
 
         """
-        Given a response string from an LLM, returns the response expected for the task.
+        Given a response string from an LLM, returns the response expected for
+        the task.
         """
 
         text = text.lower()
@@ -51,7 +52,7 @@ class ClassificationParser(BaseParser):
             result = [label for label in self._labels if label in text]
 
         if self._chain_of_thoughts  and  not self._labels:
-            result = text.split(self._labels_separator)[-1]
+            result = [text.split(self._labels_separator)[-1]]
 
         return result
 

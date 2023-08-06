@@ -33,6 +33,32 @@ class BasePrompt():
     Prompt class interface.
     """
 
+    PROMPT_EXAMPLE = """
+        TEMPLATE:
+            "Here you exaplain the task.
+            {__PROMPT_DOMAIN__}
+            {__PROMPT_LABELS__}
+
+            {__CHAIN_THOUGHT__}
+            {__ANSWER_FORMAT__}"
+
+        PROMPT_DOMAIN:
+            "Here you explain the {__DOMAIN__} from the texts."
+
+        PROMPT_LABELS:
+            "Here you give the {__LABELS__} if required."
+
+        PROMPT_DETAIL:
+            "Here you can give some help"
+
+        CHAIN_THOUGHT:
+            "Explain your answer step by step."
+
+        ANSWER_FORMAT:
+            "Response just with the asnwer."
+    """
+
+
     def __init__(
         self,
         prompt_domain : str = '',
@@ -41,7 +67,7 @@ class BasePrompt():
     ) -> None:
 
         """
-        Build a Prompt object string given a concrete especification
+        Build a Prompt object string given a concrete especification.
         """
 
         self._domain = prompt_domain
@@ -132,9 +158,10 @@ class BasePrompt():
 
         except Exception as error:
             raise ValueError(
-                f'`cls.__name__ class error. `read_prompt` is trying to read'
+                f'`{cls.__name__} error. `read_prompt` is trying to read'
                 f'prompt with a wrong prompt template format. The expected '
-                f'string input should be like:\n\n{cls.PROMPT_EXAMPLE}'
+                f'string input should be like:\n\n{cls.PROMPT_EXAMPLE}\n\n'
+                f'Instead received:\n\n{prompt_text}'
                 ) from error
 
 

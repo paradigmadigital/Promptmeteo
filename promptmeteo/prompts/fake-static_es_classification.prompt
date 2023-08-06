@@ -1,0 +1,33 @@
+TEMPLATE:
+    "Necesito que me ayudes en una tarea de clasificación de texto.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_LABELS__}
+
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
+
+
+PROMPT_DOMAIN:
+    "Los textos que vas procesar del ambito de {__DOMAIN__}."
+
+
+PROMPT_LABELS:
+    "Quiero que me clasifiques los textos una de las siguientes categorías:
+    {__LABELS__}."
+
+
+PROMPT_DETAIL:
+    ""
+
+
+CHAIN_THOUGHT:
+    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
+    está justificada tu elección final, y asegúrate de que acabas tu
+    explicación con el nombre de la clase que has escogido como la
+    correcta, en minúscula y sin puntuación."
+
+
+ANSWER_FORMAT:
+    "En tu respuesta incluye sólo el nombre de la clase, como una única
+    palabra, en minúscula, sin puntuación, y sin añadir ninguna otra
+    afirmación o palabra."

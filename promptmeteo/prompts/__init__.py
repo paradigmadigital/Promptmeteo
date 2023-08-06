@@ -27,35 +27,66 @@ from typing import List
 from .base import BasePrompt
 
 
-class ClassificationPrompt(BasePrompt):
-    pass
+module_dir = os.path.abspath(os.path.join(__file__,os.path.pardir))
 
-
-class NerPrompt(BasePrompt):
-    pass
-
-
-class PromptTypes(str, Enum):
+def get_files_taxonomy(sep : str = '_'):
 
     """
-    Enum of availables prompts.
+    Convert a list of prompt files with the naming convetion of
+    `{model_name}_{language}_{task}.prompt into a dictorionary version.
+    Given the following folder structure:
+
+        ./prompts/
+          ├── __init__.py
+          ├── base.py
+          ├── google-flan-t5-small_es_classification.prompt
+          ├── google-flan-t5-small_es_code-generation.prompt
+          ├── google-flan-t5-small_es_ner.prompt
+          ├── text-davinci-003_es_classification.prompt
+          ├── text-davinci-003_es_code-generation.prompt
+          └── text-davinci-003_es_ner.prompt
+
+    The function returns:
+
+        {'google-flan-t5-small': {
+             'es': {
+                 'classification': {},
+                 'ner': {}
+                 }
+              },
+         'text-davinci-003': {
+             'es': {
+                 'classification': {},
+                 'code-generation': {},
+                 'ner': {}
+                 }
+              }
+        }
+
     """
 
-    PROMPT_1 = "classification"
-    PROMPT_2 = "ner"
+    try:
 
+        prompt_files = [os.path.join(
+            path, name.replace('.prompt','')).replace(module_dir+'/','')
+            for path, _, files in os.walk(module_dir)
+            for name in files
+            if  name.endswith('.prompt')]
 
-def read_prompt(prompt_file: str):
+        taxonomy = {}
+        for prompt_file in prompt_files:
+            tmp = taxonomy
+            for field in prompt_file.split(sep):
+                tmp = tmp.setdefault(field, {})
 
-    """
-    Reads a prompt file (i.e. `.prompt` extension). 
-    """
+    except Exception as error:
+        raise RuntimeError(
+            f'Problems with the prompts file structure in directory '
+            f'promptmeteo/prompts. The expected naming for the prompts '
+            'is `{model_name}_{language}_{task}.prompt`.'
+            ) from error
 
-    path = os.path.join(__file__, os.path.pardir, 'sp', prompt_file)
-    with open(os.path.abspath(path), encoding='utf-8') as fin:
-        prompt_text = fin.read()
-
-    return prompt_text
+    return taxonomy
 
 
 class PromptFactory():
@@ -64,9 +95,12 @@ class PromptFactory():
     Factory of Prompts
     """
 
-    @staticmethod
+    @classmethod
     def factory_method(
-        prompt_type   : str,
+        cls,
+        language      : str,
+        task_type     : str,
+        model_name    : str,
         prompt_domain : str,
         prompt_labels : List[str],
         prompt_detail : str,
@@ -74,29 +108,83 @@ class PromptFactory():
 
         """
         Returns and instance of a BasePrompt object depending on the
-        `prompt_type`.
+        `task_type`.
         """
 
-        if prompt_type == PromptTypes.PROMPT_1.value:
-            ClassificationPrompt.PROMPT_EXAMPLE = read_prompt(
-                'classification.prompt')
+        _model_name = model_name.replace('/','-')
 
-            prompt_cls = ClassificationPrompt
+        taxonomy=get_files_taxonomy()
 
-        elif prompt_type == PromptTypes.PROMPT_2.value:
-            NerPrompt.PROMPT_EXAMPLE = read_prompt('ner.prompt')
-            prompt_cls = NerPrompt
-
-        else:
+        if _model_name not in taxonomy:
             raise ValueError(
-                f"{prompt_type} is not in the list of supported providers: "
-                f"{[i.value for i in PromptTypes]}"
+                f"`{cls.__name__}` class in function `factory_method()`. "
+                f"{model_name} has not a prompt file created. Available model "
+                f"prompts are: {[i for i in taxonomy]}"
                 )
 
-        prompt_cls.read_prompt(prompt_cls.PROMPT_EXAMPLE)
+        if language not in taxonomy[_model_name]:
+            raise ValueError(
+                f"`{cls.__name__}` class in function `factory_method()`. "
+                f"{model_name} has not a prompt file created for the language "
+                f"{language}. Available languages for {model_name}: "
+                f"{[i for i in taxonomy[model_name]]}"
+                )
+
+        if task_type not in taxonomy[_model_name][language]:
+            raise ValueError(
+                f"`{cls.__name__}` class in function `factory_method()`. "
+                f"{model_name}  in {language} has not a prompt file created"
+                f"for the task {task_type}. Available tasks are: "
+                f"{[i for i in taxonomy[model_name][language]]}"
+                )
+
+        prompt_cls = cls.build_class(language,task_type,_model_name)
 
         return prompt_cls(
             prompt_domain=prompt_domain,
             prompt_labels=prompt_labels,
             prompt_detail=prompt_detail,
         )
+
+
+    @staticmethod
+    def build_class(
+        language   : str,
+        task_type  : str,
+        _model_name : str
+    ) -> BasePrompt:
+
+        """
+        Creates a class dinamically that inherits from `BasePrompt` given
+        arguments configuracion. This new class has included its prompt from
+        the .prompt file.
+
+        Example
+        -------
+
+        >>> PromptFactory.build_class(
+        >>>     language='es',
+        >>>     task_type='ner',
+        >>>     model_name='text-davinci-003')
+        >>> )
+
+        <class '__main__.Textdavinci003SpNer'>
+        """
+
+        prompt_class_name = ''.join([
+             _model_name.replace('-','').capitalize(),
+             language.capitalize(),
+             task_type.replace('-','').capitalize()
+        ])
+
+        prompt_cls = type(
+            prompt_class_name,
+            (BasePrompt,),
+            {"__init__": BasePrompt.__init__}
+        )
+
+        file_name = f"{_model_name}_{language}_{task_type}.prompt"
+        with open(os.path.join(module_dir,file_name), encoding='utf-8') as fin:
+            prompt_cls.read_prompt(fin.read())
+
+        return prompt_cls

@@ -1,36 +1,18 @@
 import pytest
 
-from promptmeteo.tasks import TaskTypes
 from promptmeteo.models import BaseModel
-from promptmeteo.tasks import TaskBuilderFactory
+from promptmeteo.tasks import TaskBuilder
 
+task_types = ['classification']
 
 class TestTaskBuilder():
 
-
-    def test_factory_method(self):
-
-        for task_type in TaskTypes:
-            TaskBuilderFactory.factory_method(
-                task_type.value, verbose=False)
-
-        for task_type in TaskTypes:
-            TaskBuilderFactory.factory_method(
-                task_type.value, verbose=True)
-
-        with pytest.raises(Exception):
-            TaskBuilderFactory.factory_method(
-                'wrong_type')
-
-
     def test_build_model(self):
 
-        for task_type in TaskTypes:
-            task_builder = TaskBuilderFactory.factory_method(
-                task_type.value
-            ).build_model(
-                model_name='fake_static',
-                model_provider_name='fake_llm',
+        for task_type in task_types:
+            task_builder = TaskBuilder(task_type).build_model(
+                model_name='fake-static',
+                model_provider_name='fake-llm',
                 model_provider_token=''
             )
 
@@ -40,10 +22,11 @@ class TestTaskBuilder():
 
     def test_build_prompt(self):
 
-        for task_type in TaskTypes:
-            task_builder = TaskBuilderFactory.factory_method(
-                task_type.value
-            ).build_prompt(
+        for task_type in task_types:
+            task_builder = TaskBuilder(task_type).build_prompt(
+                language="es",
+                task_type=task_type,
+                model_name="fake-static",
                 prompt_domain="TEST_DOMAIN",
                 prompt_labels=["LABELS_1", "LABEL_2"],
                 prompt_detail="TEST_DETAIL"
@@ -54,11 +37,9 @@ class TestTaskBuilder():
 
     def test_selector_prompt(self):
 
-        for task_type in TaskTypes:
+        for task_type in task_types:
             with pytest.raises(Exception):
-                task_builder = TaskBuilderFactory.factory_method(
-                    task_type.value
-                ).build_selector_by_train(
+                TaskBuilder(task_type).build_selector_by_train(
                     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
                     annotations = ['positive', 'neutral', 'negative'],
                     selector_k=10,
@@ -66,13 +47,11 @@ class TestTaskBuilder():
                 )
 
 
-        for task_type in TaskTypes:
-            task_builder = TaskBuilderFactory.factory_method(
-                task_type.value
-            ).build_model(
-                model_name='fake_static',
-                model_provider_name='fake_llm',
-                model_provider_token=''
+        for task_type in task_types:
+            task_builder = TaskBuilder(task_type).build_model(
+                model_name='fake-static',
+                model_provider_name='fake-llm',
+                model_provider_token='',
             )
 
             task_builder.build_selector_by_train(

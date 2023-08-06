@@ -29,5 +29,5 @@ CHAIN_THOUGHT:
 
 ANSWER_FORMAT:
     "Puedes devolver las entidades detectadas como una secuencia de cadenas de
-    texto separadas por punto y coma: primera entidad,segunda entidad,tercera
+    texto separadas por punto y coma: primera entidad, segunda entidad, tercera
     entidad."

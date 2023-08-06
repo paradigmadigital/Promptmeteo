@@ -39,38 +39,36 @@ class ParserTypes(str, Enum):
 class ParserFactory():
 
     """
-    Factory of Parsers
+    Factory of Parsers.
     """
 
-    @staticmethod
+    @classmethod
     def factory_method(
-        parser_type                 : str,
-        prompt_labels               : List[str],
-        prompt_labels_separator     : str = ',',
-        prompt_chain_of_thoughts    : bool= False
+        cls,
+        task_type     : str,
+        prompt_labels : List[str],
     ):
 
         """
         Returns and instance of a BaseParser object depending on the
-        `parser_type`.
+        `task_type`.
         """
 
-        if parser_type == ParserTypes.PARSER_1.value:
+        if task_type == ParserTypes.PARSER_1.value:
             from .classification_parser import ClassificationParser
             parser_cls = ClassificationParser
 
-        elif parser_type == ParserTypes.PARSER_2.value:
+        elif task_type == ParserTypes.PARSER_2.value:
             from .classification_parser import ClassificationParser
             parser_cls = ClassificationParser
 
         else:
             raise ValueError(
-                f"{parser_type} is not in the list of supported providers: "
+                f"`{cls.__name__}` error in function `factory_method()`: "
+                f"{task_type} is not in the list of supported providers: "
                 f"{[i.value for i in ParserTypes]}"
                 )
 
         return parser_cls(
             prompt_labels=prompt_labels,
-            prompt_labels_separator=prompt_labels_separator,
-            prompt_chain_of_thoughts=prompt_chain_of_thoughts
         )

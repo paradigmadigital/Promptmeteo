@@ -28,12 +28,11 @@ from typing import Dict
 from typing import Optional
 from typing_extensions import Self
 
-from promptmeteo.tasks import BaseTask
-from promptmeteo.tasks import BaseTaskBuilder
-from promptmeteo.tasks import TaskBuilderFactory
+from promptmeteo.tasks import Task
+from promptmeteo.tasks import TaskBuilder
 
 
-class Promptmeteo():
+class Base():
 
 
     """
@@ -45,11 +44,11 @@ class Promptmeteo():
 
     def __init__(
         self,
-        task_type            : str,
         model_name           : str,
         model_provider_name  : str,
-        model_params         : Optional[Dict] = {},
         model_provider_token : Optional[str] = None,
+        model_params         : Optional[Dict] = {},
+        language             : str = 'es',
         prompt_domain        : Optional[str] = '',
         prompt_labels        : List[str] = [],
         prompt_detail        : Optional[str] = None,
@@ -59,7 +58,7 @@ class Promptmeteo():
     ) -> None:
 
         """
-        Prompmeteo is tool, powered by LLMs, which isable to solve NLP models
+        Prompmeteo is tool, powered by LLMs, which is able to solve NLP models
         such as text classification and Named Entity Recognition. Its interface
         is similar to a conventional ML model, which allows Prometeo to be used
         in a MLOps pipeline easily.
@@ -92,72 +91,19 @@ class Promptmeteo():
         -------
 
         None
-
-        Example
-        -------
-
-        >>> from promptmeteo import Promptmeteo
-
-        >>> classifier = Promptmeteo(
-        >>>     task_type='classification',
-        >>>     model_provider_name='hf_pipeline',
-        >>>     model_name='google/flan-t5-small',
-        >>>     prompt_labels=['positivo','negativo','neutral'],
-        >>> )
-
-        >>> classifier.train(
-        >>>     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
-        >>>     annotations = ['positivo', 'neutral', 'negativo'],
-        >>>     model_name = 'google/flan-t5-small'
-        >>>     model_provider_name='hf_pipeline',
-        >>>     selector_algorithm='mmr',
-        >>>     selector_k=3)
-
-        >>> classifier.predict(['que guay!!'])
-
-        [['positive']]
         """
 
-        self._builder = TaskBuilderFactory.factory_method(
-            task_type                = task_type,
-            task_labels              = prompt_labels,
-            verbose                  = verbose
-        )
-
-        # Build model
-        self.builder.build_model(
-            model_name               = model_name,
-            model_provider_name      = model_provider_name,
-            model_provider_token     = model_provider_token,
-            model_params             = model_params
-        )
-
-        # Build prompt
-        self.builder.build_prompt(
-            prompt_domain = prompt_domain,
-            prompt_labels = prompt_labels,
-            prompt_detail = prompt_detail,
-        )
-
-        # Build parser
-        self.builder.build_parser(
-            parser_type              = task_type,
-            prompt_labels            = prompt_labels,
-        )
-
-        # Selector config
-        self._selector_k             = selector_k
-        self._selector_algorithm     = selector_algorithm
+        self._builder = None
 
 
     @property
-    def builder(self) -> BaseTaskBuilder:
+    def builder(self) -> TaskBuilder:
         """Task Builder."""
         return self._builder
 
 
     @property
-    def task(self) -> BaseTask:
+    def task(self) -> Task:
         """Task."""
         return self._builder.task
 
@@ -166,59 +112,6 @@ class Promptmeteo():
     def is_trained(self) -> bool:
         """Check if Promptmeteo intance is trained."""
         return self._builder.task.selector is not None
-
-
-    def read_prompt(
-        self,
-        prompt_text : str
-    ) -> Self:
-        
-        """
-        Reads a Promptmeteo prompt string to build the Task Prompt. Promptmeteo
-        prompts are expected to follow the following template
-
-        ```
-        TEMPLATE:
-            "
-            Your task is to classify a text in categories:
-            {__LABELS__}
-            {__TASK_INFO__}
-            {__ANSWER_FORMAT__}
-            {__CHAIN_OF_THOUGHTS__}
-            "
-
-        LABELS:
-            ["positive", "negative", "neutral"]
-
-        TASK_INFO:
-            "The text is a sentence written by a human and you have to classify
-            it in according to its sentiment."
-
-        ANSWER_FORMAT:
-            "Your answer must include the name of the category in a unique word
-            in lower case and without puntuation."
-
-        CHAIN_OF_THOUGHTS:
-            "Please explain your answer step by step before saying the name of
-            the category"
-        ```
-
-        Parameters
-        ----------
-
-        prompt_text : str
-
-        Returns
-        -------
-
-        Self
-
-        """
-
-        self.task.prompt.read_prompt(prompt_text)
-        self.task.prompt.__init__()
-
-        return self
 
 
     def predict(

@@ -34,15 +34,12 @@ class BaseParser(ABC):
 
     def __init__(
         self,
-        prompt_labels               : List[str],
-        prompt_labels_separator     : str = ',',
-        prompt_chain_of_thoughts    : bool= False
+        prompt_labels : List[str],
     ) -> None:
 
         self._labels = prompt_labels
-        self._labels_separator = prompt_labels_separator
-        self._chain_of_thoughts = prompt_chain_of_thoughts
-
+        self._labels_separator = ','
+        self._chain_of_thoughts = True
 
     @abstractmethod
     def run(
@@ -51,7 +48,8 @@ class BaseParser(ABC):
     ) -> str:
 
         """
-        Given a response string from an LLM, returns the response expected for the task.
+        Given a response string from an LLM, returns the response expected for
+        the task.
         """
 
-        pass
+        raise NotImplementedError

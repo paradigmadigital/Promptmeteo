@@ -1,68 +1,85 @@
+import os
+import yaml
 import pytest
+from tests.tools import DictionaryChecker
 
-from promptmeteo.prompts import PromptTypes
-from promptmeteo.prompts import PromptFactory
-
-from promptmeteo.prompts import NerPrompt
 from promptmeteo.prompts import BasePrompt
-from promptmeteo.prompts import ClassificationPrompt
+from promptmeteo.prompts import PromptFactory
+from promptmeteo.prompts import module_dir
 
 
 class TestPrompts:
 
     def test_prompt_factory(self):
 
-        for prompt in PromptTypes:
+        for model_name, language, task_type in [
+            ['fake-static','es','ner'],
+            ['fake-static','es','classification']
+        ]:
+            prompt = PromptFactory.factory_method(
+                language      = language,
+                task_type     = task_type,
+                model_name    = model_name,
+                prompt_domain = 'TEST DOMAIN',
+                prompt_labels =['true','false'],
+                prompt_detail = 'TEST PROMPT DETAIL'
+            )
+
+
+    def test_prompt_factory_exception(self):
+
+        with pytest.raises(ValueError):
             PromptFactory.factory_method(
-                prompt_type=prompt.value,
-                prompt_domain='TEST DOMAIN',
-                prompt_labels=['true','false'],
-                prompt_detail='TEST PROMPT DETAIL'
+                language      = 'WRONG LANGUAGE', # WRONG
+                task_type     = 'ner',
+                model_name    = 'fake-static',
+                prompt_domain = 'TEST DOMAIN',
+                prompt_labels =['true','false'],
+                prompt_detail = 'TEST PROMPT DETAIL'
             )
 
         with pytest.raises(ValueError):
             PromptFactory.factory_method(
-                prompt_type='WRONG PARSER TYPE',
-                prompt_domain='TEST DOMAIN',
-                prompt_labels=['true','false'],
-                prompt_detail='TEST PROMPT DETAIL'
+                language      = 'es',
+                task_type     = 'WRONG TASK TYPE', # WRONG
+                model_name    = 'fake-static',
+                prompt_domain = 'TEST DOMAIN',
+                prompt_labels =['true','false'],
+                prompt_detail = 'TEST PROMPT DETAIL'
             )
 
-    def test_minimal_init(self):
+        with pytest.raises(ValueError):
+            PromptFactory.factory_method(
+                language      = 'es',
+                task_type     = 'ner',
+                model_name    = 'WRONG MODEL NAME', # WRONG
+                prompt_domain = 'TEST DOMAIN',
+                prompt_labels =['true','false'],
+                prompt_detail = 'TEST PROMPT DETAIL'
+            )
+
+    def test_base_prompt(self):
 
         """
-        Tests the exepected behaviour in a normal init.
+        Test BasePrompt behavior.
         """
 
-        prompt = ClassificationPrompt()
+        BasePrompt.read_prompt(BasePrompt.PROMPT_EXAMPLE)
 
-
-    def test_arguments_init(self):
-
-        """
-        Tests the exepected behaviour in a normal init.
-        """
-
-        prompt = ClassificationPrompt(
-            prompt_domain= 'TEST_DOMAIN',
-            prompt_labels=['TEST_LABEL_1', 'TEST_LABEL_2'],
-            prompt_detail= 'TEST_DETAIL',
+        BasePrompt(
+            prompt_domain = 'TEST DOMAIN',
+            prompt_labels =['true','false'],
+            prompt_detail = 'TEST PROMPT DETAIL'
         )
 
-
-        assert 'TEST_DOMAIN' in prompt.template
-        assert 'TEST_LABEL_1' in prompt.template
-        assert 'TEST_LABEL_2' in prompt.template
-
-
-    def test_update_prompt(self):
+    def test_base_prompt_exception(self):
 
         """
-        Tests load prompt text format
+        Tests load prompt text format.
         """
 
-        with pytest.raises(ValueError):
-            ClassificationPrompt.read_prompt(
+        with pytest.raises(ValueError) as error:
+            BasePrompt.read_prompt(
                 '''
                 WRONG_TEMPLATE_KEY:
                     wrong template key
@@ -70,3 +87,69 @@ class TestPrompts:
                 ANOTHER_WRONG_TEMPLATE_KEY:
                     wrong template key again
                 ''')
+
+            assert error == (
+                f'`{cls.__name__} error. `read_prompt` is trying to read'
+                f'prompt with a wrong prompt template format. The expected '
+                f'string input should be like:\n\n{cls.PROMPT_EXAMPLE}'
+                )
+
+    def test_prompts_naming(self):
+
+        """
+        Test that the hierrachycal structure of the prompts is correct.
+        """
+
+        prompt_files = [file_name for file_name in os.listdir(module_dir)
+            if file_name.endswith('.prompt')]
+
+        assert all([len(file.split('_'))==3 for file in prompt_files])
+
+
+    def test_prompts_format(self):
+
+        """
+        Test that all the prompts from the project follow the expected
+        structure.
+        """
+
+        params = [file_name.replace('.prompt','').split('_') for file_name
+            in os.listdir(module_dir) if file_name.endswith('.prompt')]
+
+        for model_name, language, task_type in params:
+            prompt = PromptFactory.factory_method(
+                language      = language,
+                task_type     = task_type,
+                model_name    = model_name,
+                prompt_domain = '',
+                prompt_labels =['0','1'],
+                prompt_detail = ''
+            )
+
+
+    def test_prompts_spelling(self):
+
+        """
+        Test that all the prompts are written correctly.
+        """
+
+        params = [file_name.replace('.prompt','').split('_') for file_name
+            in os.listdir(module_dir) if file_name.endswith('.prompt')]
+
+        for model_name, language, task_type in params:
+            text = PromptFactory.factory_method(
+                language      = language,
+                task_type     = task_type,
+                model_name    = model_name,
+                prompt_domain = '',
+                prompt_labels =['0','1'],
+                prompt_detail = ''
+            ).template
+
+            check = DictionaryChecker(language)
+
+            for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*_~""":
+                text=text.replace(symbol,'')
+
+            for word in text.split():
+                assert check(word)

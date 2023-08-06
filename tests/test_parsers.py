@@ -13,18 +13,14 @@ class Testparsers():
 
         for parser in ParserTypes:
             ParserFactory.factory_method(
-                parser_type=parser.value,
+                task_type=parser.value,
                 prompt_labels=['true','false'],
-                prompt_labels_separator=',',
-                prompt_chain_of_thoughts='TEST THOUGHTS'
             )
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             ParserFactory.factory_method(
-                parser_type='WRONG PARSER TYPE',
+                task_type='WRONG PARSER TYPE',
                 prompt_labels=['true','false'],
-                prompt_labels_separator=',',
-                prompt_chain_of_thoughts='TEST THOUGHTS'
             )
 
 
@@ -32,8 +28,6 @@ class Testparsers():
 
         parser = DummyParser(
             prompt_labels=['true','false'],
-            prompt_labels_separator=',',
-            prompt_chain_of_thoughts='TEST THOUGHTS'
         )
 
         assert 'blabla' == parser.run('blabla')
@@ -43,8 +37,6 @@ class Testparsers():
 
         parser = ClassificationParser(
             prompt_labels=['true','false'],
-            prompt_labels_separator=',',
-            prompt_chain_of_thoughts='TEST THOUGHTS'
         )
 
         assert [] == parser.run('blabla')

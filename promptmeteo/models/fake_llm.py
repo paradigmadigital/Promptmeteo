@@ -155,9 +155,9 @@ class FakeListLLM(LLM):
 
 class ModelTypes(Enum):
 
-    MODEL_1 = 'fake_static'
-    MODEL_2 = 'fake_prompt_copy'
-    MODEL_3 = 'fake_list'
+    MODEL_1 = 'fake-static'
+    MODEL_2 = 'fake-prompt_copy'
+    MODEL_3 = 'fake-list'
 
 
 class FakeLLM(BaseModel):

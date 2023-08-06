@@ -22,159 +22,44 @@
 
 from typing import List
 from typing import Dict
-from typing import Optional
 from typing_extensions import Self
 
-from langchain.prompts.prompt import PromptTemplate
-from langchain.prompts.pipeline import PipelinePromptTemplate
-
-from promptmeteo.models import ModelFactory, BaseModel
-from promptmeteo.prompts import PromptFactory, BasePrompt
-from promptmeteo.parsers import ParserFactory, BaseParser
-from promptmeteo.selector import SelectorFactory, BaseSelector
+from .task import Task
+from ..models import ModelFactory
+from ..prompts import PromptFactory
+from ..parsers import ParserFactory
+from ..selector import SelectorFactory
 
 
-class BaseTask():
-
-    """
-    Base Task interface.
-    """
-
-    def __init__(
-        self,
-        verbose : bool = False
-    ):
-
-        self._model    = None
-        self._parser   = None
-        self._prompt   = None
-        self._selector = None
-        self._verbose  = verbose
-
-
-    @property
-    def prompt(self) -> BasePrompt:
-        """Get Task Prompt."""
-        return self._prompt
-
-    # Getters
-    @property
-    def model(self) -> BaseModel:
-        """Get Task Model."""
-        return self._model
-
-    @property
-    def selector(self) -> BaseSelector:
-        """Get Task Selector."""
-        return self._selector
-
-    @property
-    def parser(self) -> BaseParser:
-        """Task Parser"""
-        return self._parser
-
-    # Setters
-    @prompt.setter
-    def prompt(self, prompt: BasePrompt) -> None:
-        """Set Task Prompt."""
-        self._prompt = prompt
-
-    @model.setter
-    def model(self, model: BaseModel) -> None:
-        """Set Task Model."""
-        self._model = model
-
-    @selector.setter
-    def selector(self, selector: BaseSelector) -> None:
-        """Set Task Selector."""
-        self._selector = selector
-
-    @parser.setter
-    def parser(self, parser: BaseParser) -> None:
-        """Task Parser"""
-        self._parser = parser
-
-
-    def _get_prompt(
-        self,
-        example: str
-    ) -> PipelinePromptTemplate:
-
-        """
-        Create a PipelinePromptTemplate by merging the PromptTemplate and the
-        FewShotPromptTemplate.
-        """
-
-        intro_prompt  = self.prompt.run()
-
-        examples_prompt = self.selector.run() if self.selector else \
-            PromptTemplate.from_template('La frase de entrada es: {__INPUT__}')
-
-        return PipelinePromptTemplate(
-            final_prompt = PromptTemplate.from_template(
-                '''
-                {__INSTRUCTION__}
-
-                {__EXAMPLES__}
-                '''.replace(' '*4,''
-                  ).replace('\n\n','|'
-                  ).replace('\n',' '
-                  ).replace('|','\n\n')),
-            pipeline_prompts=[
-                ('__INSTRUCTION__', intro_prompt),
-                ('__EXAMPLES__', examples_prompt)]
-            ).format(__INPUT__=example)
-
-
-    def run(
-        self,
-        example : str
-    ) -> str:
-
-        """
-        Given a text sample, return the text predicted by Promptmeteo.
-        """
-
-        prompt = self._get_prompt(example)
-
-        if self._verbose:
-            print('\n\nPROMPT INPUT\n\n', prompt)
-
-        result = self.model.run(prompt)
-
-        if self._verbose:
-            print('\n\nMODEL OUTPUT\n\n', result)
-
-        result = self.parser.run(result)
-
-        return result
-
-
-class BaseTaskBuilder():
+class TaskBuilder():
 
     """
     Builder of Tasks.
     """
 
-    BASE_PROMPT = None
-
     def __init__(
         self,
-        verbose     : bool,
+        task_type   : str,
+        verbose     : bool = False,
     ) -> None:
 
-        self._labels = None
-        self._task = BaseTask(verbose=verbose)
+        self._task = Task(
+            task_type = task_type,
+            verbose = verbose
+        )
 
 
     @property
-    def task(self) -> BaseTask:
+    def task(self) -> Task:
         """Task to built."""
         return self._task
 
 
     def build_prompt(
         self,
+        language      : str,
+        task_type     : str,
+        model_name    : str,
         prompt_domain : str,
         prompt_labels : List[str],
         prompt_detail = str,
@@ -185,7 +70,9 @@ class BaseTaskBuilder():
         """
 
         self._task.prompt = PromptFactory.factory_method(
-            prompt_type   = self.BASE_PROMPT,
+            language      = language,
+            task_type     = task_type,
+            model_name    = model_name,
             prompt_domain = prompt_domain,
             prompt_labels = prompt_labels,
             prompt_detail = prompt_detail,
@@ -246,10 +133,10 @@ class BaseTaskBuilder():
         """
 
         self._task.model = ModelFactory.factory_method(
-            model_name = model_name,
-            model_provider_name = model_provider_name,
+            model_name           = model_name,
+            model_provider_name  = model_provider_name,
             model_provider_token = model_provider_token,
-            model_params = model_params
+            model_params         = model_params
         )
 
         return self
@@ -257,18 +144,17 @@ class BaseTaskBuilder():
 
     def build_parser(
         self,
-        parser_type              : str,
-        prompt_labels            : List[str],
+        task_type : str,
+        prompt_labels : List[str],
     ) -> Self:
 
         """
         Builds a the parser for the task.
         """
 
-        self._task.parser = ParserFactory.factory_method(
-            parser_type=parser_type,
-            prompt_labels=prompt_labels,
-            prompt_labels_separator=','
+        self._task.parser        = ParserFactory.factory_method(
+            task_type            = task_type,
+            prompt_labels        = prompt_labels,
         )
 
         return self

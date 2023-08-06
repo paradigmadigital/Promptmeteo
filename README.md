@@ -13,20 +13,21 @@
 # ⚡ Quick start
 
 ```python
-from promptmeteo import Promptmeteo
+from promptmeteo import DocumentClassifier
 
-model = Promptmeteo(
-        task_type           = 'classification',
+clf = DocumentClassifier(
+        language            = 'es',
         model_provider_name = 'hf_pipeline',
-        model_name          = 'google/flan-t5-small'
+        model_name          = 'google/flan-t5-small',
+        verbose = True
     )
 
-model = model.train(
+clf = clf.train(
     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
-    annotations = ['positivo', 'neutral', 'negativo'],
+    annotations = ['positive', 'neutral', 'negative'],
 )
 
-model.predict(['que guay!!'])
+clf.predict(['que guay!!'])
 ```
 
 ```shell

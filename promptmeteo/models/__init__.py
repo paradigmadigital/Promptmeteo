@@ -32,7 +32,7 @@ class ModelProvider(str, Enum):
     LLM providers currently supported by Promptmeteo
     """
 
-    PROVIDER_0 = "fake_llm"
+    PROVIDER_0 = "fake-llm"
     PROVIDER_1 = "openai"
     PROVIDER_2 = "hf_hub_api"
     PROVIDER_3 = "hf_pipeline"

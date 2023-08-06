@@ -1,1 +1,2 @@
-from .main import Promptmeteo
+from .base import Base
+from .document_classifier import DocumentClassifier

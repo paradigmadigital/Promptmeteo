@@ -55,6 +55,7 @@ class TestModels():
                 model_params = {},
                 model_provider_token = 'TEST_TOKEN')
 
+
     def test_model_fakellm(self):
 
         from promptmeteo.models.fake_llm import ModelTypes

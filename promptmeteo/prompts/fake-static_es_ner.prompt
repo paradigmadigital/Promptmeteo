@@ -1,5 +1,5 @@
 TEMPLATE:
-    "Necesito que me ayudes en una tarea de classificación de texto.
+    "Necesito que me ayudes en una tarea de detección de entidades.
     {__PROMPT_DOMAIN__}
     {__PROMPT_LABELS__}
 
@@ -12,8 +12,8 @@ PROMPT_DOMAIN:
 
 
 PROMPT_LABELS:
-    "Quiero que me clasifiques los textos una de las siguientes categorías:
-    {__LABELS__}."
+    "Las entidades que tienes que detectar se corresponden con la siguientes
+    categorías: {__LABELS__}."
 
 
 PROMPT_DETAIL:
@@ -28,6 +28,6 @@ CHAIN_THOUGHT:
 
 
 ANSWER_FORMAT:
-    "En tu respuesta incluye sólo el nombre de la clase, como una única
-    palabra, en minúscula, sin puntuación, y sin añadir ninguna otra
-    afirmación o palabra."
+    "Puedes devolver las entidades detectadas como una secuencia de cadenas de
+    texto separadas por punto y coma: primera entidad, segunda entidad, tercera
+    entidad."
