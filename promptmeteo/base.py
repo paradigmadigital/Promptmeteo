@@ -137,15 +137,17 @@ class Base():
 
         if not isinstance(examples,list):
             raise ValueError(
-               f'Arguments `examples` and `annotations` are expected to be of '
-               f'type `List[str]`. Instead they got: examples {type(examples)}'
+                f'{self.__class__.__name__} error in function `predict()`. '
+                f'Arguments `examples` and `annotations` are expected to be of '
+                f'type `List[str]`. Instead they got: examples {type(examples)}'
             )
 
         if not all([isinstance(val,str) for val in examples]):
 
             raise ValueError(
-               'Arguments `examples` are expected to be of type `List[str]`. '
-               'Some values seem no to be of type `str`.'
+                f'{self.__class__.__name__} error in function `predict()`. '
+                f'Arguments `examples` are expected to be of type `List[str]`. '
+                f'Some values seem no to be of type `str`.'
             )
 
         results = []
@@ -194,8 +196,9 @@ class Base():
             not all([isinstance(val,str) for val in annotations])):
 
             raise ValueError(
-               f'Arguments `examples` and `annotations` are expected to be of '
-               f'type `List[str]`. Some values seem no to be of type `str`.'
+                f'{self.__class__.__name__} error in function `train()`. '
+                f'Arguments `examples` and `annotations` are expected to be of '
+                f'type `List[str]`. Some values seem no to be of type `str`.'
             )
 
         if len(examples) != len(annotations):

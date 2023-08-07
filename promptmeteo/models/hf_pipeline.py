@@ -42,22 +42,46 @@ class ModelTypes(str,Enum):
 
     @classmethod
     def has_value(cls, value):
+
+        """
+        Return whether the value is in the class or not.
+        """
+
         return value in cls._value2member_map_
 
 
 class ModelParams(Enum):
 
+    """
+    Model Parameters.
+    """
+
     class MODEL_1:
+
+        """
+        Parameters Model 1.
+        """
+
         model_path   = "/home/models/flan-t5-small"
         model_task   = "text2text-generation"
         model_kwargs ={"temperature": 0.0, "max_length": 64}
 
     class MODEL_2:
+
+        """
+        Parameters Model 2.
+        """
+
         model_path   = "/home/models/falcon-7b-instruct"
         model_task   = "text2text-generation"
         model_kwargs ={"temperature": 0.0, "max_length": 64}
 
     class MODEL_3:
+
+        """
+        Parameters Model 3.
+        """
+
         model_path   = "/home/models/lince-zero"
         model_task   = "text-generation"
         model_kwargs ={"temperature": 0.0, "max_length": 64}
@@ -65,6 +89,9 @@ class ModelParams(Enum):
 
 class HFPipelineLLM(BaseModel):
 
+    """
+    HuggingFace Local Pipeline.
+    """
 
     def __init__(
         self,
@@ -74,7 +101,7 @@ class HFPipelineLLM(BaseModel):
     ) -> None:
 
         """
-        Make predictions using a model from HuggingFace locally. 
+        Make predictions using a model from HuggingFace locally.
         """
 
         if not ModelTypes.has_value(model_name):

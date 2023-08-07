@@ -28,6 +28,8 @@ from typing import Dict
 from langchain.embeddings.base import Embeddings
 
 from .base import BaseSelector
+from .marginal_relevance_selector import MMRSelector
+from .semantic_similarity_selector import SimSelector
 
 
 class SelectorTypes(str, Enum):
@@ -48,8 +50,9 @@ class SelectorFactory():
     """
 
 
-    @staticmethod
+    @classmethod
     def factory_method(
+        cls,
         embeddings         : Embeddings,
         selector_k         : int,
         selector_algorithm : str,
@@ -61,16 +64,14 @@ class SelectorFactory():
         """
 
         if selector_algorithm == SelectorTypes.SELECTOR_1.value:
-            from .marginal_relevance_selector import MMRSelector
             selector_cls = MMRSelector
 
         elif selector_algorithm == SelectorTypes.SELECTOR_2.value:
-            from .semantic_similarity_selector import SimSelector
             selector_cls = SimSelector
 
         else:
             raise ValueError(
-               f'`SelectorFactory` error in `factory_method()` . '
+               f'`{cls.__class__.__name__}` error in `factory_method()` . '
                f'{selector_algorithm} is not in the list of supported '
                f'providers: {[i.value for i in SelectorTypes]}')
 

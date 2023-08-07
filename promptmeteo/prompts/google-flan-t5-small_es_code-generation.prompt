@@ -7,13 +7,16 @@ TEMPLATE:
     {__ANSWER_FORMAT__}"
 
 
-
 PROMPT_DOMAIN:
     "El script que quiero que generes quiero que esté escrito en {__DOMAIN__}"
 
 
 PROMPT_LABELS:
     "El objetivo del script es que haga {__LABELS__}."
+
+
+PROMPT_DETAIL:
+    ""
 
 
 CHAIN_THOUGHT:

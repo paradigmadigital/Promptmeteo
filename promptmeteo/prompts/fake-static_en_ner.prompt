@@ -1,0 +1,28 @@
+TEMPLATE:
+    "I need your help with an entity detection task.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_LABELS__}
+
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
+
+
+PROMPT_DOMAIN:
+    "The texts you will be processing are from the {__DOMAIN__} domain."
+
+PROMPT_LABELS:
+    "The entities you need to detect correspond to the following categories:
+    {__LABELS__}."
+
+PROMPT_DETAIL:
+    ""
+
+CHAIN_THOUGHT:
+    "Please provide a step-by-step argument for your answer, explain why you
+    believe your final choice is justified, and make sure to conclude your 
+    explanation with the name of the class you have selected as the correct
+    one, in lowercase and without punctuation."
+
+ANSWER_FORMAT:
+    "You can return the detected entities as a sequence of text strings
+    separated by semicolons: first entity; second entity; third entity."

@@ -34,19 +34,19 @@ dependencies = [
 where = ["promptmeteo"]
 
 [tool.setuptools.package-data]
-"promptmeteo.prompts.templates.sp" = ["*.yml"]
+"promptmeteo.prompts.templates.sp" = ["*.prompt"]
 
 [project.optional-dependencies]
 all = [
     "black",
     "coverage",
     "bumpver",
+    "jupyter",
     "pip-tools",
     "polars",
     "pylint",
     "pytest",
     "pytest-cov",
-    "pytest-mock",
     "seaborn",
     "scikit-learn"
 ]

@@ -56,7 +56,9 @@ class FakeStaticLLM(LLM):
     def _call(
         self,
         prompt: str,
-        stop: Optional[List[str]] = None
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[Any] = None,
+        **kwargs: Any,
     ) -> str:
 
         """
@@ -94,7 +96,9 @@ class FakePromptCopyLLM(LLM):
     def _call(
         self,
         prompt: str,
-        stop: Optional[List[str]] = None
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[Any] = None,
+        **kwargs: Any,
     ) -> str:
 
         """
@@ -135,7 +139,9 @@ class FakeListLLM(LLM):
     def _call(
         self,
         prompt: str,
-        stop: Optional[List[str]] = None
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[Any] = None,
+        **kwargs: Any,
     ) -> str:
 
         """
@@ -155,12 +161,20 @@ class FakeListLLM(LLM):
 
 class ModelTypes(Enum):
 
+    """
+    FakeLLM Model Types.
+    """
+    
     MODEL_1 = 'fake-static'
     MODEL_2 = 'fake-prompt_copy'
     MODEL_3 = 'fake-list'
 
 
 class FakeLLM(BaseModel):
+
+    """
+    Fake LLM class.
+    """
 
     def __init__(
         self,
@@ -182,7 +196,8 @@ class FakeLLM(BaseModel):
 
         else:
             raise ValueError(
-                "{model_name} is not in the list of supported FakeLLMS: "
-                "[i.value for i in ModelTypes]"
+                f"{self.__class__.__name__} error creating object. "
+                f"{model_name} is not in the list of supported FakeLLMS: "
+                f"[i.value for i in ModelTypes]"
                 )
 

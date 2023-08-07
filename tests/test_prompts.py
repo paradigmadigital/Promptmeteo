@@ -149,7 +149,10 @@ class TestPrompts:
             check = DictionaryChecker(language)
 
             for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*_~""":
-                text=text.replace(symbol,'')
+                text=text.replace(symbol,' ')
 
             for word in text.split():
-                assert check(word)
+                if not check(word):
+                    raise Exception(
+                        f'Error in {model_name}_{language}_{task_type}.prompt '
+                        f'the word `{word}` is not in the dictionary')

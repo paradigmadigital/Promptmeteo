@@ -24,6 +24,10 @@ from enum import Enum
 from typing import Dict
 
 from .base import BaseModel
+from .openai import OpenAILLM
+from .fake_llm import FakeLLM
+from .hf_hub_api import HFHubApiLLM
+from .hf_pipeline import HFPipelineLLM
 
 
 class ModelProvider(str, Enum):
@@ -45,8 +49,9 @@ class ModelFactory():
     configuration.
     """
 
-    @staticmethod
+    @classmethod
     def factory_method(
+        cls,
         model_name           : str,
         model_provider_name  : str,
         model_provider_token : str,
@@ -59,23 +64,20 @@ class ModelFactory():
         """
 
         if model_provider_name == ModelProvider.PROVIDER_0.value:
-            from .fake_llm import FakeLLM
             model_cls = FakeLLM
 
         elif model_provider_name == ModelProvider.PROVIDER_1.value:
-            from .openai import OpenAILLM
             model_cls = OpenAILLM
 
         elif model_provider_name == ModelProvider.PROVIDER_2.value:
-            from .hf_hub_api import HFHubApiLLM
             model_cls = HFHubApiLLM
 
         elif model_provider_name == ModelProvider.PROVIDER_3.value:
-            from .hf_pipeline import HFPipelineLLM
             model_cls = HFPipelineLLM
 
         else:
             raise ValueError(
+                f'{cls.__class__.__name__} error in `factory_method()`. '
                 f'{model_provider_name} is not in the list of supported '
                 f'providers: {[i.value for i in ModelProvider]}'
             )

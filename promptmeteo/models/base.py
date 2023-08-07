@@ -24,7 +24,12 @@ from abc import ABC
 from langchain.llms.base import BaseLLM
 from langchain.embeddings.base import Embeddings
 
+
 class BaseModel(ABC):
+
+    """
+    Model Interface.
+    """
 
 
     def __init__(self):
@@ -55,7 +60,7 @@ class BaseModel(ABC):
         """
 
         try:
-            return self._llm(sample)
+            return self._llm(prompt = sample)
 
         except Exception as error:
             raise RuntimeError(

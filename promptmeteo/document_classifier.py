@@ -79,8 +79,6 @@ class DocumentClassifier(Base):
 
         """
 
-        #TODO add Chain of thoughts by configuration
-
         task_type = 'classification'
 
         self._builder = TaskBuilder(

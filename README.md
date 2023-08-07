@@ -10,6 +10,30 @@
 **Promptmeteo** is a Python library build over LangChain to build prompts and LLMs by configuration parameters. The goal of this project is to be used as a template to industrialize LLM projects.
 
 
+| model_provider |       model_name          | language |   
+|      ---       |           ---	         |    ---   |
+|     openai     |     text-davinci-003      |    es    |
+|     openai     |     text-davinci-003      |    en    |
+|   hf_hub_api   |    google/flan-t5-xxl     |    es    |
+|   hf_hub_api   |    google/flan-t5-xxl     |    en    |
+|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
+|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
+|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
+|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
+|  hf_pipeline   |   google/flan-t5-small    |    es    |
+|  hf_pipeline   |   google/flan-t5-small    |    en    |
+
+
+The current available `tasks_type` values are:
+
+ * `classification` : Classify a document accorgind to a predefined labels and/or examples. 
+ * `ner` : Name Entity Recognition. Detect the world level entities in a document given examples or predefined labels.
+ * `code-generation` : Generate code for a given language domain.
+
+
+More examples can be seen in the directory ![examples](./examples).
+
+
 # ⚡ Quick start
 
 ```python

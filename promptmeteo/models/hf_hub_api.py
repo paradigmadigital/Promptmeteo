@@ -20,7 +20,6 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
 from enum import Enum
 from typing import Dict
 from typing import Optional
@@ -31,14 +30,14 @@ from langchain.embeddings import HuggingFaceHubEmbeddings
 from .base import BaseModel
 
 
-class ModelTypes(str,Enum):
+class ModelTypes(str, Enum):
 
     """
     Enum of available model types.
     """
 
-    MODEL_1 = 'google/flan-t5-xxl'
-    MODEL_2 = 'tiiuae/falcon-7b-instruct'
+    FlanT5Xxl = 'google/flan-t5-xxl'
+    Falcon7bInstruct = 'tiiuae/falcon-7b-instruct'
 
     @classmethod
     def has_value(
@@ -55,17 +54,34 @@ class ModelTypes(str,Enum):
 
 class ModelParams(Enum):
 
-    class MODEL_1:
+    """
+    Model Parameters Enum
+    """
+
+    class FlanT5Xxl:
+
+        """
+        Flan-t5-xxl default params
+        """
+
         model_task   = "text2text-generation"
         model_kwargs ={"temperature": 0.9, "max_length": 64}
 
-    class MODEL_2:
+    class Falcon7bInstruct:
+
+        """
+        Falcon-7b-instruct default params
+        """
+
         model_task   = "text2text-generation"
         model_kwargs ={"temperature": 0.9, "max_length": 64}
 
 
 class HFHubApiLLM(BaseModel):
 
+    """
+    HuggingFace API call.
+    """
 
     def __init__(
         self,

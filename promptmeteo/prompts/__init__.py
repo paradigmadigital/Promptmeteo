@@ -81,9 +81,9 @@ def get_files_taxonomy(sep : str = '_'):
 
     except Exception as error:
         raise RuntimeError(
-            f'Problems with the prompts file structure in directory '
-            f'promptmeteo/prompts. The expected naming for the prompts '
-            'is `{model_name}_{language}_{task}.prompt`.'
+            'Problems with the prompts file structure in directory '
+            'promptmeteo/prompts. The expected naming for the prompts '
+            'is `<model_name>_<language>_<task>.prompt`.'
             ) from error
 
     return taxonomy
@@ -119,7 +119,7 @@ class PromptFactory():
             raise ValueError(
                 f"`{cls.__name__}` class in function `factory_method()`. "
                 f"{model_name} has not a prompt file created. Available model "
-                f"prompts are: {[i for i in taxonomy]}"
+                f"prompts are: {list(taxonomy)}"
                 )
 
         if language not in taxonomy[_model_name]:
@@ -127,7 +127,7 @@ class PromptFactory():
                 f"`{cls.__name__}` class in function `factory_method()`. "
                 f"{model_name} has not a prompt file created for the language "
                 f"{language}. Available languages for {model_name}: "
-                f"{[i for i in taxonomy[model_name]]}"
+                f"{list(taxonomy[model_name])}"
                 )
 
         if task_type not in taxonomy[_model_name][language]:
@@ -135,7 +135,7 @@ class PromptFactory():
                 f"`{cls.__name__}` class in function `factory_method()`. "
                 f"{model_name}  in {language} has not a prompt file created"
                 f"for the task {task_type}. Available tasks are: "
-                f"{[i for i in taxonomy[model_name][language]]}"
+                f"{list(taxonomy[model_name][language])}"
                 )
 
         prompt_cls = cls.build_class(language,task_type,_model_name)

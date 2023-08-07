@@ -20,7 +20,6 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
 from enum import Enum
 from typing import Dict
 from typing import Optional
@@ -37,7 +36,7 @@ class ModelTypes(str,Enum):
     Enum of available model types.
     """
 
-    MODEL_1 = 'text-davinci-003'
+    TextDavinci003 = 'text-davinci-003'
 
     @classmethod
     def has_value(
@@ -54,13 +53,25 @@ class ModelTypes(str,Enum):
 
 class ModelParams(Enum):
 
-    class MODEL_1:
+    """
+    Model Parameters.
+    """
+
+    class TextDavinci003:
+
+        """
+        Default parameters for TextDavinci003 model.
+        """
+
         model_task   = "text2text-generation"
         model_kwargs ={"temperature": 0.7, "max_tokens": 256, "max_retries": 3}
 
 
 class OpenAILLM(BaseModel):
 
+    """
+    OpenAI LLM model.
+    """
 
     def __init__(
         self,
@@ -90,4 +101,3 @@ class OpenAILLM(BaseModel):
         self._embeddings = OpenAIEmbeddings(
             openai_api_key=model_provider_token
         )
-

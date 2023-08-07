@@ -20,6 +20,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from abc import ABC
 from typing import List
 
 import yaml
@@ -27,7 +28,7 @@ from langchain import PromptTemplate
 from langchain.prompts.pipeline import PipelinePromptTemplate
 
 
-class BasePrompt():
+class BasePrompt(ABC):
 
     """
     Prompt class interface.
@@ -148,6 +149,14 @@ class BasePrompt():
                 prompt_text,
                 Loader=yaml.FullLoader)
 
+        except Exception as error:
+            raise ValueError(
+                f'`{cls.__name__} error in function `read_prompt()`. '
+                f'The expected string input should be like:\n\n'
+                f'{cls.PROMPT_EXAMPLE}\n\n{error}'
+                ) from error
+
+        try:
             cls.TEMPLATE      = prompt['TEMPLATE']
             cls.PROMPT_DOMAIN = prompt['PROMPT_DOMAIN']
             cls.PROMPT_LABELS = prompt['PROMPT_LABELS']
@@ -158,10 +167,8 @@ class BasePrompt():
 
         except Exception as error:
             raise ValueError(
-                f'`{cls.__name__} error. `read_prompt` is trying to read'
-                f'prompt with a wrong prompt template format. The expected '
-                f'string input should be like:\n\n{cls.PROMPT_EXAMPLE}\n\n'
-                f'Instead received:\n\n{prompt_text}'
+                f'`{cls.__name__} error. `read_prompt()`. The expected keys '
+                f'are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}'
                 ) from error
 
 

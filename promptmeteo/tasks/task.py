@@ -46,7 +46,7 @@ class Task():
         self._prompt   = None
         self._selector = None
         self._verbose  = verbose
-
+        self._task_type = task_type
 
     @property
     def prompt(self) -> BasePrompt:
