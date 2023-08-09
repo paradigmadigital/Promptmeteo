@@ -22,7 +22,10 @@
 
 from typing import List
 from typing import Dict
-from typing_extensions import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from .task import Task
 from ..models import ModelFactory
@@ -56,10 +59,10 @@ class TaskBuilder:
         model_name: str,
         prompt_domain: str,
         prompt_labels: List[str],
-        prompt_detail=str,
+        prompt_detail: str,
     ) -> Self:
         """
-        Builds a the prompt for the task.
+        Builds a prompt for the task.
         """
 
         self._task.prompt = PromptFactory.factory_method(
@@ -115,17 +118,17 @@ class TaskBuilder:
         model_name: str = "",
         model_provider_name: str = "",
         model_provider_token: str = "",
-        model_params: Dict = {},
+        model_params: Dict = None,
     ) -> Self:
         """
-        Builds a the model for the task.
+        Builds a model for the task.
         """
 
         self._task.model = ModelFactory.factory_method(
             model_name=model_name,
             model_provider_name=model_provider_name,
             model_provider_token=model_provider_token,
-            model_params=model_params,
+            model_params=model_params or {},
         )
 
         return self
@@ -147,10 +150,10 @@ class TaskBuilder:
         return self
 
     def build_selector_by_load(
-        self, model_path: str, selector_k: str, selector_algorithm: str
+        self, model_path: str, selector_k: int, selector_algorithm: str
     ) -> Self:
         """
-        Builds a the selector for the task by loading a pretrained selector.
+        Builds the selector for the task by loading a pretrained selector.
         """
 
         if not self._task.model:

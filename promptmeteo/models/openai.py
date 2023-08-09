@@ -20,6 +20,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+import os
 from enum import Enum
 from typing import Dict
 from typing import Optional
@@ -72,11 +73,12 @@ class OpenAILLM(BaseModel):
     def __init__(
         self,
         model_name: Optional[str] = "",
-        model_params: Optional[Dict] = {},
+        model_params: Optional[Dict] = None,
         model_provider_token: Optional[str] = "",
     ) -> None:
         """
         Make predictions using a model from OpenAI.
+        It will use the os environment called OPENAI_ORGANIZATION for instance the LLM
         """
 
         if not ModelTypes.has_value(model_name):
@@ -84,14 +86,16 @@ class OpenAILLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{list(ModelTypes.__members__.keys())}"
             )
-
-        if not model_params:
-            model_params = ModelParams[ModelTypes(model_name).name].value
+        super(OpenAILLM, self).__init__()
 
         self._llm = OpenAI(
             model_name=model_name,
             openai_api_key=model_provider_token,
-            # openai_organization="YOUR_ORGANIZATION_ID"
+            openai_organization=os.environ.get("OPENAI_ORGANIZATION", "")
         )
 
         self._embeddings = OpenAIEmbeddings(openai_api_key=model_provider_token)
+
+        if not model_params:
+            model_params = ModelParams[ModelTypes(model_name).name].value
+        self.model_params = model_params

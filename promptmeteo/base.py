@@ -26,7 +26,10 @@ import tempfile
 from typing import List
 from typing import Dict
 from typing import Optional
-from typing_extensions import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from promptmeteo.tasks import Task
 from promptmeteo.tasks import TaskBuilder
@@ -45,10 +48,10 @@ class Base:
         model_name: str,
         model_provider_name: str,
         model_provider_token: Optional[str] = None,
-        model_params: Optional[Dict] = {},
+        model_params: Optional[Dict] = None,
         language: str = "es",
         prompt_domain: Optional[str] = "",
-        prompt_labels: List[str] = [],
+        prompt_labels: List[str] = None,
         prompt_detail: Optional[str] = None,
         selector_k: int = 10,
         selector_algorithm: str = "mmr",
@@ -89,6 +92,17 @@ class Base:
 
         None
         """
+        self.model_name: str = model_name
+        self.model_provider_name: str = model_provider_name
+        self.model_provider_token: Optional[str] = model_provider_token
+        self.model_params: Dict = model_params or {}
+        self.language: str = language
+        self.prompt_domain: Optional[str] = prompt_domain
+        self.prompt_labels: List[str] = prompt_labels or []
+        self.prompt_detail: Optional[str] = prompt_detail
+        self._selector_k: int = selector_k
+        self._selector_algorithm: str = selector_algorithm
+        self.verbose: bool = verbose
 
         self._builder = None
 

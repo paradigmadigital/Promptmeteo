@@ -21,7 +21,10 @@
 #  THE SOFTWARE.
 
 from typing import List
-from typing_extensions import Self
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from langchain.vectorstores import FAISS
 from langchain.embeddings.base import Embeddings
