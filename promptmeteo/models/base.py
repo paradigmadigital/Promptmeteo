@@ -32,8 +32,8 @@ class BaseModel(ABC):
     """
 
     def __init__(self):
-        self._llm = BaseLLM
-        self._embeddings = Embeddings
+        self._llm: BaseLLM = None
+        self._embeddings: Embeddings = None
 
     @property
     def llm(self) -> BaseLLM:

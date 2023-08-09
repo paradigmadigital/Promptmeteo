@@ -23,3 +23,7 @@ clean:
 	rm -f .coverage
 	rm -f .coverage.*
 	rm -rf ./build
+	rm -rf ./.pytest_cache
+
+test:
+	pytest --cov=promptmeteo .

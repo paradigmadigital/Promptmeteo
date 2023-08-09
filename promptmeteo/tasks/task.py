@@ -85,7 +85,7 @@ class Task:
         """Task Parser"""
         self._parser = parser
 
-    def _get_prompt(self, example: str) -> PipelinePromptTemplate:
+    def _get_prompt(self, example: str) -> str:
         """
         Create a PipelinePromptTemplate by merging the PromptTemplate and the
         FewShotPromptTemplate.

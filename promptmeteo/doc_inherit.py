@@ -47,10 +47,14 @@ class DocInherit(object):
         return self.use_parent_doc(f, overridden)
 
     def get_no_inst(self, cls):
+        overridden = None
         for parent in cls.__mro__[1:]:
             overridden = getattr(parent, self.name, None)
             if overridden:
                 break
+
+        if overridden is None:
+            raise ValueError("Cannot function to override")
 
         @wraps(self.mthd, assigned=("__name__", "__module__"))
         def f(*args, **kwargs):
