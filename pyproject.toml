@@ -37,16 +37,27 @@ where = ["promptmeteo"]
 "promptmeteo.prompts.templates.sp" = ["*.prompt"]
 
 [project.optional-dependencies]
-all = [
-    "black",
+test = [
+    "pytest",
     "coverage",
+    "pytest-cov",
+    "pytest-mock"
+]
+dev = [
+    "promptmeteo[test]",
+    "mkdocs",
+    "pre-commit",
+    "pip-tools",
+    "black",
+    "pylint"
+]
+examples = [
     "bumpver",
     "jupyter",
-    "pip-tools",
     "polars",
-    "pylint",
-    "pytest",
-    "pytest-cov",
     "seaborn",
     "scikit-learn"
+]
+all = [
+    "promptmeteo[dev, examples]",
 ]
