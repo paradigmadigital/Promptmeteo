@@ -31,7 +31,7 @@ from ..parsers import ParserFactory
 from ..selector import SelectorFactory
 
 
-class TaskBuilder():
+class TaskBuilder:
 
     """
     Builder of Tasks.
@@ -39,159 +39,139 @@ class TaskBuilder():
 
     def __init__(
         self,
-        task_type   : str,
-        verbose     : bool = False,
+        task_type: str,
+        verbose: bool = False,
     ) -> None:
-
-        self._task = Task(
-            task_type = task_type,
-            verbose = verbose
-        )
-
+        self._task = Task(task_type=task_type, verbose=verbose)
 
     @property
     def task(self) -> Task:
         """Task to built."""
         return self._task
 
-
     def build_prompt(
         self,
-        language      : str,
-        task_type     : str,
-        model_name    : str,
-        prompt_domain : str,
-        prompt_labels : List[str],
-        prompt_detail = str,
+        language: str,
+        task_type: str,
+        model_name: str,
+        prompt_domain: str,
+        prompt_labels: List[str],
+        prompt_detail=str,
     ) -> Self:
-
         """
         Builds a the prompt for the task.
         """
 
         self._task.prompt = PromptFactory.factory_method(
-            language      = language,
-            task_type     = task_type,
-            model_name    = model_name,
-            prompt_domain = prompt_domain,
-            prompt_labels = prompt_labels,
-            prompt_detail = prompt_detail,
+            language=language,
+            task_type=task_type,
+            model_name=model_name,
+            prompt_domain=prompt_domain,
+            prompt_labels=prompt_labels,
+            prompt_detail=prompt_detail,
         )
 
         return self
 
-
     def build_selector_by_train(
         self,
-        examples        : List[str],
-        annotations     : List[str],
-        selector_k           : int,
-        selector_algorithm   : str,
+        examples: List[str],
+        annotations: List[str],
+        selector_k: int,
+        selector_algorithm: str,
     ) -> Self:
-
         """
         Builds a the selector for the task by training a new selector.
         """
 
         if not self._task.model:
             raise RuntimeError(
-                'Selector algorithm is trying yo be built but there is no'
-                'LLM model or embeddings loaded. You need to call function'
-                '`build_model()` before calling `build_selector()`.'
+                "Selector algorithm is trying yo be built but there is no"
+                "LLM model or embeddings loaded. You need to call function"
+                "`build_model()` before calling `build_selector()`."
             )
 
         if not self._task.model.embeddings:
             raise RuntimeError(
-                'Selector algorithm is trying yo be built but there is no'
-                'embeddigns for model {self._task._model.__name__}.'
+                "Selector algorithm is trying yo be built but there is no"
+                "embeddigns for model {self._task._model.__name__}."
             )
 
         embeddings = self._task.model.embeddings
 
         self._task.selector = SelectorFactory.factory_method(
-            embeddings           = embeddings,
-            selector_k           = selector_k,
-            selector_algorithm   = selector_algorithm
+            embeddings=embeddings,
+            selector_k=selector_k,
+            selector_algorithm=selector_algorithm,
         ).train(
-            examples             = examples,
-            annotations          = annotations,
+            examples=examples,
+            annotations=annotations,
         )
 
         return self
 
-
     def build_model(
         self,
-        model_name           : str = '',
-        model_provider_name  : str = '',
-        model_provider_token : str = '',
-        model_params         : Dict = {}
+        model_name: str = "",
+        model_provider_name: str = "",
+        model_provider_token: str = "",
+        model_params: Dict = {},
     ) -> Self:
-
         """
         Builds a the model for the task.
         """
 
         self._task.model = ModelFactory.factory_method(
-            model_name           = model_name,
-            model_provider_name  = model_provider_name,
-            model_provider_token = model_provider_token,
-            model_params         = model_params
+            model_name=model_name,
+            model_provider_name=model_provider_name,
+            model_provider_token=model_provider_token,
+            model_params=model_params,
         )
 
         return self
 
-
     def build_parser(
         self,
-        task_type : str,
-        prompt_labels : List[str],
+        task_type: str,
+        prompt_labels: List[str],
     ) -> Self:
-
         """
         Builds a the parser for the task.
         """
 
-        self._task.parser        = ParserFactory.factory_method(
-            task_type            = task_type,
-            prompt_labels        = prompt_labels,
+        self._task.parser = ParserFactory.factory_method(
+            task_type=task_type,
+            prompt_labels=prompt_labels,
         )
 
         return self
 
-
     def build_selector_by_load(
-        self,
-        model_path         : str,
-        selector_k         : str,
-        selector_algorithm : str
+        self, model_path: str, selector_k: str, selector_algorithm: str
     ) -> Self:
-
         """
         Builds a the selector for the task by loading a pretrained selector.
         """
 
         if not self._task.model:
             raise RuntimeError(
-                'Selector algorithm is trying to be built but there is no'
-                'LLM model or embeddings loaded. You need to call function'
-                '`build_model()` before calling `load_selector()`.'
+                "Selector algorithm is trying to be built but there is no"
+                "LLM model or embeddings loaded. You need to call function"
+                "`build_model()` before calling `load_selector()`."
             )
 
         if not self._task.model.embeddings:
             raise RuntimeError(
-                'Selector algorithm is trying to be built but there is no'
-                'embeddigns for model {self._task._model.__name__}.'
+                "Selector algorithm is trying to be built but there is no"
+                "embeddigns for model {self._task._model.__name__}."
             )
 
         embeddings = self._task.model.embeddings
 
         self._task.selector = SelectorFactory.factory_method(
-            embeddings           = embeddings,
-            selector_k           = selector_k,
-            selector_algorithm   = selector_algorithm
-        ).load_example_selector(
-            model_path           = model_path
-        )
+            embeddings=embeddings,
+            selector_k=selector_k,
+            selector_algorithm=selector_algorithm,
+        ).load_example_selector(model_path=model_path)
 
         return self

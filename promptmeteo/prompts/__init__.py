@@ -27,10 +27,10 @@ from typing import List
 from .base import BasePrompt
 
 
-module_dir = os.path.abspath(os.path.join(__file__,os.path.pardir))
+module_dir = os.path.abspath(os.path.join(__file__, os.path.pardir))
 
-def get_files_taxonomy(sep : str = '_'):
 
+def get_files_taxonomy(sep: str = "_"):
     """
     Convert a list of prompt files with the naming convetion of
     `{model_name}_{language}_{task}.prompt into a dictorionary version.
@@ -66,12 +66,14 @@ def get_files_taxonomy(sep : str = '_'):
     """
 
     try:
-
-        prompt_files = [os.path.join(
-            path, name.replace('.prompt','')).replace(module_dir+'/','')
+        prompt_files = [
+            os.path.join(path, name.replace(".prompt", "")).replace(
+                module_dir + "/", ""
+            )
             for path, _, files in os.walk(module_dir)
             for name in files
-            if  name.endswith('.prompt')]
+            if name.endswith(".prompt")
+        ]
 
         taxonomy = {}
         for prompt_file in prompt_files:
@@ -81,15 +83,15 @@ def get_files_taxonomy(sep : str = '_'):
 
     except Exception as error:
         raise RuntimeError(
-            'Problems with the prompts file structure in directory '
-            'promptmeteo/prompts. The expected naming for the prompts '
-            'is `<model_name>_<language>_<task>.prompt`.'
-            ) from error
+            "Problems with the prompts file structure in directory "
+            "promptmeteo/prompts. The expected naming for the prompts "
+            "is `<model_name>_<language>_<task>.prompt`."
+        ) from error
 
     return taxonomy
 
 
-class PromptFactory():
+class PromptFactory:
 
     """
     Factory of Prompts
@@ -98,29 +100,28 @@ class PromptFactory():
     @classmethod
     def factory_method(
         cls,
-        language      : str,
-        task_type     : str,
-        model_name    : str,
-        prompt_domain : str,
-        prompt_labels : List[str],
-        prompt_detail : str,
+        language: str,
+        task_type: str,
+        model_name: str,
+        prompt_domain: str,
+        prompt_labels: List[str],
+        prompt_detail: str,
     ):
-
         """
         Returns and instance of a BasePrompt object depending on the
         `task_type`.
         """
 
-        _model_name = model_name.replace('/','-')
+        _model_name = model_name.replace("/", "-")
 
-        taxonomy=get_files_taxonomy()
+        taxonomy = get_files_taxonomy()
 
         if _model_name not in taxonomy:
             raise ValueError(
                 f"`{cls.__name__}` class in function `factory_method()`. "
                 f"{model_name} has not a prompt file created. Available model "
                 f"prompts are: {list(taxonomy)}"
-                )
+            )
 
         if language not in taxonomy[_model_name]:
             raise ValueError(
@@ -128,7 +129,7 @@ class PromptFactory():
                 f"{model_name} has not a prompt file created for the language "
                 f"{language}. Available languages for {model_name}: "
                 f"{list(taxonomy[model_name])}"
-                )
+            )
 
         if task_type not in taxonomy[_model_name][language]:
             raise ValueError(
@@ -136,9 +137,9 @@ class PromptFactory():
                 f"{model_name}  in {language} has not a prompt file created"
                 f"for the task {task_type}. Available tasks are: "
                 f"{list(taxonomy[model_name][language])}"
-                )
+            )
 
-        prompt_cls = cls.build_class(language,task_type,_model_name)
+        prompt_cls = cls.build_class(language, task_type, _model_name)
 
         return prompt_cls(
             prompt_domain=prompt_domain,
@@ -146,14 +147,8 @@ class PromptFactory():
             prompt_detail=prompt_detail,
         )
 
-
     @staticmethod
-    def build_class(
-        language   : str,
-        task_type  : str,
-        _model_name : str
-    ) -> BasePrompt:
-
+    def build_class(language: str, task_type: str, _model_name: str) -> BasePrompt:
         """
         Creates a class dinamically that inherits from `BasePrompt` given
         arguments configuracion. This new class has included its prompt from
@@ -171,20 +166,20 @@ class PromptFactory():
         <class '__main__.Textdavinci003SpNer'>
         """
 
-        prompt_class_name = ''.join([
-             _model_name.replace('-','').capitalize(),
-             language.capitalize(),
-             task_type.replace('-','').capitalize()
-        ])
+        prompt_class_name = "".join(
+            [
+                _model_name.replace("-", "").capitalize(),
+                language.capitalize(),
+                task_type.replace("-", "").capitalize(),
+            ]
+        )
 
         prompt_cls = type(
-            prompt_class_name,
-            (BasePrompt,),
-            {"__init__": BasePrompt.__init__}
+            prompt_class_name, (BasePrompt,), {"__init__": BasePrompt.__init__}
         )
 
         file_name = f"{_model_name}_{language}_{task_type}.prompt"
-        with open(os.path.join(module_dir,file_name), encoding='utf-8') as fin:
+        with open(os.path.join(module_dir, file_name), encoding="utf-8") as fin:
             prompt_cls.read_prompt(fin.read())
 
         return prompt_cls

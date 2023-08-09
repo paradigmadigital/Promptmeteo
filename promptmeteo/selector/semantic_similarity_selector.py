@@ -20,8 +20,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from langchain.prompts.example_selector import (
-    SemanticSimilarityExampleSelector)
+from langchain.prompts.example_selector import SemanticSimilarityExampleSelector
 
 from .base import BaseSelector
 

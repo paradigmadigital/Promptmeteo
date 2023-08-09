@@ -30,19 +30,18 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from .base import BaseModel
 
 
-class ModelTypes(str,Enum):
+class ModelTypes(str, Enum):
 
     """
     Enum of available model types.
     """
 
-    MODEL_1 = 'google/flan-t5-small'
-    MODEL_2 = 'tiiuae/falcon-7b-instruct'
-    MODEL_3 = 'clibrain/lince-zero'
+    MODEL_1 = "google/flan-t5-small"
+    MODEL_2 = "tiiuae/falcon-7b-instruct"
+    MODEL_3 = "clibrain/lince-zero"
 
     @classmethod
     def has_value(cls, value):
-
         """
         Return whether the value is in the class or not.
         """
@@ -62,9 +61,9 @@ class ModelParams(Enum):
         Parameters Model 1.
         """
 
-        model_path   = "/home/models/flan-t5-small"
-        model_task   = "text2text-generation"
-        model_kwargs ={"temperature": 0.0, "max_length": 64}
+        model_path = "/home/models/flan-t5-small"
+        model_task = "text2text-generation"
+        model_kwargs = {"temperature": 0.0, "max_length": 64}
 
     class MODEL_2:
 
@@ -72,9 +71,9 @@ class ModelParams(Enum):
         Parameters Model 2.
         """
 
-        model_path   = "/home/models/falcon-7b-instruct"
-        model_task   = "text2text-generation"
-        model_kwargs ={"temperature": 0.0, "max_length": 64}
+        model_path = "/home/models/falcon-7b-instruct"
+        model_task = "text2text-generation"
+        model_kwargs = {"temperature": 0.0, "max_length": 64}
 
     class MODEL_3:
 
@@ -82,9 +81,9 @@ class ModelParams(Enum):
         Parameters Model 3.
         """
 
-        model_path   = "/home/models/lince-zero"
-        model_task   = "text-generation"
-        model_kwargs ={"temperature": 0.0, "max_length": 64}
+        model_path = "/home/models/lince-zero"
+        model_task = "text-generation"
+        model_kwargs = {"temperature": 0.0, "max_length": 64}
 
 
 class HFPipelineLLM(BaseModel):
@@ -95,19 +94,19 @@ class HFPipelineLLM(BaseModel):
 
     def __init__(
         self,
-        model_name           : Optional[str] = '',
-        model_params         : Optional[Dict] = {},
-        model_provider_token : Optional[str] = '',
+        model_name: Optional[str] = "",
+        model_params: Optional[Dict] = {},
+        model_provider_token: Optional[str] = "",
     ) -> None:
-
         """
         Make predictions using a model from HuggingFace locally.
         """
 
         if not ModelTypes.has_value(model_name):
             raise ValueError(
-                f'`model_name`={model_name} not in supported model names: '
-                f'{[i.value for i in ModelTypes]}')
+                f"`model_name`={model_name} not in supported model names: "
+                f"{[i.value for i in ModelTypes]}"
+            )
 
         if not model_params:
             model_params = ModelParams[ModelTypes(model_name).name].value
@@ -121,11 +120,8 @@ class HFPipelineLLM(BaseModel):
             model_kwargs=model_params.model_kwargs,
         )
 
-        embedding_name = 'sentence-transformers/all-MiniLM-L6-v2'
-        if os.path.exists('/home/models/all-MiniLM-L6-v2'):
-            embedding_name='/home/models/all-MiniLM-L6-v2'
+        embedding_name = "sentence-transformers/all-MiniLM-L6-v2"
+        if os.path.exists("/home/models/all-MiniLM-L6-v2"):
+            embedding_name = "/home/models/all-MiniLM-L6-v2"
 
-        self._embeddings = HuggingFaceEmbeddings(
-            model_name=embedding_name
-        )
-
+        self._embeddings = HuggingFaceEmbeddings(model_name=embedding_name)

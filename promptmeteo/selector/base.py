@@ -30,7 +30,7 @@ from langchain.prompts import PromptTemplate
 from langchain.prompts import FewShotPromptTemplate
 
 
-class BaseSelector():
+class BaseSelector:
 
     """
     Base Selector Interface
@@ -38,85 +38,66 @@ class BaseSelector():
 
     SELECTOR = None
 
-
-    def __init__(
-        self,
-        embeddings : Embeddings,
-        k          : int
-    ) -> None:
-
+    def __init__(self, embeddings: Embeddings, k: int) -> None:
         self._k = k
         self._selector = None
         self._embeddings = embeddings
-
 
     @property
     def vectorstore(self):
         """Selector Vectorstore."""
         return self._selector.vectorstore
 
-
     @property
     def template(self) -> str:
         """Selector Template"""
-        return self.run().format(__INPUT__='{__INPUT__}')
-
+        return self.run().format(__INPUT__="{__INPUT__}")
 
     def train(
         self,
-        examples    : List[str],
-        annotations : List[str],
+        examples: List[str],
+        annotations: List[str],
     ) -> Self:
-
         """
         Creates the vectorstor with the training samples.
         """
 
-        examples = [{"ejemplo" : example, "respuesta" : annotation}
-            for example, annotation in zip(examples,annotations)]
+        examples = [
+            {"ejemplo": example, "respuesta": annotation}
+            for example, annotation in zip(examples, annotations)
+        ]
 
         self._selector = self.SELECTOR.from_examples(
-            examples        = examples,
-            embeddings      = self._embeddings,
-            vectorstore_cls = FAISS,
-            k               = self._k)
+            examples=examples,
+            embeddings=self._embeddings,
+            vectorstore_cls=FAISS,
+            k=self._k,
+        )
 
         return self
 
-
-    def load_example_selector(
-        self,
-        model_path : str
-    ) -> Self:
-
+    def load_example_selector(self, model_path: str) -> Self:
         """
         Load a vectorstore database from a disk file
         """
 
         vectorstore = FAISS.load_local(model_path, self._embeddings)
 
-        self._selector = self.SELECTOR(
-            vectorstore=vectorstore,
-            k=self._k
-        )
+        self._selector = self.SELECTOR(vectorstore=vectorstore, k=self._k)
 
         return self
 
-
-    def run(
-        self
-    ) -> FewShotPromptTemplate:
-
+    def run(self) -> FewShotPromptTemplate:
         """
         Creates the FewShotPromptTemplate from the samples of the vectorstore.
         """
 
         if self._selector is None:
             raise RuntimeError(
-                f'`{self.__class__.__name__}` object has no vector store '
-                f'created when executing `run()` method. You should call '
-                f'method `load_example_selector()` `train()` befoto create '
-                f'a vector store before.'
+                f"`{self.__class__.__name__}` object has no vector store "
+                f"created when executing `run()` method. You should call "
+                f"method `load_example_selector()` `train()` befoto create "
+                f"a vector store before."
             )
 
         example_prompt = PromptTemplate(

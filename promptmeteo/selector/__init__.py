@@ -38,28 +38,25 @@ class SelectorTypes(str, Enum):
     Enum with the avaialable selector algorithms.
     """
 
-    SELECTOR_1 = 'mmr'
-    SELECTOR_2 = 'semantic_similarity'
+    SELECTOR_1 = "mmr"
+    SELECTOR_2 = "semantic_similarity"
 
 
-class SelectorFactory():
-
+class SelectorFactory:
 
     """
     Factory of Selectors
     """
 
-
     @classmethod
     def factory_method(
         cls,
-        embeddings         : Embeddings,
-        selector_k         : int,
-        selector_algorithm : str,
+        embeddings: Embeddings,
+        selector_k: int,
+        selector_algorithm: str,
     ) -> BaseSelector:
-
         """
-        Returns and instance of a BaseSelector object depending on the 
+        Returns and instance of a BaseSelector object depending on the
         `selector_algorithm`.
         """
 
@@ -71,11 +68,9 @@ class SelectorFactory():
 
         else:
             raise ValueError(
-               f'`{cls.__class__.__name__}` error in `factory_method()` . '
-               f'{selector_algorithm} is not in the list of supported '
-               f'providers: {[i.value for i in SelectorTypes]}')
+                f"`{cls.__class__.__name__}` error in `factory_method()` . "
+                f"{selector_algorithm} is not in the list of supported "
+                f"providers: {[i.value for i in SelectorTypes]}"
+            )
 
-        return selector_cls(
-            embeddings=embeddings,
-            k=selector_k
-        )
+        return selector_cls(embeddings=embeddings, k=selector_k)

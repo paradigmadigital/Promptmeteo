@@ -42,7 +42,7 @@ class ModelProvider(str, Enum):
     PROVIDER_3 = "hf_pipeline"
 
 
-class ModelFactory():
+class ModelFactory:
 
     """
     The ModelFactory class is used to create a BaseModel object from the given
@@ -52,12 +52,11 @@ class ModelFactory():
     @classmethod
     def factory_method(
         cls,
-        model_name           : str,
-        model_provider_name  : str,
-        model_provider_token : str,
-        model_params         : Dict
+        model_name: str,
+        model_provider_name: str,
+        model_provider_token: str,
+        model_params: Dict,
     ) -> BaseModel:
-
         """
         Returns a BaseModel object configured with the settings found in the
         provided parameters.
@@ -77,9 +76,9 @@ class ModelFactory():
 
         else:
             raise ValueError(
-                f'{cls.__class__.__name__} error in `factory_method()`. '
-                f'{model_provider_name} is not in the list of supported '
-                f'providers: {[i.value for i in ModelProvider]}'
+                f"{cls.__class__.__name__} error in `factory_method()`. "
+                f"{model_provider_name} is not in the list of supported "
+                f"providers: {[i.value for i in ModelProvider]}"
             )
 
         return model_cls(

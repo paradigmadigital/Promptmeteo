@@ -30,26 +30,24 @@ from .tasks import TaskBuilder
 
 class DocumentClassifier(Base):
 
-
     """
     DocumentClassifier Task
     """
 
     def __init__(
         self,
-        model_name           : str,
-        model_provider_name  : str,
-        model_provider_token : Optional[str] = None,
-        model_params         : Optional[Dict] = {},
-        language             : str = 'es',
-        prompt_domain        : Optional[str] = '',
-        prompt_labels        : List[str] = [],
-        prompt_detail        : Optional[str] = None,
-        selector_k           : int = 10,
-        selector_algorithm   : str = 'mmr',
-        verbose              : bool = False
+        model_name: str,
+        model_provider_name: str,
+        model_provider_token: Optional[str] = None,
+        model_params: Optional[Dict] = {},
+        language: str = "es",
+        prompt_domain: Optional[str] = "",
+        prompt_labels: List[str] = [],
+        prompt_detail: Optional[str] = None,
+        selector_k: int = 10,
+        selector_algorithm: str = "mmr",
+        verbose: bool = False,
     ) -> None:
-
         """
         Returns
         -------
@@ -79,37 +77,34 @@ class DocumentClassifier(Base):
 
         """
 
-        task_type = 'classification'
+        task_type = "classification"
 
-        self._builder = TaskBuilder(
-            task_type            = task_type,
-            verbose              = verbose
-        )
+        self._builder = TaskBuilder(task_type=task_type, verbose=verbose)
 
         # Build model
         self._builder.build_model(
-            model_name           = model_name,
-            model_provider_name  = model_provider_name,
-            model_provider_token = model_provider_token,
-            model_params         = model_params
+            model_name=model_name,
+            model_provider_name=model_provider_name,
+            model_provider_token=model_provider_token,
+            model_params=model_params,
         )
 
         # Build prompt
         self._builder.build_prompt(
-            language             = language,
-            task_type            = task_type,
-            model_name           = model_name,
-            prompt_domain        = prompt_domain,
-            prompt_labels        = prompt_labels,
-            prompt_detail        = prompt_detail,
+            language=language,
+            task_type=task_type,
+            model_name=model_name,
+            prompt_domain=prompt_domain,
+            prompt_labels=prompt_labels,
+            prompt_detail=prompt_detail,
         )
 
         # Build parser
         self._builder.build_parser(
-            task_type            = task_type,
-            prompt_labels        = prompt_labels,
+            task_type=task_type,
+            prompt_labels=prompt_labels,
         )
 
         # Selector config
-        self._selector_k         = selector_k
+        self._selector_k = selector_k
         self._selector_algorithm = selector_algorithm
