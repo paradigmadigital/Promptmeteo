@@ -58,6 +58,11 @@ clf.predict(['que guay!!'])
 [['positive']]
 ```
 
+## Using Docker
+```shell
+docker build -t promptmeteo:latest .
+docker run --rm -i -t -v .:/home promptmeteo:latest
+```
 &nbsp;
 
 # 🤔 What is this for?

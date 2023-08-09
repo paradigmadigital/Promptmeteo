@@ -7,7 +7,8 @@ dev:
 	pre-commit install
 
 format:
-	black src/
+	black promptmeteo/
+	black tests/
 
 docs:
 	mkdocs build

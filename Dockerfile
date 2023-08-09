@@ -2,7 +2,7 @@ FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
 
 # Update apt
 RUN apt-get upgrade && apt-get update
-RUN apt-get install nano
+RUN apt-get install nano make -y
 
 # Install git large files
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
@@ -19,4 +19,4 @@ RUN git lfs clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 # Copy project
 WORKDIR /home
 COPY ./ /home/
-RUN pip install .
+RUN make setup
