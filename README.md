@@ -7,11 +7,163 @@
 
 # PromptMeteo 🔥🧔
 
-**Promptmeteo** is a Python library build over LangChain to build prompts and LLMs by configuration parameters. The goal of this project is to be used as a template to industrialize LLM projects.
+**Promptmeteo** is a Promt Engineer Python library build over LangChain that simplfies the use of LLMs for different tasks with a low-code interface. For doing so, Promptmeteo is able to use different LLMs model and mcreate the prompts dinamically for concrete task underneath, given just some configuration parameters.
 
+
+
+
+&nbsp;
+
+# 🤔 What is this for?
+**TL;DR: Industrialize projects powered by LLMs easily.**
+
+LLMs are able to solve many tasks given a concrete instruction as input (prompt) and they can be used as a "reasoning engine" to build applications. However, this applications are very difficult to deploy and insdustrialize because two reasons. First because prompts usually include application logic in their definition, however, they are actually treated as a input argument. The latter mean that a bad prompt input can break the application.
+
+Secondly, writing the concrete prompt for each task is not only a tedious work but also difficult. Slights changes in the input prompt can become in different results which make them very error-prone. Moreover when writting the prompt we do not only should take into consideration the task, but also the LLM that is going to use it, the model capacity...
+
+
+
+
+&nbsp;
+# 🚀 How do we solve it?
+
+**TL;DR: Treating prompts an code equally!!!**
+
+Prompmeteo try to solve the problems mentioned before by sepaarating the prompt definition in two parts: the task-logic (which is coded in prompt templates) and the concrete-problem (which is included as argument variables). Prompmeteo include high level objects for different tasks which are programmed with `.py` and `.prompt` files.
+
+#### 🏠 Prebuilt tasks
+
+The project includes high-level objects to solve different NLP tasks such as: text classification, Named Entity Recognition, code generation... This object only require configuration parameters to run and return the expected output from the task (i.e. we do not require to parse the output from the LLM).
+
+#### ⚙️ Ease Deployment
+
+The modules from Promptmeteo follow a similar model interface as a Scikit-Learn. Defining a interface with independant methods for training and predicting as well as saving and loading the model, allows Promptmeteo to be trained in and independant pipeline from predicting. This allows to reuse the conventional ML pipeline for LLM projects. 
+
+#### 📦 Model Artifacts
+
+LLMs can improve the results by including examples in their prompt. Promptmeteo is able to be trained with examples and to ensure reproducibility, the training process can be stored as a binary model artifact. This allows to store the training results and reuse it many times in new data. The training process store the embeddings from the input text in a vector database such as FAISS.
+
+#### ⚙️ LLMs integration 
+
+Prompmeteo include the integration of different LLMs throught LangChain. This includes models that can be executed locally as well as remote API calls from providers such as OpenAI and HuggingFace. 
+
+#### 📄 Prompt Templating
+
+Defining a concrete format when creating the prompts in Promptmeteo (`.prompt`), does not only allow to use it easily in a programatic way, but it also allows to versionate the prompts, understand where is the change when something happends and also **define code test oriented to prompt testing**. This testing includes aspects such as: validate the use of the language, that the size of the prompt is appropiate for the model,...
+
+```yaml
+TEMPLATE:
+    "I need you to help me with a text classification task.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_LABELS__}
+
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
+
+PROMPT_DOMAIN:
+    "The texts you will be processing are from the {__DOMAIN__} domain."
+
+PROMPT_LABELS:
+    "I want you to classify the texts into one of the following categories:
+    {__LABELS__}."
+
+PROMPT_DETAIL:
+    ""
+
+CHAIN_THOUGHT:
+    "Please provide a step-by-step argument for your answer, explain why you
+    believe your final choice is justified."
+
+ANSWER_FORMAT:
+    "In your response, include only the name of the class as a single word, in
+    lowercase, without punctuation, and without adding any other statements or
+    words."
+```
+
+
+&nbsp;
+# ⚡ Quick start
+
+### 🔥 Create the task
+You can make a prediccion directly indanciating the model and calling the method `predict()`.
+
+```python
+from promptmeteo import DocumentClassifier
+
+clf = DocumentClassifier(
+        language            = 'en',
+        model_provider_name = 'hf_pipeline',
+        model_name          = 'google/flan-t5-small',
+    )
+
+clf.predict(['so cool!!'])
+```
+
+```shell
+[['positive']]
+```
+
+### 🔥 Train the task
+Buy you can also include examples to improve the results by calling the method `train()`
+
+
+```python
+clf = clf.train(
+    examples    = ['i am happy', 'doesnt matter', 'I hate it'],
+    annotations = ['positive', 'neutral', 'negative'],
+)
+
+clf.predict(['so cool!!'])
+```
+
+```shell
+[['positive']]
+```
+
+### 🔥 Save a trained task
+
+One the model is trained it can be save locally
+
+```python
+clf.save_model("hello_world.prompt")
+```
+
+
+### 🔥 Load a trained task
+
+and loaded again to make new predictions
+
+```python
+from promptmeteo import DocumentClassifier
+
+clf = DocumentClassifier(
+        language            = 'en',
+        model_provider_name = 'hf_pipeline',
+        model_name          = 'google/flan-t5-small',
+    )
+
+clf.predict(['so cool!!'])
+```
+
+```shell
+[['positive']]
+```
+
+###  🔥 Learn more
+
+More examples can be seen in the directory ![examples](./examples).
+
+&nbsp;
+
+
+## 📋 Current capacilities
+
+### ✅ Available Model
+
+The current available `model_name` and `language` values are:
 
 | model_provider |       model_name          | language |   
-|      ---       |           ---	         |    ---   |
+|      ---       |           ---	     |    ---   |
 |     openai     |     text-davinci-003      |    es    |
 |     openai     |     text-davinci-003      |    en    |
 |   hf_hub_api   |    google/flan-t5-xxl     |    es    |
@@ -23,196 +175,12 @@
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
 
+### ✅ Available tasks
 
 The current available `tasks_type` values are:
 
- * `classification` : Classify a document accorgind to a predefined labels and/or examples. 
- * `ner` : Name Entity Recognition. Detect the world level entities in a document given examples or predefined labels.
- * `code-generation` : Generate code for a given language domain.
-
-
-More examples can be seen in the directory ![examples](./examples).
-
-
-# ⚡ Quick start
-
-```python
-from promptmeteo import DocumentClassifier
-
-clf = DocumentClassifier(
-        language            = 'es',
-        model_provider_name = 'hf_pipeline',
-        model_name          = 'google/flan-t5-small',
-        verbose = True
-    )
-
-clf = clf.train(
-    examples = ['estoy feliz', 'me da igual', 'no me gusta'],
-    annotations = ['positive', 'neutral', 'negative'],
-)
-
-clf.predict(['que guay!!'])
-```
-
-```shell
-[['positive']]
-```
-
-## Using Docker
-```shell
-docker build -t promptmeteo:latest .
-docker run --rm -i -t -v .:/home promptmeteo:latest
-```
-&nbsp;
-
-# 🤔 What is this for?
-
-**TL;DR**: Industrialize projects powered by LLMs easily.
-
-LLMs are fine, but they are difficult to industrialize in real world problems because two main reasons:
-
- - **Prompt Versioning**: In LLMs, prompts are not just static files as configuration data, but also they has logic that defines the results of the project. Code versioning is made through git, however, there is no standard to version prompts.
-
-- **Model Trazability**: MLOps are used to program ML pipelines and ensure the model trazability along the pipeline. However LLMs do not usually has the same logic
-
-&nbsp;
-
-# 🚀 How is it made?
-
-For solving the previous problems **Prompmeteo** has the following features.
-
-#### ⚙️ MLOps Interface
-
-Defining a interface with independant methods for training and predicting as well as saving and loading the model, allows Promptmeteo to be trained in and independant pipeline from predicting. This allows to reuse the conventional ML pipeline for LLM projects. 
-
-#### 📦 Model Artifacts
-
-LLMs proyects usually require of a Vector Data Base to save and load embeddings. Prompmeteo uses FAISS as a vectorstore database that not only allow it to run Promptmeteo locally, but it also allow to store the vectordatabase as a binary file. This binary file is analogue as a model artifact in a conventional ML project.
-
-#### 📄 Prompt Formating
-
-Defining a concrete format when creating the prompt text, does not only allow to use it easily in a programatic way, but it also allows to versionate the prompts, understand where is the change when something happends and also **define code test oriented to prompt testing**
-
-```yml
-TEMPLATE:
-    "
-    Your task is to classify a text in categories:
-    {__LABELS__}
-    {__TASK_INFO__}
-    {__ANSWER_FORMAT__}
-    {__CHAIN_OF_THOUGHTS__}
-    "
-
-LABELS:
-    ["positive", "negative", "neutral"]
-
-TASK_INFO:
-    "The text is a sentence written by a human and you have to classify
-    it in according to its sentiment."
-
-ANSWER_FORMAT:
-    "Your answer must include the name of the category in a unique word
-    in lower case and without puntuation."
-
-CHAIN_OF_THOUGHTS:
-    "Please explain your answer step by step before saying the name of
-    the category"
-```
-
-# 🧩 Project Components
-
-```mermaid
-classDiagram
-
-Promptmeteo        ..|> TaskBuilderFactory : Composition
-TaskBuilder        ..|> TaskBuilderFactory : Instanciate
-TaskBuilder        ..|> Task               : Build
-ClassificationTask --|> Task               : Inheritance
-Task               ..|> Prompt             : Composition
-Task               ..|> ParserFactory      : Composition
-Task               ..|> SelectorFactory    : Composition
-Task               ..|> ModelFactory       : Composition
-Parser             ..|> ParserFactory      : Instanciate
-Selector           ..|> SelectorFactory    : Instanciate
-Model              ..|> ModelFactory       : Instanciate
-
-class Promptmeteo{
-  + builder : TaskBuilder
-  + task : Task
-  + is_trained : Bool
-  + train(examples : List[str], annotations : List[str])
-  + predict(examples : List[str])
-  + read_prompt(prompt_text : str)
-  + save_model(model_path : str)
-  + load_model(model_path : str)
-}
-class TaskBuilderFactory{
-  + factory_method(task_type : str, task_labels : List[str])
-}
-class TaskBuilder{
-  + task : Task
-  + build_model(model_name : str, model_provider_name : str, model_provider_token : str, model_params : Dict)
-  + build_prompt(prompt_template : str, prompt_task_info : str, prompt_answer_format : str, prompt_chain_of_thoughts : st])
-  + build_parser(parser_type : str, prompt_labels : List[str], prompt_labels_separator : str, prompt_chain_of_thoughts : str)
-  + build_selector_by_train(examples : List[str], annotations : List[str], selector_k : int, selector_algorithm : str)
-  + build_selector_by_load(model_path : str, selector_k : str, selector_algorithm : str)
-}
-class Task{
-  + model : Model
-  + prompt : Prompt
-  + parser : Parser
-  + selector : Selector
-  + run(prompt: str)
-  - _get_prompt(example: str) 
-}
-class ClassificationTask{
-  + model : Model
-  + prompt : Prompt
-  + parser : Parser
-  + selector : Selector
-  + run(prompt: str)
-  - _get_prompt(example: str) 
-}
-
-class NerTask{
-  + model : Model
-  + prompt : Prompt
-  + parser : Parser
-  + selector : Selector
-  + run(prompt: str)
-  - _get_prompt(example: str) 
-}
-
-class ParserFactory{
-  + factory_method(parser_type : str, prompt_labels : List[str], prompt_labels_separator : str, prompt_chain_of_thoughts : bool) -> Parser
-}
-class ModelFactory{
-  + factory_method(model_name: str, model_provider_name: str, model_provider_token :str, model_prams : Dict) -> Model
-}
-class SelectorFactory{
-  + factory_method(embeddings: Embeddings, selector: str, selector_algorithm :str) -> Selector
-}
-class Prompt{
-  + PROMPT_EXAMPLE
-  + template
-  + labels
-  + read_prompt_file(prompt_text : str)
-  + run()
-}
-class Parser{
-  + run(sample: str)
-}
-class Model{
-  + llm
-  + embeddings
-  + run(sample: str)
-}
-class Selector{
-  + example_selector
-  + vectorstore
-  + template
-  + train(examples: List[str], annotations : List[str])
-  + load_example_selector(model_path : str)
-  + run()
-}
-```
+|     task_type     |          description           |
+|        ---        |              ---               |
+|  `classification` |  Document-level classification |
+|       `ner`       |    Word-level classification   |
+| `code-generation` | Document-level text generation |
