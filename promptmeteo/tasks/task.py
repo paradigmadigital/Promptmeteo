@@ -29,23 +29,18 @@ from ..parsers import BaseParser
 from ..selector import BaseSelector
 
 
-class Task():
+class Task:
 
     """
     Base Task interface.
     """
 
-    def __init__(
-        self,
-        task_type : str,
-        verbose : bool = False
-    ):
-
-        self._model    = None
-        self._parser   = None
-        self._prompt   = None
+    def __init__(self, task_type: str, verbose: bool = False):
+        self._model = None
+        self._parser = None
+        self._prompt = None
         self._selector = None
-        self._verbose  = verbose
+        self._verbose = verbose
         self._task_type = task_type
 
     @property
@@ -90,43 +85,40 @@ class Task():
         """Task Parser"""
         self._parser = parser
 
-
-    def _get_prompt(
-        self,
-        example: str
-    ) -> PipelinePromptTemplate:
-
+    def _get_prompt(self, example: str) -> PipelinePromptTemplate:
         """
         Create a PipelinePromptTemplate by merging the PromptTemplate and the
         FewShotPromptTemplate.
         """
 
-        intro_prompt  = self.prompt.run()
+        intro_prompt = self.prompt.run()
 
-        examples_prompt = self.selector.run() if self.selector else \
-            PromptTemplate.from_template('La frase de entrada es: {__INPUT__}')
+        examples_prompt = (
+            self.selector.run()
+            if self.selector
+            else PromptTemplate.from_template("La frase de entrada es: {__INPUT__}")
+        )
 
         return PipelinePromptTemplate(
-            final_prompt = PromptTemplate.from_template(
-                '''
+            final_prompt=PromptTemplate.from_template(
+                """
                 {__INSTRUCTION__}
 
                 {__EXAMPLES__}
-                '''.replace(' '*4,''
-                  ).replace('\n\n','|'
-                  ).replace('\n',' '
-                  ).replace('|','\n\n')),
+                """.replace(
+                    " " * 4, ""
+                )
+                .replace("\n\n", "|")
+                .replace("\n", " ")
+                .replace("|", "\n\n")
+            ),
             pipeline_prompts=[
-                ('__INSTRUCTION__', intro_prompt),
-                ('__EXAMPLES__', examples_prompt)]
-            ).format(__INPUT__=example)
+                ("__INSTRUCTION__", intro_prompt),
+                ("__EXAMPLES__", examples_prompt),
+            ],
+        ).format(__INPUT__=example)
 
-
-    def run(
-        self,
-        example : str
-    ) -> str:
-
+    def run(self, example: str) -> str:
         """
         Given a text sample, return the text predicted by Promptmeteo.
         """
@@ -135,8 +127,8 @@ class Task():
         result = self.model.run(prompt)
 
         if self._verbose:
-            print('\n\nPROMPT INPUT\n\n', prompt)
-            print('\n\nMODEL OUTPUT\n\n', result)
+            print("\n\nPROMPT INPUT\n\n", prompt)
+            print("\n\nMODEL OUTPUT\n\n", result)
 
         result = self.parser.run(result)
 

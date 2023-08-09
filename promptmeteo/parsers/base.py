@@ -34,19 +34,14 @@ class BaseParser(ABC):
 
     def __init__(
         self,
-        prompt_labels : List[str],
+        prompt_labels: List[str],
     ) -> None:
-
         self._labels = prompt_labels
-        self._labels_separator = ','
+        self._labels_separator = ","
         self._chain_of_thoughts = True
 
     @abstractmethod
-    def run(
-        self,
-        text : str
-    ) -> str:
-
+    def run(self, text: str) -> str:
         """
         Given a response string from an LLM, returns the response expected for
         the task.

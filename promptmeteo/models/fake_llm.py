@@ -39,19 +39,15 @@ class FakeStaticLLM(LLM):
     Fake Static LLM wrapper for testing purposes.
     """
 
-    response:str='positive'
+    response: str = "positive"
 
     @property
-    def _llm_type(
-        self
-    ) -> str:
-
+    def _llm_type(self) -> str:
         """
         Return type of llm.
         """
 
         return "fake-static"
-
 
     def _call(
         self,
@@ -60,19 +56,14 @@ class FakeStaticLLM(LLM):
         run_manager: Optional[Any] = None,
         **kwargs: Any,
     ) -> str:
-
         """
         Return static response.
         """
 
         return self.response
 
-
     @property
-    def _identifying_params(
-        self
-    ) -> Mapping[str, Any]:
-
+    def _identifying_params(self) -> Mapping[str, Any]:
         return {}
 
 
@@ -82,16 +73,13 @@ class FakePromptCopyLLM(LLM):
     Fake Prompt Copy LLM wrapper for testing purposes.
     """
 
-
     @property
     def _llm_type(self) -> str:
-
         """
         Return type of llm.
         """
 
         return "fake-prompt-copy"
-
 
     def _call(
         self,
@@ -100,19 +88,14 @@ class FakePromptCopyLLM(LLM):
         run_manager: Optional[Any] = None,
         **kwargs: Any,
     ) -> str:
-
         """
         Return prompt.
         """
 
         return prompt
 
-
     @property
-    def _identifying_params(
-        self
-    ) -> Mapping[str, Any]:
-
+    def _identifying_params(self) -> Mapping[str, Any]:
         return {}
 
 
@@ -122,19 +105,16 @@ class FakeListLLM(LLM):
     Fake LLM wrapper for testing purposes.
     """
 
-    responses: List =['uno','dos','tres']
+    responses: List = ["uno", "dos", "tres"]
     i: int = 0
-
 
     @property
     def _llm_type(self) -> str:
-
         """
         Return type of llm.
         """
 
         return "fake-list"
-
 
     def _call(
         self,
@@ -143,7 +123,6 @@ class FakeListLLM(LLM):
         run_manager: Optional[Any] = None,
         **kwargs: Any,
     ) -> str:
-
         """
         First try to lookup in queries, else return 'foo' or 'bar'.
         """
@@ -152,7 +131,6 @@ class FakeListLLM(LLM):
         self.i += 1
 
         return response
-
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
@@ -164,10 +142,10 @@ class ModelTypes(Enum):
     """
     FakeLLM Model Types.
     """
-    
-    MODEL_1 = 'fake-static'
-    MODEL_2 = 'fake-prompt_copy'
-    MODEL_3 = 'fake-list'
+
+    MODEL_1 = "fake-static"
+    MODEL_2 = "fake-prompt_copy"
+    MODEL_3 = "fake-list"
 
 
 class FakeLLM(BaseModel):
@@ -178,11 +156,10 @@ class FakeLLM(BaseModel):
 
     def __init__(
         self,
-        model_name           : Optional[str] = '',
-        model_params         : Optional[Dict] = {},
-        model_provider_token : Optional[str] = '',
+        model_name: Optional[str] = "",
+        model_params: Optional[Dict] = {},
+        model_provider_token: Optional[str] = "",
     ) -> None:
-
         self._embeddings = FakeEmbeddings(size=64)
 
         if model_name == ModelTypes.MODEL_1.value:
@@ -199,5 +176,4 @@ class FakeLLM(BaseModel):
                 f"{self.__class__.__name__} error creating object. "
                 f"{model_name} is not in the list of supported FakeLLMS: "
                 f"[i.value for i in ModelTypes]"
-                )
-
+            )

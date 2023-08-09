@@ -31,38 +31,29 @@ class BaseModel(ABC):
     Model Interface.
     """
 
-
     def __init__(self):
-
         self._llm = BaseLLM
         self._embeddings = Embeddings
-
 
     @property
     def llm(self) -> BaseLLM:
         """Get Model LLM."""
         return self._llm
 
-
     @property
     def embeddings(self) -> Embeddings:
         """Get Model Embeddings."""
         return self._embeddings
 
-
-    def run(
-        self,
-        sample: str
-    ) -> str:
-
+    def run(self, sample: str) -> str:
         """
         Executes the model LLM and return its prediction.
         """
 
         try:
-            return self._llm(prompt = sample)
+            return self._llm(prompt=sample)
 
         except Exception as error:
             raise RuntimeError(
-                f"Error generating from LLM: with sample \"{sample}\""
+                f'Error generating from LLM: with sample "{sample}"'
             ) from error

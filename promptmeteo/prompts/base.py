@@ -59,14 +59,12 @@ class BasePrompt(ABC):
             "Response just with the asnwer."
     """
 
-
     def __init__(
         self,
-        prompt_domain : str = '',
-        prompt_labels : str = '',
-        prompt_detail : str = '',
+        prompt_domain: str = "",
+        prompt_labels: str = "",
+        prompt_detail: str = "",
     ) -> None:
-
         """
         Build a Prompt object string given a concrete especification.
         """
@@ -75,13 +73,15 @@ class BasePrompt(ABC):
         self._labels = prompt_labels
 
         # Labels
-        prompt_labels = ', '.join(prompt_labels)
-        prompt_labels = self.PROMPT_LABELS.format(
-            __LABELS__=prompt_labels) if prompt_labels else ''
+        prompt_labels = ", ".join(prompt_labels)
+        prompt_labels = (
+            self.PROMPT_LABELS.format(__LABELS__=prompt_labels) if prompt_labels else ""
+        )
 
         # Domain
-        prompt_domain = self.PROMPT_DOMAIN.format(
-            __DOMAIN__=prompt_domain) if prompt_domain else ''
+        prompt_domain = (
+            self.PROMPT_DOMAIN.format(__DOMAIN__=prompt_domain) if prompt_domain else ""
+        )
 
         # Answer format
         answer_format = self.ANSWER_FORMAT
@@ -91,40 +91,32 @@ class BasePrompt(ABC):
 
         # Build prompt
         self._prompt = PipelinePromptTemplate(
-            final_prompt=PromptTemplate.from_template(
-                self.TEMPLATE),
+            final_prompt=PromptTemplate.from_template(self.TEMPLATE),
             pipeline_prompts=[
-                ('__PROMPT_DOMAIN__',
-                    PromptTemplate.from_template(prompt_domain)),
-                ('__PROMPT_LABELS__',
-                    PromptTemplate.from_template(prompt_labels)),
-                ('__ANSWER_FORMAT__',
-                    PromptTemplate.from_template(answer_format)),
-                ('__CHAIN_THOUGHT__',
-                    PromptTemplate.from_template(chain_thought))])
-
+                ("__PROMPT_DOMAIN__", PromptTemplate.from_template(prompt_domain)),
+                ("__PROMPT_LABELS__", PromptTemplate.from_template(prompt_labels)),
+                ("__ANSWER_FORMAT__", PromptTemplate.from_template(answer_format)),
+                ("__CHAIN_THOUGHT__", PromptTemplate.from_template(chain_thought)),
+            ],
+        )
 
     @property
     def domain(self) -> str:
         """Prompt Domain."""
         return self._domain
 
-
     @property
     def labels(self) -> List[str]:
         """Prompt Labels."""
         return self._labels
-
 
     @property
     def template(self) -> str:
         """Prompt Template."""
         return self._prompt.format()
 
-
     @classmethod
-    def read_prompt(cls, prompt_text : str) -> None:
-
+    def read_prompt(cls, prompt_text: str) -> None:
         """
         Reads a Promptmeteo prompt string to build the Task Prompt. Promptmeteo
         prompts are expected to follow the following template:
@@ -144,38 +136,31 @@ class BasePrompt(ABC):
         """
 
         try:
-
-            prompt = yaml.load(
-                prompt_text,
-                Loader=yaml.FullLoader)
+            prompt = yaml.load(prompt_text, Loader=yaml.FullLoader)
 
         except Exception as error:
             raise ValueError(
-                f'`{cls.__name__} error in function `read_prompt()`. '
-                f'The expected string input should be like:\n\n'
-                f'{cls.PROMPT_EXAMPLE}\n\n{error}'
-                ) from error
+                f"`{cls.__name__} error in function `read_prompt()`. "
+                f"The expected string input should be like:\n\n"
+                f"{cls.PROMPT_EXAMPLE}\n\n{error}"
+            ) from error
 
         try:
-            cls.TEMPLATE      = prompt['TEMPLATE']
-            cls.PROMPT_DOMAIN = prompt['PROMPT_DOMAIN']
-            cls.PROMPT_LABELS = prompt['PROMPT_LABELS']
-            cls.ANSWER_FORMAT = prompt['ANSWER_FORMAT']
-            cls.CHAIN_THOUGHT = prompt['CHAIN_THOUGHT']
+            cls.TEMPLATE = prompt["TEMPLATE"]
+            cls.PROMPT_DOMAIN = prompt["PROMPT_DOMAIN"]
+            cls.PROMPT_LABELS = prompt["PROMPT_LABELS"]
+            cls.ANSWER_FORMAT = prompt["ANSWER_FORMAT"]
+            cls.CHAIN_THOUGHT = prompt["CHAIN_THOUGHT"]
 
             cls.PROMPT_EXAMPLE = prompt_text
 
         except Exception as error:
             raise ValueError(
-                f'`{cls.__name__} error. `read_prompt()`. The expected keys '
-                f'are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}'
-                ) from error
+                f"`{cls.__name__} error. `read_prompt()`. The expected keys "
+                f"are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}"
+            ) from error
 
-
-    def run(
-        self
-    ) -> PromptTemplate:
-
+    def run(self) -> PromptTemplate:
         """
         Returns the prompt template for the current task.
         """

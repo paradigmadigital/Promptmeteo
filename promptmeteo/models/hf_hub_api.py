@@ -36,15 +36,11 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    FlanT5Xxl = 'google/flan-t5-xxl'
-    Falcon7bInstruct = 'tiiuae/falcon-7b-instruct'
+    FlanT5Xxl = "google/flan-t5-xxl"
+    Falcon7bInstruct = "tiiuae/falcon-7b-instruct"
 
     @classmethod
-    def has_value(
-        cls,
-        value : str
-    ) -> bool:
-
+    def has_value(cls, value: str) -> bool:
         """
         Checks if the value is in the enum or not.
         """
@@ -64,8 +60,8 @@ class ModelParams(Enum):
         Flan-t5-xxl default params
         """
 
-        model_task   = "text2text-generation"
-        model_kwargs ={"temperature": 0.9, "max_length": 64}
+        model_task = "text2text-generation"
+        model_kwargs = {"temperature": 0.9, "max_length": 64}
 
     class Falcon7bInstruct:
 
@@ -73,8 +69,8 @@ class ModelParams(Enum):
         Falcon-7b-instruct default params
         """
 
-        model_task   = "text2text-generation"
-        model_kwargs ={"temperature": 0.9, "max_length": 64}
+        model_task = "text2text-generation"
+        model_kwargs = {"temperature": 0.9, "max_length": 64}
 
 
 class HFHubApiLLM(BaseModel):
@@ -85,19 +81,19 @@ class HFHubApiLLM(BaseModel):
 
     def __init__(
         self,
-        model_name           : Optional[str] = '',
-        model_params         : Optional[Dict] = {},
-        model_provider_token : Optional[str] = '',
+        model_name: Optional[str] = "",
+        model_params: Optional[Dict] = {},
+        model_provider_token: Optional[str] = "",
     ) -> None:
-
         """
         Make predictions using a model from HuggingFace using the API.
         """
 
         if not ModelTypes.has_value(model_name):
             raise ValueError(
-                f'`model_name`={model_name} not in supported model names: '
-                f'{[i.value for i in ModelTypes]}')
+                f"`model_name`={model_name} not in supported model names: "
+                f"{[i.value for i in ModelTypes]}"
+            )
 
         if not model_params:
             model_params = ModelParams[ModelTypes(model_name).name].value
@@ -109,7 +105,6 @@ class HFHubApiLLM(BaseModel):
         )
 
         self._embeddings = HuggingFaceHubEmbeddings(
-            repo_id='sentence-transformers/all-MiniLM-L6-v2',
+            repo_id="sentence-transformers/all-MiniLM-L6-v2",
             huggingfacehub_api_token=model_provider_token,
         )
-

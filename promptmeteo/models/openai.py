@@ -30,20 +30,16 @@ from langchain.embeddings import OpenAIEmbeddings
 from .base import BaseModel
 
 
-class ModelTypes(str,Enum):
+class ModelTypes(str, Enum):
 
     """
     Enum of available model types.
     """
 
-    TextDavinci003 = 'text-davinci-003'
+    TextDavinci003 = "text-davinci-003"
 
     @classmethod
-    def has_value(
-        cls,
-        value : str
-    ) -> bool:
-
+    def has_value(cls, value: str) -> bool:
         """
         Checks if the value is in the enum or not.
         """
@@ -63,8 +59,8 @@ class ModelParams(Enum):
         Default parameters for TextDavinci003 model.
         """
 
-        model_task   = "text2text-generation"
-        model_kwargs ={"temperature": 0.7, "max_tokens": 256, "max_retries": 3}
+        model_task = "text2text-generation"
+        model_kwargs = {"temperature": 0.7, "max_tokens": 256, "max_retries": 3}
 
 
 class OpenAILLM(BaseModel):
@@ -75,19 +71,19 @@ class OpenAILLM(BaseModel):
 
     def __init__(
         self,
-        model_name           : Optional[str] = '',
-        model_params         : Optional[Dict] = {},
-        model_provider_token : Optional[str] = '',
+        model_name: Optional[str] = "",
+        model_params: Optional[Dict] = {},
+        model_provider_token: Optional[str] = "",
     ) -> None:
-
         """
         Make predictions using a model from OpenAI.
         """
 
         if not ModelTypes.has_value(model_name):
             raise ValueError(
-                f'`model_name`={model_name} not in supported model names: '
-                f'{list(ModelTypes.__members__.keys())}')
+                f"`model_name`={model_name} not in supported model names: "
+                f"{list(ModelTypes.__members__.keys())}"
+            )
 
         if not model_params:
             model_params = ModelParams[ModelTypes(model_name).name].value
@@ -95,9 +91,7 @@ class OpenAILLM(BaseModel):
         self._llm = OpenAI(
             model_name=model_name,
             openai_api_key=model_provider_token,
-            #openai_organization="YOUR_ORGANIZATION_ID"
-            )
-
-        self._embeddings = OpenAIEmbeddings(
-            openai_api_key=model_provider_token
+            # openai_organization="YOUR_ORGANIZATION_ID"
         )
+
+        self._embeddings = OpenAIEmbeddings(openai_api_key=model_provider_token)
