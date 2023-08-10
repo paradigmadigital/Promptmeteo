@@ -21,7 +21,6 @@
 #  THE SOFTWARE.
 
 from enum import Enum
-from typing import Dict
 from typing import Optional
 
 from langchain import HuggingFaceHub
@@ -36,8 +35,8 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    FlanT5Xxl = "google/flan-t5-xxl"
-    Falcon7bInstruct = "tiiuae/falcon-7b-instruct"
+    FlanT5Xxl: str = "google/flan-t5-xxl"
+    Falcon7bInstruct: str = "tiiuae/falcon-7b-instruct"
 
     @classmethod
     def has_value(cls, value: str) -> bool:
@@ -82,21 +81,24 @@ class HFHubApiLLM(BaseModel):
     def __init__(
         self,
         model_name: Optional[str] = "",
-        model_params: Optional[Dict] = {},
+        model_params: Optional[ModelParams] = None,
         model_provider_token: Optional[str] = "",
     ) -> None:
         """
         Make predictions using a model from HuggingFace using the API.
         """
 
-        if not ModelTypes.has_value(model_name):
+        if ModelTypes.has_value(model_name):
+            model_params = ModelParams[ModelTypes(model_name).name].value
+        elif not model_params:
             raise ValueError(
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.value for i in ModelTypes]}"
             )
+        elif not hasattr(model_params, 'model_kwargs'):
+            raise ValueError("invalid model_params")
 
-        if not model_params:
-            model_params = ModelParams[ModelTypes(model_name).name].value
+        super(HFHubApiLLM, self).__init__()
 
         self._llm = HuggingFaceHub(
             repo_id=model_name,

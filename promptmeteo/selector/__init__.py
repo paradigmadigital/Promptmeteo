@@ -38,8 +38,8 @@ class SelectorTypes(str, Enum):
     Enum with the avaialable selector algorithms.
     """
 
-    SELECTOR_1 = "mmr"
-    SELECTOR_2 = "semantic_similarity"
+    SELECTOR_1: str = "mmr"
+    SELECTOR_2: str = "semantic_similarity"
 
 
 class SelectorFactory:
@@ -68,7 +68,7 @@ class SelectorFactory:
 
         else:
             raise ValueError(
-                f"`{cls.__class__.__name__}` error in `factory_method()` . "
+                f"`{cls.__name__}` error in `factory_method()` . "
                 f"{selector_algorithm} is not in the list of supported "
                 f"providers: {[i.value for i in SelectorTypes]}"
             )

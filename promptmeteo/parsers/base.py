@@ -41,7 +41,7 @@ class BaseParser(ABC):
         self._chain_of_thoughts = True
 
     @abstractmethod
-    def run(self, text: str) -> str:
+    def run(self, text: str) -> List[str]:
         """
         Given a response string from an LLM, returns the response expected for
         the task.

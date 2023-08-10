@@ -69,8 +69,9 @@ class BasePrompt(ABC):
         Build a Prompt object string given a concrete especification.
         """
 
-        self._domain = prompt_domain
-        self._labels = prompt_labels
+        self._domain: str = prompt_domain
+        self._labels: List[str] = [prompt_labels]
+        self.prompt_detail: str = prompt_detail
 
         # Labels
         prompt_labels = ", ".join(prompt_labels)
@@ -140,7 +141,7 @@ class BasePrompt(ABC):
 
         except Exception as error:
             raise ValueError(
-                f"`{cls.__name__} error in function `read_prompt()`. "
+                f"`{cls.__name__}` error in function `read_prompt()`. "
                 f"The expected string input should be like:\n\n"
                 f"{cls.PROMPT_EXAMPLE}\n\n{error}"
             ) from error
@@ -156,7 +157,7 @@ class BasePrompt(ABC):
 
         except Exception as error:
             raise ValueError(
-                f"`{cls.__name__} error. `read_prompt()`. The expected keys "
+                f"`{cls.__name__}` error `read_prompt()`. The expected keys "
                 f"are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}"
             ) from error
 

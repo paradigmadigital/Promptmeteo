@@ -15,7 +15,7 @@ class TestTaskBuilder:
                 model_provider_token="",
             )
 
-            assert task_builder.task._model != None
+            assert task_builder.task._model is not None
             assert isinstance(task_builder.task._model, BaseModel)
 
     def test_build_prompt(self):
@@ -29,7 +29,7 @@ class TestTaskBuilder:
                 prompt_detail="TEST_DETAIL",
             )
 
-            assert task_builder.task._prompt != None
+            assert task_builder.task._prompt is not None
 
     def test_selector_prompt(self):
         for task_type in task_types:
@@ -55,4 +55,4 @@ class TestTaskBuilder:
                 selector_algorithm="mmr",
             )
 
-            assert task_builder.task._selector != None
+            assert task_builder.task._selector is not None

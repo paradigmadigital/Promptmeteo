@@ -24,11 +24,11 @@ class TestSelectors:
                 embeddings=FakeEmbeddings(size=64),
             )
 
-            assert error == (
-                f"`SelectorFactory` error in `factory_method()` . "
-                f"{selector_algorithm} is not in the list of supported "
-                f"providers: {[i.value for i in SelectorTypes]}"
-            )
+        assert error.value.args[0] == (
+            f"`SelectorFactory` error in `factory_method()` . "
+            f"WRONG_ALGORITHM_NAME is not in the list of supported "
+            f"providers: {[i.value for i in SelectorTypes]}"
+        )
 
     def test_mmr_selector(self):
         selector = MMRSelector(embeddings=FakeEmbeddings(size=64), k=1)
@@ -57,17 +57,11 @@ class TestSelectors:
         assert selector.SELECTOR is not None
 
         selector.train(examples=["TEST_EXAMPLE"], annotations=["TEST_ANNOTATION"])
+        expected_template = """
+        Ejemplo: TEST_EXAMPLE
+        Respuesta: TEST_ANNOTATION
 
-        assert (
-            selector.template
-            == """
-            Ejemplo: TEST_EXAMPLE
-            Respuesta: TEST_ANNOTATION
+        Ejemplo: {__INPUT__}
+        Respuesta:""".replace(" " * 4, "")[1:]
 
-            Ejemplo: {__INPUT__}
-            Respuesta:""".replace(
-                " " * 4, ""
-            )[
-                1:
-            ]
-        )
+        assert selector.template == expected_template
