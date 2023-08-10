@@ -30,12 +30,13 @@ class ClassificationParser(BaseParser):
     """
 
     def run(self, text: str) -> str:
+
         """
         Given a response string from an LLM, returns the response expected for
         the task.
         """
 
-        text = text.lower()
+        text = text.lower().replace('\n','')
 
         if not self._chain_of_thoughts and not self._labels:
             result = [word for word in text.split(self._labels_separator)]
@@ -54,3 +55,4 @@ class ClassificationParser(BaseParser):
             result = [text.split(self._labels_separator)[-1]]
 
         return result
+

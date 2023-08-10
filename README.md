@@ -84,7 +84,7 @@ ANSWER_FORMAT:
 &nbsp;
 # ⚡ Quick start
 
-### 🔥 Create the task
+### ✨ Create the task
 You can make a prediccion directly indanciating the model and calling the method `predict()`.
 
 ```python
@@ -94,6 +94,7 @@ clf = DocumentClassifier(
         language            = 'en',
         model_provider_name = 'hf_pipeline',
         model_name          = 'google/flan-t5-small',
+        prompt_labels       = ['positive', 'neutral', 'negative']
     )
 
 clf.predict(['so cool!!'])
@@ -103,7 +104,7 @@ clf.predict(['so cool!!'])
 [['positive']]
 ```
 
-### 🔥 Train the task
+### ✨ Train the task
 Buy you can also include examples to improve the results by calling the method `train()`
 
 
@@ -120,7 +121,7 @@ clf.predict(['so cool!!'])
 [['positive']]
 ```
 
-### 🔥 Save a trained task
+### ✨ Save a trained task
 
 One the model is trained it can be save locally
 
@@ -129,7 +130,7 @@ clf.save_model("hello_world.prompt")
 ```
 
 
-### 🔥 Load a trained task
+### ✨ Load a trained task
 
 and loaded again to make new predictions
 
@@ -140,7 +141,7 @@ clf = DocumentClassifier(
         language            = 'en',
         model_provider_name = 'hf_pipeline',
         model_name          = 'google/flan-t5-small',
-    )
+    ).load_model("hello_world.prompt")
 
 clf.predict(['so cool!!'])
 ```
@@ -149,12 +150,33 @@ clf.predict(['so cool!!'])
 [['positive']]
 ```
 
-###  🔥 Learn more
+###  ✨ Learn more
 
-More examples can be seen in the directory ![examples](./examples).
+More examples can be seen in the directory [examples](./examples).
 
 &nbsp;
 
+
+## 🚗 Usage
+
+### ⚙️ Install locally
+
+```shell
+make setup
+```
+
+### ⚙️ Run with docker
+
+```shell
+docker build -t promptmeteo:latest .
+docker run --rm -i -t -v .:/home promptmeteo:latest
+```
+
+### ⚙️ Run tests
+
+```
+make test
+```
 
 ## 📋 Current capacilities
 
@@ -162,8 +184,8 @@ More examples can be seen in the directory ![examples](./examples).
 
 The current available `model_name` and `language` values are:
 
-| model_provider |       model_name          | language |   
-|      ---       |           ---	     |    ---   |
+| model_provider |       model_name          | language |
+|      ---       |           ---             |    ---   |
 |     openai     |     text-davinci-003      |    es    |
 |     openai     |     text-davinci-003      |    en    |
 |   hf_hub_api   |    google/flan-t5-xxl     |    es    |
@@ -174,6 +196,7 @@ The current available `model_name` and `language` values are:
 |   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
+
 
 ### ✅ Available tasks
 
