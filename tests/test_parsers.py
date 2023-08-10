@@ -25,7 +25,7 @@ class Testparsers:
             prompt_labels=["true", "false"],
         )
 
-        assert "blabla" == parser.run("blabla")
+        assert ["blabla"] == parser.run("blabla")
 
     def test_classification_parser(self):
         parser = ClassificationParser(

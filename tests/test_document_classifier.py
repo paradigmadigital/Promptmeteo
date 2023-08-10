@@ -140,11 +140,11 @@ class TestDocumentClassifier:
         # Try to save before training
         with pytest.raises(Exception) as error:
             model.save_model("model.meteo")
-            assert error == (
-                f"{model.__class__.__name__} error in `save_model()`. "
-                f"You are trying to save a model that has non been trained. "
-                f"Please, call `train()` function before"
-            )
+        assert error.value.args[0] == (
+            f"{model.__class__.__name__} error in `save_model()`. "
+            f"You are trying to save a model that has non been trained. "
+            f"Please, call `train()` function before"
+        )
 
         model.train(
             examples=["estoy feliz", "me da igual", "no me gusta"],
@@ -155,20 +155,20 @@ class TestDocumentClassifier:
         with pytest.raises(ValueError) as error:
             model_path = "model.WRONG_EXTENSION"
             model.save_model(model_path)
-            assert error == (
-                f"{model.__class__.__name__} error in `save_model()`. "
-                f'model_path="{model_path}" has a bad model name extension. '
-                f"Model name must end with `.meteo` (i.e. `./model.meteo`)"
-            )
+        assert error.value.args[0] == (
+            f"{model.__class__.__name__} error in `save_model()`. "
+            f'model_path="{model_path}" has a bad model name extension. '
+            f"Model name must end with `.meteo` (i.e. `./model.meteo`)"
+        )
 
         # Use non existing file path
         with pytest.raises(ValueError) as error:
             model_dir = "WRONG_DIR_PATH"
             model.save_model(os.path.join(model_dir, "model.meteo"))
-            assert error == (
-                f"{model.__class__.__name__} error in `save_model()`. "
-                f"directory {model_dir} does not exists."
-            )
+        assert error.value.args[0] == (
+            f"{model.__class__.__name__} error in `save_model()`. "
+            f"directory {model_dir} does not exists."
+        )
 
         # Normal save
         with tempfile.TemporaryDirectory() as tmp:
@@ -187,20 +187,20 @@ class TestDocumentClassifier:
         with pytest.raises(ValueError) as error:
             model_path = "model.WRONG_EXTENSION"
             model.load_model(model_path)
-            assert error == (
-                f"{model.__class__.__name__} error in `load_model()`. "
-                f'model_path="{model_path}" has a bad model name extension. '
-                f"Model name must end with `.meteo` (i.e. `./model.meteo`)"
-            )
+        assert error.value.args[0] == (
+            f"{model.__class__.__name__} error in `load_model()`. "
+            f'model_path="{model_path}" has a bad model name extension. '
+            f"Model name must end with `.meteo` (i.e. `./model.meteo`)"
+        )
 
         # Use non existing file path
         with pytest.raises(ValueError) as error:
             model_dir = "WRONG_DIR_PATH"
             model.load_model(os.path.join(model_dir, "model.meteo"))
-            assert error == (
-                f"{model.__class__.__name__} error in `load_model()`. "
-                f"directory {model_dir} does not exists."
-            )
+        assert error.value.args[0] == (
+            f"{model.__class__.__name__} error in `load_model()`. "
+            f"directory {model_dir} does not exists."
+        )
 
         # Normal load
         with tempfile.TemporaryDirectory() as tmp:

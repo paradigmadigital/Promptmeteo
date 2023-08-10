@@ -37,7 +37,7 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextDavinci003 = "text-davinci-003"
+    TextDavinci003: str = "text-davinci-003"
 
     @classmethod
     def has_value(cls, value: str) -> bool:
@@ -60,7 +60,7 @@ class ModelParams(Enum):
         Default parameters for TextDavinci003 model.
         """
 
-        model_task = "text2text-generation"
+        model_task: str = "text2text-generation"
         model_kwargs = {"temperature": 0.7, "max_tokens": 256, "max_retries": 3}
 
 
@@ -84,7 +84,7 @@ class OpenAILLM(BaseModel):
         if not ModelTypes.has_value(model_name):
             raise ValueError(
                 f"`model_name`={model_name} not in supported model names: "
-                f"{list(ModelTypes.__members__.keys())}"
+                f"{[i.name for i in ModelTypes]}"
             )
         super(OpenAILLM, self).__init__()
 

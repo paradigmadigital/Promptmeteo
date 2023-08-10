@@ -36,10 +36,10 @@ class ModelProvider(str, Enum):
     LLM providers currently supported by Promptmeteo
     """
 
-    PROVIDER_0 = "fake-llm"
-    PROVIDER_1 = "openai"
-    PROVIDER_2 = "hf_hub_api"
-    PROVIDER_3 = "hf_pipeline"
+    PROVIDER_0: str = "fake-llm"
+    PROVIDER_1: str = "openai"
+    PROVIDER_2: str = "hf_hub_api"
+    PROVIDER_3: str = "hf_pipeline"
 
 
 class ModelFactory:
@@ -48,6 +48,13 @@ class ModelFactory:
     The ModelFactory class is used to create a BaseModel object from the given
     configuration.
     """
+
+    MAPPING = {
+        ModelProvider.PROVIDER_0: FakeLLM,
+        ModelProvider.PROVIDER_1: OpenAILLM,
+        ModelProvider.PROVIDER_2: HFHubApiLLM,
+        ModelProvider.PROVIDER_3: HFPipelineLLM,
+    }
 
     @classmethod
     def factory_method(
@@ -61,6 +68,7 @@ class ModelFactory:
         Returns a BaseModel object configured with the settings found in the
         provided parameters.
         """
+        model_cls = cls.MAPPING.get(model_provider_name)
 
         if model_provider_name == ModelProvider.PROVIDER_0.value:
             model_cls = FakeLLM
@@ -76,7 +84,7 @@ class ModelFactory:
 
         else:
             raise ValueError(
-                f"{cls.__class__.__name__} error in `factory_method()`. "
+                f"{cls.__name__} error in `factory_method()`. "
                 f"{model_provider_name} is not in the list of supported "
                 f"providers: {[i.value for i in ModelProvider]}"
             )

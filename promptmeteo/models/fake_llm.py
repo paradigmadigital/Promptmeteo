@@ -27,6 +27,7 @@ from typing import Dict
 from typing import Mapping
 from typing import Optional
 
+from langchain.callbacks.manager import AsyncCallbackManagerForLLMRun
 from langchain.llms.base import LLM
 from langchain.embeddings import FakeEmbeddings
 
@@ -66,6 +67,10 @@ class FakeStaticLLM(LLM):
     def _identifying_params(self) -> Mapping[str, Any]:
         return {}
 
+    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
+                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
+        return self._call(prompt, stop, run_manager, **kwargs)
+
 
 class FakePromptCopyLLM(LLM):
 
@@ -97,6 +102,10 @@ class FakePromptCopyLLM(LLM):
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
         return {}
+
+    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
+                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
+        return self._call(prompt, stop, run_manager, **kwargs)
 
 
 class FakeListLLM(LLM):
@@ -136,6 +145,11 @@ class FakeListLLM(LLM):
     def _identifying_params(self) -> Mapping[str, Any]:
         return {}
 
+    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
+                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
+
+        return self._call(prompt, stop, run_manager, **kwargs)
+
 
 class ModelTypes(Enum):
 
@@ -143,37 +157,37 @@ class ModelTypes(Enum):
     FakeLLM Model Types.
     """
 
-    MODEL_1 = "fake-static"
-    MODEL_2 = "fake-prompt_copy"
-    MODEL_3 = "fake-list"
+    MODEL_1: str = "fake-static"
+    MODEL_2: str = "fake-prompt_copy"
+    MODEL_3: str = "fake-list"
 
 
 class FakeLLM(BaseModel):
-
     """
     Fake LLM class.
     """
+    LLM_MAPPING: Dict[str, LLM] = {
+        ModelTypes.MODEL_1.value: FakeStaticLLM,
+        ModelTypes.MODEL_2.value: FakePromptCopyLLM,
+        ModelTypes.MODEL_3.value: FakeListLLM
+    }
 
     def __init__(
         self,
         model_name: Optional[str] = "",
-        model_params: Optional[Dict] = {},
+        model_params: Optional[Dict] = None,
         model_provider_token: Optional[str] = "",
     ) -> None:
+        super(FakeLLM, self).__init__()
+        self.model_params = model_params
+        self.model_provider_token = model_provider_token
+
         self._embeddings = FakeEmbeddings(size=64)
-
-        if model_name == ModelTypes.MODEL_1.value:
-            self._llm = FakeStaticLLM()
-
-        elif model_name == ModelTypes.MODEL_2.value:
-            self._llm = FakePromptCopyLLM()
-
-        elif model_name == ModelTypes.MODEL_3.value:
-            self._llm = FakeListLLM()
-
+        if model_name in self.LLM_MAPPING:
+            self._llm = self.LLM_MAPPING[model_name]()
         else:
             raise ValueError(
                 f"{self.__class__.__name__} error creating object. "
                 f"{model_name} is not in the list of supported FakeLLMS: "
-                f"[i.value for i in ModelTypes]"
+                f"{[i.value for i in ModelTypes]}"
             )

@@ -22,7 +22,7 @@
 
 import os
 from enum import Enum
-from typing import Optional, Dict
+from typing import Optional
 
 from langchain import HuggingFacePipeline
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -95,21 +95,30 @@ class HFPipelineLLM(BaseModel):
     def __init__(
         self,
         model_name: Optional[str] = "",
-        model_params: Optional[Dict] = {},
+        model_params: Optional[ModelParams] = None,
         model_provider_token: Optional[str] = "",
     ) -> None:
         """
         Make predictions using a model from HuggingFace locally.
         """
 
-        if not ModelTypes.has_value(model_name):
+        if ModelTypes.has_value(model_name):
+            model_params = ModelParams[ModelTypes(model_name).name].value
+        elif not model_params:
             raise ValueError(
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.value for i in ModelTypes]}"
             )
+        elif any([
+            not hasattr(model_params, 'model_path'),
+            not hasattr(model_params, 'model_task'),
+            not hasattr(model_params, 'model_kwargs'),
+        ]):
+            raise ValueError(
+                "Invalid model_params"
+            )
 
-        if not model_params:
-            model_params = ModelParams[ModelTypes(model_name).name].value
+        super(HFPipelineLLM, self).__init__()
 
         if os.path.exists(model_params.model_path):
             model_name = model_params.model_path
@@ -125,3 +134,5 @@ class HFPipelineLLM(BaseModel):
             embedding_name = "/home/models/all-MiniLM-L6-v2"
 
         self._embeddings = HuggingFaceEmbeddings(model_name=embedding_name)
+
+        self.model_provider_token = model_provider_token

@@ -83,11 +83,10 @@ class TestPrompts:
                 """
             )
 
-            assert error == (
-                f"`{cls.__name__} error. `read_prompt` is trying to read"
-                f"prompt with a wrong prompt template format. The expected "
-                f"string input should be like:\n\n{cls.PROMPT_EXAMPLE}"
-            )
+        assert error.value.args[0] == (
+            f"`BasePrompt` error `read_prompt()`. "
+            f"The expected keys are {yaml.load(BasePrompt.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}"
+        )
 
     def test_prompts_naming(self):
         """

@@ -32,8 +32,8 @@ class ParserTypes(str, Enum):
     Enum of availables parsers.
     """
 
-    PARSER_1 = "classification"
-    PARSER_2 = "ner"
+    PARSER_1: str = "classification"
+    PARSER_2: str = "ner"
 
 
 class ParserFactory:

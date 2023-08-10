@@ -20,6 +20,8 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from typing import List
+
 from .base import BaseParser
 
 
@@ -29,9 +31,9 @@ class DummyParser(BaseParser):
     Dummy parser, returns what it receives.
     """
 
-    def run(self, text: str) -> str:
+    def run(self, text: str) -> List[str]:
         """
         Given a response string from an LLM, returns the response expected for the task.
         """
 
-        return text
+        return [text]

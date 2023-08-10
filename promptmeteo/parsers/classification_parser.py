@@ -20,6 +20,8 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from typing import List
+
 from .base import BaseParser
 
 
@@ -29,30 +31,30 @@ class ClassificationParser(BaseParser):
     Parser for the classification task.
     """
 
-    def run(self, text: str) -> str:
+    def run(self, text: str) -> List[str]:
 
         """
         Given a response string from an LLM, returns the response expected for
         the task.
         """
 
-        text = text.lower().replace('\n','')
+        text = text.lower().replace('\n', '')
+        result = []
 
         if not self._chain_of_thoughts and not self._labels:
             result = [word for word in text.split(self._labels_separator)]
 
-        if not self._chain_of_thoughts and self._labels:
+        elif not self._chain_of_thoughts and self._labels:
             result = [
                 word
                 for word in text.split(self._labels_separator)
                 if word in self._labels
             ]
 
-        if self._chain_of_thoughts and self._labels:
+        elif self._chain_of_thoughts and self._labels:
             result = [label for label in self._labels if label in text]
 
-        if self._chain_of_thoughts and not self._labels:
+        elif self._chain_of_thoughts and not self._labels:
             result = [text.split(self._labels_separator)[-1]]
 
         return result
-
