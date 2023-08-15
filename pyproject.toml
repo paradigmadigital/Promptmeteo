@@ -33,6 +33,10 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["promptmeteo"]
 
+[tool.black]
+line-length = 80
+include = '\.pyi?$'
+
 [tool.setuptools.package-data]
 "promptmeteo.prompts.templates.sp" = ["*.prompt"]
 
@@ -61,3 +65,5 @@ examples = [
 all = [
     "promptmeteo[dev, examples]",
 ]
+
+

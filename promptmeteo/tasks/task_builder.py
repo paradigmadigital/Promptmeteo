@@ -22,6 +22,7 @@
 
 from typing import List
 from typing import Dict
+
 try:
     from typing import Self
 except ImportError:
@@ -42,20 +43,25 @@ class TaskBuilder:
 
     def __init__(
         self,
+        language: str,
         task_type: str,
         verbose: bool = False,
     ) -> None:
-        self._task = Task(task_type=task_type, verbose=verbose)
+        self._task = Task(
+            language=language,
+            task_type=task_type,
+            verbose=verbose,
+        )
 
     @property
-    def task(self) -> Task:
+    def task(
+        self,
+    ) -> Task:
         """Task to built."""
         return self._task
 
     def build_prompt(
         self,
-        language: str,
-        task_type: str,
         model_name: str,
         prompt_domain: str,
         prompt_labels: List[str],
@@ -66,8 +72,8 @@ class TaskBuilder:
         """
 
         self._task.prompt = PromptFactory.factory_method(
-            language=language,
-            task_type=task_type,
+            language=self._task.language,
+            task_type=self._task.task_type,
             model_name=model_name,
             prompt_domain=prompt_domain,
             prompt_labels=prompt_labels,
@@ -103,6 +109,7 @@ class TaskBuilder:
         embeddings = self._task.model.embeddings
 
         self._task.selector = SelectorFactory.factory_method(
+            language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
             selector_algorithm=selector_algorithm,
@@ -135,7 +142,6 @@ class TaskBuilder:
 
     def build_parser(
         self,
-        task_type: str,
         prompt_labels: List[str],
     ) -> Self:
         """
@@ -143,7 +149,7 @@ class TaskBuilder:
         """
 
         self._task.parser = ParserFactory.factory_method(
-            task_type=task_type,
+            task_type=self._task.task_type,
             prompt_labels=prompt_labels,
         )
 
@@ -172,6 +178,7 @@ class TaskBuilder:
         embeddings = self._task.model.embeddings
 
         self._task.selector = SelectorFactory.factory_method(
+            language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
             selector_algorithm=selector_algorithm,

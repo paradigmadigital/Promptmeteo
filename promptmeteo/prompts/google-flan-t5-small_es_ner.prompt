@@ -21,13 +21,9 @@ PROMPT_DETAIL:
 
 
 CHAIN_THOUGHT:
-    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
-    está justificada tu elección final, y asegúrate de que acabas tu
-    explicación con el nombre de la clase que has escogido como la
-    correcta, en minúscula y sin puntuación."
+    ""
 
 
 ANSWER_FORMAT:
     "Puedes devolver las entidades detectadas como una secuencia de cadenas de
-    texto separadas por punto y coma: primera entidad, segunda entidad, tercera
-    entidad."
+    texto separadas por punto y coma ; ."

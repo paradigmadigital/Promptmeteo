@@ -13,7 +13,9 @@ class TestDocumentClassifier:
         """
 
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static"
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
         )
 
     def test_init_with_arguments(self):
@@ -22,6 +24,7 @@ class TestDocumentClassifier:
         """
 
         model = DocumentClassifier(
+            language="es",
             model_provider_name="fake-llm",
             model_name="fake-static",
             model_provider_token="",
@@ -47,12 +50,16 @@ class TestDocumentClassifier:
 
         with pytest.raises(Exception):
             pred = DocumentClassifier(
-                model_provider_name="fake-llm", model_name="fake-static"
+                language="es",
+                model_provider_name="fake-llm",
+                model_name="fake-static",
             ).predict("Wrong type this is expected to be a list")
 
         with pytest.raises(Exception):
             pred = DocumentClassifier(
-                model_provider_name="fake-llm", model_name="fake-static"
+                language="es",
+                model_provider_name="fake-llm",
+                model_name="fake-static",
             ).predict([1, 2, 3])
 
     def test_predict_without_train(self):
@@ -62,7 +69,10 @@ class TestDocumentClassifier:
         """
 
         pred = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static"
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
+            prompt_labels=["positive", "negative", "neutral"],
         ).predict(["positive"])
 
         assert pred == [["positive"]]
@@ -74,7 +84,10 @@ class TestDocumentClassifier:
         """
 
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static"
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
+            prompt_labels=['1','0']
         )
 
         with pytest.raises(Exception):
@@ -95,6 +108,12 @@ class TestDocumentClassifier:
                 annotations=["list", "with", "three"],
             )
 
+        with pytest.raises(Exception):
+            model.train(
+                examples=["text", "text", "text"],
+                annotations=["1", "0", "WRONG_LABEL"],
+            )
+
     def test_correct_train(self):
         """
         Test that the task property form DocumentClassifier is trained after calling
@@ -102,7 +121,9 @@ class TestDocumentClassifier:
         """
 
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static"
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
         )
 
         model = model.train(
@@ -112,6 +133,7 @@ class TestDocumentClassifier:
 
         assert model
         assert model.is_trained
+        assert model.prompt_labels==list(set(["positive", "neutral", "negative"]))
 
     def test_predict_with_train(self):
         """
@@ -120,7 +142,9 @@ class TestDocumentClassifier:
         """
 
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static"
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
         )
 
         model = model.train(
@@ -134,7 +158,10 @@ class TestDocumentClassifier:
 
     def test_save_model(self):
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static", verbose=True
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
+            verbose=True,
         )
 
         # Try to save before training
@@ -177,7 +204,10 @@ class TestDocumentClassifier:
 
     def test_load_model(self):
         model = DocumentClassifier(
-            model_provider_name="fake-llm", model_name="fake-static", verbose=True
+            language="es",
+            model_provider_name="fake-llm",
+            model_name="fake-static",
+            verbose=True,
         ).train(
             examples=["estoy feliz", "me da igual", "no me gusta"],
             annotations=["positivo", "neutral", "negativo"],

@@ -43,7 +43,9 @@ class FakeStaticLLM(LLM):
     response: str = "positive"
 
     @property
-    def _llm_type(self) -> str:
+    def _llm_type(
+        self,
+    ) -> str:
         """
         Return type of llm.
         """
@@ -64,11 +66,18 @@ class FakeStaticLLM(LLM):
         return self.response
 
     @property
-    def _identifying_params(self) -> Mapping[str, Any]:
+    def _identifying_params(
+        self,
+    ) -> Mapping[str, Any]:
         return {}
 
-    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
-                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
+    async def _acall(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[AsyncCallbackManagerForLLMRun] = None,
+        **kwargs: Any,
+    ) -> str:
         return self._call(prompt, stop, run_manager, **kwargs)
 
 
@@ -79,7 +88,9 @@ class FakePromptCopyLLM(LLM):
     """
 
     @property
-    def _llm_type(self) -> str:
+    def _llm_type(
+        self,
+    ) -> str:
         """
         Return type of llm.
         """
@@ -100,11 +111,18 @@ class FakePromptCopyLLM(LLM):
         return prompt
 
     @property
-    def _identifying_params(self) -> Mapping[str, Any]:
+    def _identifying_params(
+        self,
+    ) -> Mapping[str, Any]:
         return {}
 
-    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
-                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
+    async def _acall(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[AsyncCallbackManagerForLLMRun] = None,
+        **kwargs: Any,
+    ) -> str:
         return self._call(prompt, stop, run_manager, **kwargs)
 
 
@@ -118,7 +136,9 @@ class FakeListLLM(LLM):
     i: int = 0
 
     @property
-    def _llm_type(self) -> str:
+    def _llm_type(
+        self,
+    ) -> str:
         """
         Return type of llm.
         """
@@ -142,12 +162,18 @@ class FakeListLLM(LLM):
         return response
 
     @property
-    def _identifying_params(self) -> Mapping[str, Any]:
+    def _identifying_params(
+        self,
+    ) -> Mapping[str, Any]:
         return {}
 
-    async def _acall(self, prompt: str, stop: Optional[List[str]] = None,
-                     run_manager: Optional[AsyncCallbackManagerForLLMRun] = None, **kwargs: Any) -> str:
-
+    async def _acall(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[AsyncCallbackManagerForLLMRun] = None,
+        **kwargs: Any,
+    ) -> str:
         return self._call(prompt, stop, run_manager, **kwargs)
 
 
@@ -166,10 +192,11 @@ class FakeLLM(BaseModel):
     """
     Fake LLM class.
     """
+
     LLM_MAPPING: Dict[str, LLM] = {
         ModelTypes.MODEL_1.value: FakeStaticLLM,
         ModelTypes.MODEL_2.value: FakePromptCopyLLM,
-        ModelTypes.MODEL_3.value: FakeListLLM
+        ModelTypes.MODEL_3.value: FakeListLLM,
     }
 
     def __init__(

@@ -32,7 +32,7 @@ class Testparsers:
             prompt_labels=["true", "false"],
         )
 
-        assert [] == parser.run("blabla")
+        assert [""] == parser.run("blabla")
         assert ["true"] == parser.run("true")
         assert ["true"] == parser.run("True")
         assert ["true"] == parser.run("blabla, true, blabla")

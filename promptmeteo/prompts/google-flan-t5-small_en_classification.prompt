@@ -21,13 +21,8 @@ PROMPT_DETAIL:
 
 
 CHAIN_THOUGHT:
-    "Please provide a step-by-step argument for your answer, explain why you
-    believe your final choice is justified, and make sure to conclude your
-    explanation with the name of the class you have selected as the correct
-    one, in lowercase and without punctuation."
+    ""
 
 
 ANSWER_FORMAT:
-    "In your response, include only the name of the class as a single word, in
-    lowercase, without punctuation, and without adding any other statements or
-    words."
+    "In your response, include only the name of the class predicted."

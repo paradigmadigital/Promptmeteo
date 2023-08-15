@@ -37,8 +37,6 @@ class ModelTypes(str, Enum):
     """
 
     MODEL_1 = "google/flan-t5-small"
-    MODEL_2 = "tiiuae/falcon-7b-instruct"
-    MODEL_3 = "clibrain/lince-zero"
 
     @classmethod
     def has_value(cls, value):
@@ -65,26 +63,6 @@ class ModelParams(Enum):
         model_task = "text2text-generation"
         model_kwargs = {"temperature": 0.0, "max_length": 64}
 
-    class MODEL_2:
-
-        """
-        Parameters Model 2.
-        """
-
-        model_path = "/home/models/falcon-7b-instruct"
-        model_task = "text2text-generation"
-        model_kwargs = {"temperature": 0.0, "max_length": 64}
-
-    class MODEL_3:
-
-        """
-        Parameters Model 3.
-        """
-
-        model_path = "/home/models/lince-zero"
-        model_task = "text-generation"
-        model_kwargs = {"temperature": 0.0, "max_length": 64}
-
 
 class HFPipelineLLM(BaseModel):
 
@@ -109,14 +87,14 @@ class HFPipelineLLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.value for i in ModelTypes]}"
             )
-        elif any([
-            not hasattr(model_params, 'model_path'),
-            not hasattr(model_params, 'model_task'),
-            not hasattr(model_params, 'model_kwargs'),
-        ]):
-            raise ValueError(
-                "Invalid model_params"
-            )
+        elif any(
+            [
+                not hasattr(model_params, "model_path"),
+                not hasattr(model_params, "model_task"),
+                not hasattr(model_params, "model_kwargs"),
+            ]
+        ):
+            raise ValueError("Invalid model_params")
 
         super(HFPipelineLLM, self).__init__()
 

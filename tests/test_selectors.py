@@ -12,6 +12,7 @@ class TestSelectors:
     def test_selector_factory(self):
         for algorithm in SelectorTypes:
             SelectorFactory.factory_method(
+                language="es",
                 selector_k=1,
                 selector_algorithm=algorithm.value,
                 embeddings=FakeEmbeddings(size=64),
@@ -19,6 +20,7 @@ class TestSelectors:
 
         with pytest.raises(ValueError) as error:
             SelectorFactory.factory_method(
+                language="es",
                 selector_k=1,
                 selector_algorithm="WRONG_ALGORITHM_NAME",
                 embeddings=FakeEmbeddings(size=64),
@@ -31,20 +33,26 @@ class TestSelectors:
         )
 
     def test_mmr_selector(self):
-        selector = MMRSelector(embeddings=FakeEmbeddings(size=64), k=1)
+        selector = MMRSelector(
+            language="es",
+            embeddings=FakeEmbeddings(size=64),
+            k=1,
+        )
 
         assert selector.SELECTOR is not None
 
-        selector.train(examples=["TEST_EXAMPLE"], annotations=["TEST_ANNOTATION"])
+        selector.train(
+            examples=["TEST_EXAMPLE"], annotations=["TEST_ANNOTATION"]
+        )
 
         assert (
             selector.template
             == """
-            Ejemplo: TEST_EXAMPLE
-            Respuesta: TEST_ANNOTATION
+            EJEMPLO: TEST_EXAMPLE
+            RESPUESTA: TEST_ANNOTATION
 
-            Ejemplo: {__INPUT__}
-            Respuesta:""".replace(
+            EJEMPLO: {__INPUT__}
+            RESPUESTA: """.replace(
                 " " * 4, ""
             )[
                 1:
@@ -52,16 +60,26 @@ class TestSelectors:
         )
 
     def test_sim_selector(self):
-        selector = SimSelector(embeddings=FakeEmbeddings(size=64), k=1)
+        selector = SimSelector(
+            language="es",
+            embeddings=FakeEmbeddings(size=64),
+            k=1,
+        )
 
         assert selector.SELECTOR is not None
 
-        selector.train(examples=["TEST_EXAMPLE"], annotations=["TEST_ANNOTATION"])
+        selector.train(
+            examples=["TEST_EXAMPLE"], annotations=["TEST_ANNOTATION"]
+        )
         expected_template = """
-        Ejemplo: TEST_EXAMPLE
-        Respuesta: TEST_ANNOTATION
+        EJEMPLO: TEST_EXAMPLE
+        RESPUESTA: TEST_ANNOTATION
 
-        Ejemplo: {__INPUT__}
-        Respuesta:""".replace(" " * 4, "")[1:]
+        EJEMPLO: {__INPUT__}
+        RESPUESTA: """.replace(
+            " " * 4, ""
+        )[
+            1:
+        ]
 
         assert selector.template == expected_template

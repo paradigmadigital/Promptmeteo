@@ -26,6 +26,7 @@ import tempfile
 from typing import List
 from typing import Dict
 from typing import Optional
+
 try:
     from typing import Self
 except ImportError:
@@ -45,11 +46,11 @@ class Base:
 
     def __init__(
         self,
+        language: str,
         model_name: str,
         model_provider_name: str,
         model_provider_token: Optional[str] = None,
         model_params: Optional[Dict] = None,
-        language: str = "es",
         prompt_domain: Optional[str] = "",
         prompt_labels: List[str] = None,
         prompt_detail: Optional[str] = None,
@@ -92,6 +93,7 @@ class Base:
 
         None
         """
+        self.language: str = language
         self.model_name: str = model_name
         self.model_provider_name: str = model_provider_name
         self.model_provider_token: Optional[str] = model_provider_token
@@ -107,17 +109,23 @@ class Base:
         self._builder = None
 
     @property
-    def builder(self) -> TaskBuilder:
+    def builder(
+        self,
+    ) -> TaskBuilder:
         """Task Builder."""
         return self._builder
 
     @property
-    def task(self) -> Task:
+    def task(
+        self,
+    ) -> Task:
         """Task."""
         return self._builder.task
 
     @property
-    def is_trained(self) -> bool:
+    def is_trained(
+        self,
+    ) -> bool:
         """Check if Promptmeteo intance is trained."""
         return self._builder.task.selector is not None
 
@@ -160,7 +168,11 @@ class Base:
 
         return results
 
-    def train(self, examples: List[str], annotations: List[str]) -> Self:
+    def train(
+        self,
+        examples: List[str],
+        annotations: List[str],
+    ) -> Self:
         """
         Trains the model given examples and its annotations. The training
         process create a vector store with all the training texts in memory
@@ -198,6 +210,7 @@ class Base:
 
         if len(examples) != len(annotations):
             raise ValueError(
+                f"{self.__class__.__name__} error in function `train()`. "
                 f"Arguments `examples` and `annotations` are expected to have "
                 f"the same length. examples=({len(examples)},) annotations= "
                 f"({len(annotations)},)"
@@ -209,6 +222,21 @@ class Base:
             selector_k=self._selector_k,
             selector_algorithm=self._selector_algorithm,
         )
+
+        if self.prompt_labels:
+            for idx, annotation in enumerate(annotations):
+                if annotation not in self.prompt_labels:
+                    raise ValueError(
+                        f"{self.__class__.__name__} error in `train()`. "
+                        f"`annotation value in item {idx}: `{annotation}`"
+                        f"is not in the expected values: {self.prompt_labels}"
+                    )
+
+        if not self.prompt_labels:
+            self.prompt_labels = list(set(annotations))
+            self._builder.build_parser(
+                prompt_labels=self.prompt_labels,
+            )
 
         return self
 

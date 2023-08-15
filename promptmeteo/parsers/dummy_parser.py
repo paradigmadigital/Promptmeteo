@@ -31,7 +31,10 @@ class DummyParser(BaseParser):
     Dummy parser, returns what it receives.
     """
 
-    def run(self, text: str) -> List[str]:
+    def run(
+        self,
+        text: str,
+    ) -> List[str]:
         """
         Given a response string from an LLM, returns the response expected for the task.
         """
