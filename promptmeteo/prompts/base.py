@@ -69,55 +69,36 @@ class BasePrompt(ABC):
         Build a Prompt object string given a concrete especification.
         """
 
-        self._domain: str = prompt_domain
-        self._labels: List[str] = [prompt_labels]
-        self.prompt_detail: str = prompt_detail
-
-        # Labels
-        prompt_labels = ", ".join(prompt_labels)
-        prompt_labels = (
-            self.PROMPT_LABELS.format(__LABELS__=prompt_labels) if prompt_labels else ""
-        )
-
-        # Domain
-        prompt_domain = (
-            self.PROMPT_DOMAIN.format(__DOMAIN__=prompt_domain) if prompt_domain else ""
-        )
-
-        # Answer format
-        answer_format = self.ANSWER_FORMAT
-
-        # Chain of thoughts
-        chain_thought = self.CHAIN_THOUGHT
-
-        # Build prompt
-        self._prompt = PipelinePromptTemplate(
-            final_prompt=PromptTemplate.from_template(self.TEMPLATE),
-            pipeline_prompts=[
-                ("__PROMPT_DOMAIN__", PromptTemplate.from_template(prompt_domain)),
-                ("__PROMPT_LABELS__", PromptTemplate.from_template(prompt_labels)),
-                ("__ANSWER_FORMAT__", PromptTemplate.from_template(answer_format)),
-                ("__CHAIN_THOUGHT__", PromptTemplate.from_template(chain_thought)),
-            ],
-        )
+        self._prompt_domain = prompt_domain
+        self._prompt_labels = prompt_labels
+        self._prompt_detail = prompt_detail
 
     @property
-    def domain(self) -> str:
+    def domain(
+        self,
+    ) -> str:
         """Prompt Domain."""
-        return self._domain
+        return self._prompt_domain
 
     @property
-    def labels(self) -> List[str]:
+    def labels(
+        self,
+    ) -> List[str]:
         """Prompt Labels."""
-        return self._labels
+        return [self._prompt_labels]
 
     @property
-    def template(self) -> str:
+    def template(
+        self,
+    ) -> str:
         """Prompt Template."""
-        return self._prompt.format()
+        return self.run().format()
 
     @classmethod
-    def read_prompt(cls, prompt_text: str) -> None:
+    def read_prompt(
+        cls,
+        prompt_text: str,
+    ) -> None:
         """
         Reads a Promptmeteo prompt string to build the Task Prompt. Promptmeteo
         prompts are expected to follow the following template:
@@ -161,9 +142,52 @@ class BasePrompt(ABC):
                 f"are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}"
             ) from error
 
-    def run(self) -> PromptTemplate:
+    def run(
+        self,
+    ) -> PromptTemplate:
         """
         Returns the prompt template for the current task.
         """
 
-        return self._prompt
+        # Labels
+        prompt_labels = ", ".join(self._prompt_labels)
+        prompt_labels = (
+            self.PROMPT_LABELS.format(__LABELS__=self._prompt_labels)
+            if self._prompt_labels
+            else ""
+        )
+
+        # Domain
+        prompt_domain = (
+            self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
+            if self._prompt_domain
+            else ""
+        )
+
+        # Answer format
+        answer_format = self.ANSWER_FORMAT
+
+        # Chain of thoughts
+        chain_thought = self.CHAIN_THOUGHT
+
+        return PipelinePromptTemplate(
+            final_prompt=PromptTemplate.from_template(self.TEMPLATE),
+            pipeline_prompts=[
+                (
+                    "__PROMPT_DOMAIN__",
+                    PromptTemplate.from_template(prompt_domain),
+                ),
+                (
+                    "__PROMPT_LABELS__",
+                    PromptTemplate.from_template(prompt_labels),
+                ),
+                (
+                    "__ANSWER_FORMAT__",
+                    PromptTemplate.from_template(answer_format),
+                ),
+                (
+                    "__CHAIN_THOUGHT__",
+                    PromptTemplate.from_template(chain_thought),
+                ),
+            ],
+        )

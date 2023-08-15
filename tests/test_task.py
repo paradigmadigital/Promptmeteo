@@ -9,7 +9,10 @@ task_types = ["classification"]
 class TestTaskBuilder:
     def test_build_model(self):
         for task_type in task_types:
-            task_builder = TaskBuilder(task_type).build_model(
+            task_builder = TaskBuilder(
+                language="es",
+                task_type=task_type,
+            ).build_model(
                 model_name="fake-static",
                 model_provider_name="fake-llm",
                 model_provider_token="",
@@ -20,9 +23,10 @@ class TestTaskBuilder:
 
     def test_build_prompt(self):
         for task_type in task_types:
-            task_builder = TaskBuilder(task_type).build_prompt(
+            task_builder = TaskBuilder(
                 language="es",
                 task_type=task_type,
+            ).build_prompt(
                 model_name="fake-static",
                 prompt_domain="TEST_DOMAIN",
                 prompt_labels=["LABELS_1", "LABEL_2"],
@@ -34,7 +38,10 @@ class TestTaskBuilder:
     def test_selector_prompt(self):
         for task_type in task_types:
             with pytest.raises(Exception):
-                TaskBuilder(task_type).build_selector_by_train(
+                TaskBuilder(
+                    language="es",
+                    task_type=task_type,
+                ).build_selector_by_train(
                     examples=["estoy feliz", "me da igual", "no me gusta"],
                     annotations=["positive", "neutral", "negative"],
                     selector_k=10,
@@ -42,7 +49,10 @@ class TestTaskBuilder:
                 )
 
         for task_type in task_types:
-            task_builder = TaskBuilder(task_type).build_model(
+            task_builder = TaskBuilder(
+                language="es",
+                task_type=task_type,
+            ).build_model(
                 model_name="fake-static",
                 model_provider_name="fake-llm",
                 model_provider_token="",

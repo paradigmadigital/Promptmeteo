@@ -30,7 +30,11 @@ class DocumentClassifier(Base):
     DocumentClassifier Task
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ) -> None:
         """
         Returns
         -------
@@ -64,7 +68,11 @@ class DocumentClassifier(Base):
 
         task_type = "classification"
 
-        self._builder = TaskBuilder(task_type=task_type, verbose=self.verbose)
+        self._builder = TaskBuilder(
+            language=self.language,
+            task_type=task_type,
+            verbose=self.verbose,
+        )
 
         # Build model
         self._builder.build_model(
@@ -76,8 +84,6 @@ class DocumentClassifier(Base):
 
         # Build prompt
         self._builder.build_prompt(
-            language=self.language,
-            task_type=task_type,
             model_name=self.model_name,
             prompt_domain=self.prompt_domain,
             prompt_labels=self.prompt_labels,
@@ -86,6 +92,5 @@ class DocumentClassifier(Base):
 
         # Build parser
         self._builder.build_parser(
-            task_type=task_type,
             prompt_labels=self.prompt_labels,
         )

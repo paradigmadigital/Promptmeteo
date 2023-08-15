@@ -20,7 +20,9 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from langchain.prompts.example_selector import MaxMarginalRelevanceExampleSelector
+from langchain.prompts.example_selector import (
+    MaxMarginalRelevanceExampleSelector,
+)
 
 from .base import BaseSelector
 

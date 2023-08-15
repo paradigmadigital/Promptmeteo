@@ -51,6 +51,7 @@ class SelectorFactory:
     @classmethod
     def factory_method(
         cls,
+        language: str,
         embeddings: Embeddings,
         selector_k: int,
         selector_algorithm: str,
@@ -73,4 +74,8 @@ class SelectorFactory:
                 f"providers: {[i.value for i in SelectorTypes]}"
             )
 
-        return selector_cls(embeddings=embeddings, k=selector_k)
+        return selector_cls(
+            language=language,
+            embeddings=embeddings,
+            k=selector_k,
+        )

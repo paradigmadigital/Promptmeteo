@@ -31,30 +31,36 @@ class ClassificationParser(BaseParser):
     Parser for the classification task.
     """
 
-    def run(self, text: str) -> List[str]:
-
+    def run(
+        self,
+        text: str,
+    ) -> List[str]:
         """
         Given a response string from an LLM, returns the response expected for
         the task.
         """
 
-        text = text.lower().replace('\n', '')
-        result = []
+        text = self._preprocess(text)
 
-        if not self._chain_of_thoughts and not self._labels:
-            result = [word for word in text.split(self._labels_separator)]
+        result = [
+            label for label in self._labels if label.lower() in text.split()
+        ]
 
-        elif not self._chain_of_thoughts and self._labels:
-            result = [
-                word
-                for word in text.split(self._labels_separator)
-                if word in self._labels
-            ]
+        return result if result else [""]
 
-        elif self._chain_of_thoughts and self._labels:
-            result = [label for label in self._labels if label in text]
+    def _preprocess(
+        self,
+        text: str,
+    ) -> str:
+        """
+        Preprocess output string before parsing result to solve common mistakes
+        such as end-of-line presence and beginning and finishing with empty
+        space.
+        """
 
-        elif self._chain_of_thoughts and not self._labels:
-            result = [text.split(self._labels_separator)[-1]]
-
-        return result
+        return " ".join(
+            text.lower()
+            .replace("\n", " ")
+            .strip()
+            .split(self._labels_separator)
+        )

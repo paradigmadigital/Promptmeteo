@@ -39,7 +39,10 @@ class ModelTypes(str, Enum):
     Falcon7bInstruct: str = "tiiuae/falcon-7b-instruct"
 
     @classmethod
-    def has_value(cls, value: str) -> bool:
+    def has_value(
+        cls,
+        value: str,
+    ) -> bool:
         """
         Checks if the value is in the enum or not.
         """
@@ -95,7 +98,7 @@ class HFHubApiLLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.value for i in ModelTypes]}"
             )
-        elif not hasattr(model_params, 'model_kwargs'):
+        elif not hasattr(model_params, "model_kwargs"):
             raise ValueError("invalid model_params")
 
         super(HFHubApiLLM, self).__init__()

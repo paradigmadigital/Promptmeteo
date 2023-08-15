@@ -36,16 +36,23 @@ class BaseModel(ABC):
         self._embeddings: Embeddings = None
 
     @property
-    def llm(self) -> BaseLLM:
+    def llm(
+        self,
+    ) -> BaseLLM:
         """Get Model LLM."""
         return self._llm
 
     @property
-    def embeddings(self) -> Embeddings:
+    def embeddings(
+        self,
+    ) -> Embeddings:
         """Get Model Embeddings."""
         return self._embeddings
 
-    def run(self, sample: str) -> str:
+    def run(
+        self,
+        sample: str,
+    ) -> str:
         """
         Executes the model LLM and return its prediction.
         """

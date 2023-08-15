@@ -148,7 +148,11 @@ class PromptFactory:
         )
 
     @staticmethod
-    def build_class(language: str, task_type: str, _model_name: str) -> BasePrompt:
+    def build_class(
+        language: str,
+        task_type: str,
+        _model_name: str,
+    ) -> BasePrompt:
         """
         Creates a class dinamically that inherits from `BasePrompt` given
         arguments configuracion. This new class has included its prompt from

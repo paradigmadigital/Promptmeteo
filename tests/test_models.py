@@ -84,8 +84,11 @@ class TestModels:
     def test_model_hf_hub_api(self, mocker):
         from promptmeteo.models.hf_hub_api import ModelTypes
         from promptmeteo.models.hf_hub_api import HFHubApiLLM
+
         mock = MagicMock()
-        mocker.patch("huggingface_hub.inference_api.InferenceApi.__call__", mock)
+        mocker.patch(
+            "huggingface_hub.inference_api.InferenceApi.__call__", mock
+        )
 
         for model_name in ModelTypes:
             HFHubApiLLM(

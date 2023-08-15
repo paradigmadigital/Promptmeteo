@@ -40,7 +40,10 @@ class ModelTypes(str, Enum):
     TextDavinci003: str = "text-davinci-003"
 
     @classmethod
-    def has_value(cls, value: str) -> bool:
+    def has_value(
+        cls,
+        value: str,
+    ) -> bool:
         """
         Checks if the value is in the enum or not.
         """
@@ -91,7 +94,7 @@ class OpenAILLM(BaseModel):
         self._llm = OpenAI(
             model_name=model_name,
             openai_api_key=model_provider_token,
-            openai_organization=os.environ.get("OPENAI_ORGANIZATION", "")
+            openai_organization=os.environ.get("OPENAI_ORGANIZATION", ""),
         )
 
         self._embeddings = OpenAIEmbeddings(openai_api_key=model_provider_token)

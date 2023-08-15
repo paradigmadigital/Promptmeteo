@@ -21,6 +21,7 @@
 #  THE SOFTWARE.
 
 from typing import List
+
 try:
     from typing import Self
 except ImportError:
@@ -41,9 +42,15 @@ class BaseSelector:
 
     SELECTOR = None
 
-    def __init__(self, embeddings: Embeddings, k: int) -> None:
+    def __init__(
+        self,
+        language: str,
+        embeddings: Embeddings,
+        k: int,
+    ) -> None:
         self._k = k
         self._selector = None
+        self._language = language
         self._embeddings = embeddings
 
     @property
@@ -52,7 +59,9 @@ class BaseSelector:
         return self._selector.vectorstore
 
     @property
-    def template(self) -> str:
+    def template(
+        self,
+    ) -> str:
         """Selector Template"""
         return self.run().format(__INPUT__="{__INPUT__}")
 
@@ -66,7 +75,7 @@ class BaseSelector:
         """
 
         examples = [
-            {"ejemplo": example, "respuesta": annotation}
+            {"__INPUT__": example, "__OUTPUT__": annotation}
             for example, annotation in zip(examples, annotations)
         ]
 
@@ -79,7 +88,10 @@ class BaseSelector:
 
         return self
 
-    def load_example_selector(self, model_path: str) -> Self:
+    def load_example_selector(
+        self,
+        model_path: str,
+    ) -> Self:
         """
         Load a vectorstore database from a disk file
         """
@@ -90,7 +102,9 @@ class BaseSelector:
 
         return self
 
-    def run(self) -> FewShotPromptTemplate:
+    def run(
+        self,
+    ) -> FewShotPromptTemplate:
         """
         Creates the FewShotPromptTemplate from the samples of the vectorstore.
         """
@@ -103,16 +117,22 @@ class BaseSelector:
                 f"a vector store before."
             )
 
-        example_prompt = PromptTemplate(
-            input_variables=["ejemplo", "respuesta"],
-            template="Ejemplo: {ejemplo}\nRespuesta: {respuesta}",
-        )
+        template = "{__INPUT__}\n{__OUTPUT__}"
 
-        suffix = "Ejemplo: {__INPUT__}\nRespuesta:"
+        if self._language == "es":
+            template = "EJEMPLO: {__INPUT__}\nRESPUESTA: {__OUTPUT__}"
+
+        if self._language == "en":
+            template = "INPUT: {__INPUT__}\nOUTPUT: {__OUTPUT__}"
+
+        example_prompt = PromptTemplate(
+            input_variables=["__INPUT__", "__OUTPUT__"],
+            template=template,
+        )
 
         return FewShotPromptTemplate(
             example_selector=self._selector,
             example_prompt=example_prompt,
-            suffix=suffix,
+            suffix=template.format(__INPUT__="{__INPUT__}", __OUTPUT__=""),
             input_variables=["__INPUT__"],
         )
