@@ -24,6 +24,8 @@ from enum import Enum
 from typing import List
 
 from .base import BaseParser
+from .dummy_parser import DummyParser
+from .classification_parser import ClassificationParser
 
 
 class ParserTypes(str, Enum):
@@ -34,6 +36,7 @@ class ParserTypes(str, Enum):
 
     PARSER_1: str = "classification"
     PARSER_2: str = "ner"
+    PARSER_3: str = "qa"
 
 
 class ParserFactory:
@@ -54,14 +57,13 @@ class ParserFactory:
         """
 
         if task_type == ParserTypes.PARSER_1.value:
-            from .classification_parser import ClassificationParser
-
             parser_cls = ClassificationParser
 
         elif task_type == ParserTypes.PARSER_2.value:
-            from .classification_parser import ClassificationParser
+            parser_cls = DummyParser
 
-            parser_cls = ClassificationParser
+        elif task_type == ParserTypes.PARSER_3.value:
+            parser_cls = DummyParser
 
         else:
             raise ValueError(

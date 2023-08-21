@@ -20,6 +20,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from enum import Enum
 from typing import List
 from typing import Dict
 
@@ -33,6 +34,15 @@ from ..models import ModelFactory
 from ..prompts import PromptFactory
 from ..parsers import ParserFactory
 from ..selector import SelectorFactory
+
+
+class TaskTypes(str, Enum):
+    """
+    Enum with all the available task types
+    """
+
+    QA: str = "qa"
+    CLASSIFICATION: str = "classification"
 
 
 class TaskBuilder:
@@ -87,6 +97,7 @@ class TaskBuilder:
         examples: List[str],
         annotations: List[str],
         selector_k: int,
+        selector_type: str,
         selector_algorithm: str,
     ) -> Self:
         """
@@ -112,6 +123,7 @@ class TaskBuilder:
             language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
+            selector_type=selector_type,
             selector_algorithm=selector_algorithm,
         ).train(
             examples=examples,
@@ -156,7 +168,11 @@ class TaskBuilder:
         return self
 
     def build_selector_by_load(
-        self, model_path: str, selector_k: int, selector_algorithm: str
+        self,
+        model_path: str,
+        selector_k: int,
+        selector_type: str,
+        selector_algorithm: str,
     ) -> Self:
         """
         Builds the selector for the task by loading a pretrained selector.
@@ -181,6 +197,7 @@ class TaskBuilder:
             language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
+            selector_type=selector_type,
             selector_algorithm=selector_algorithm,
         ).load_example_selector(model_path=model_path)
 

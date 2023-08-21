@@ -36,7 +36,6 @@ class ModelTypes(str, Enum):
     """
 
     FlanT5Xxl: str = "google/flan-t5-xxl"
-    Falcon7bInstruct: str = "tiiuae/falcon-7b-instruct"
 
     @classmethod
     def has_value(
@@ -60,15 +59,6 @@ class ModelParams(Enum):
 
         """
         Flan-t5-xxl default params
-        """
-
-        model_task = "text2text-generation"
-        model_kwargs = {"temperature": 0.9, "max_length": 64}
-
-    class Falcon7bInstruct:
-
-        """
-        Falcon-7b-instruct default params
         """
 
         model_task = "text2text-generation"

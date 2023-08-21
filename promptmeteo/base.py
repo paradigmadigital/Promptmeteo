@@ -23,6 +23,7 @@
 import os
 import tarfile
 import tempfile
+from abc import ABC
 from typing import List
 from typing import Dict
 from typing import Optional
@@ -36,7 +37,7 @@ from promptmeteo.tasks import Task
 from promptmeteo.tasks import TaskBuilder
 
 
-class Base:
+class Base(ABC):
 
     """
     'Sun is setting on the New Republic. It's time for the ResistencIA to rise'
@@ -55,7 +56,7 @@ class Base:
         prompt_labels: List[str] = None,
         prompt_detail: Optional[str] = None,
         selector_k: int = 10,
-        selector_algorithm: str = "mmr",
+        selector_algorithm: str = "relevance",
         verbose: bool = False,
     ) -> None:
         """
@@ -107,27 +108,34 @@ class Base:
         self.verbose: bool = verbose
 
         self._builder = None
+        self._is_trained = False
 
     @property
     def builder(
         self,
     ) -> TaskBuilder:
-        """Task Builder."""
+        """
+        Get TaskBuilder.
+        """
         return self._builder
 
     @property
     def task(
         self,
     ) -> Task:
-        """Task."""
+        """
+        Get Task.
+        """
         return self._builder.task
 
     @property
     def is_trained(
         self,
     ) -> bool:
-        """Check if Promptmeteo intance is trained."""
-        return self._builder.task.selector is not None
+        """
+        Check if model intance is trained.
+        """
+        return self._is_trained
 
     def predict(
         self,
@@ -151,15 +159,15 @@ class Base:
         if not isinstance(examples, list):
             raise ValueError(
                 f"{self.__class__.__name__} error in function `predict()`. "
-                f"Arguments `examples` and `annotations` are expected to be of "
-                f"type `List[str]`. Instead they got: examples {type(examples)}"
+                f"Arguments `examples` and `annotations` are expected to be "
+                f"of type `List[str]`. Instead they got: `{type(examples)}`"
             )
 
         if not all([isinstance(val, str) for val in examples]):
             raise ValueError(
                 f"{self.__class__.__name__} error in function `predict()`. "
-                f"Arguments `examples` are expected to be of type `List[str]`. "
-                f"Some values seem no to be of type `str`."
+                f"Arguments `examples` are expected to be of type "
+                f"  `List[str]`. Some values seem no to be of type `str`."
             )
 
         results = []
@@ -167,78 +175,6 @@ class Base:
             results.append(self.task.run(example))
 
         return results
-
-    def train(
-        self,
-        examples: List[str],
-        annotations: List[str],
-    ) -> Self:
-        """
-        Trains the model given examples and its annotations. The training
-        process create a vector store with all the training texts in memory
-
-        Parameters
-        ----------
-
-        examples : List[str]
-
-        annotations : List[str]
-
-
-        Returns
-        -------
-
-        self
-
-        """
-
-        if not isinstance(examples, list) or not isinstance(annotations, list):
-            raise ValueError(
-                f"Arguments `examples` and `annotations` are expected to be of "
-                f"type `List[str]`. Instead they got: examples {type(examples)}"
-                f" annotations {type(annotations)}."
-            )
-
-        if not all([isinstance(val, str) for val in examples]) or not all(
-            [isinstance(val, str) for val in annotations]
-        ):
-            raise ValueError(
-                f"{self.__class__.__name__} error in function `train()`. "
-                f"Arguments `examples` and `annotations` are expected to be of "
-                f"type `List[str]`. Some values seem no to be of type `str`."
-            )
-
-        if len(examples) != len(annotations):
-            raise ValueError(
-                f"{self.__class__.__name__} error in function `train()`. "
-                f"Arguments `examples` and `annotations` are expected to have "
-                f"the same length. examples=({len(examples)},) annotations= "
-                f"({len(annotations)},)"
-            )
-
-        self.builder.build_selector_by_train(
-            examples=examples,
-            annotations=annotations,
-            selector_k=self._selector_k,
-            selector_algorithm=self._selector_algorithm,
-        )
-
-        if self.prompt_labels:
-            for idx, annotation in enumerate(annotations):
-                if annotation not in self.prompt_labels:
-                    raise ValueError(
-                        f"{self.__class__.__name__} error in `train()`. "
-                        f"`annotation value in item {idx}: `{annotation}`"
-                        f"is not in the expected values: {self.prompt_labels}"
-                    )
-
-        if not self.prompt_labels:
-            self.prompt_labels = list(set(annotations))
-            self._builder.build_parser(
-                prompt_labels=self.prompt_labels,
-            )
-
-        return self
 
     def save_model(
         self,
@@ -334,8 +270,170 @@ class Base:
 
             self.builder.build_selector_by_load(
                 model_path=os.path.join(tmp, model_name),
+                selector_type=self.SELECTOR_TYPE,
                 selector_k=self._selector_k,
                 selector_algorithm=self._selector_algorithm,
             )
+
+            self._is_trained = True
+
+        return self
+
+
+class BaseSupervised(Base):
+
+    """
+    Model Inferface for supervised training tasks.
+    """
+
+    SELECTOR_TYPE = "supervised"
+
+    def __init__(
+        self,
+        **kwargs,
+    ) -> None:
+        """ """
+
+        super(BaseSupervised, self).__init__(**kwargs)
+
+    def train(
+        self,
+        examples: List[str],
+        annotations: List[str],
+    ) -> Self:
+        """
+        Trains the model given examples and its annotations. The training
+        process create a vector store with all the training texts in memory
+
+        Parameters
+        ----------
+
+        examples : List[str]
+
+        annotations : List[str]
+
+
+        Returns
+        -------
+
+        self
+
+        """
+
+        if not isinstance(examples, list) or not isinstance(annotations, list):
+            raise ValueError(
+                f"Arguments `examples` and `annotations` are expected to be of "
+                f"type `List[str]`. Instead they got: examples {type(examples)}"
+                f" annotations {type(annotations)}."
+            )
+
+        if not all([isinstance(val, str) for val in examples]) or not all(
+            [isinstance(val, str) for val in annotations]
+        ):
+            raise ValueError(
+                f"{self.__class__.__name__} error in function `train()`. "
+                f"Arguments `examples` and `annotations` are expected to be of "
+                f"type `List[str]`. Some values seem no to be of type `str`."
+            )
+
+        if len(examples) != len(annotations):
+            raise ValueError(
+                f"{self.__class__.__name__} error in function `train()`. "
+                f"Arguments `examples` and `annotations` are expected to have "
+                f"the same length. examples=({len(examples)},) annotations= "
+                f"({len(annotations)},)"
+            )
+
+        if self.prompt_labels:
+            for idx, annotation in enumerate(annotations):
+                if annotation not in self.prompt_labels:
+                    raise ValueError(
+                        f"{self.__class__.__name__} error in `train()`. "
+                        f"`annotation value in item {idx}: `{annotation}`"
+                        f"is not in the expected values: {self.prompt_labels}"
+                    )
+
+        self.builder.build_selector_by_train(
+            examples=examples,
+            annotations=annotations,
+            selector_k=self._selector_k,
+            selector_type=self.SELECTOR_TYPE,
+            selector_algorithm=self._selector_algorithm,
+        )
+
+        self._is_trained = True
+
+        if not self.prompt_labels:
+            self.prompt_labels = list(set(annotations))
+            self._builder.build_parser(
+                prompt_labels=self.prompt_labels,
+            )
+
+        return self
+
+
+class BaseUnsupervised(Base):
+    """
+    Model Inferface for unsupervised training tasks.
+    """
+
+    SELECTOR_TYPE = "unsupervised"
+
+    def __init__(
+        self,
+        **kwargs,
+    ) -> None:
+        super(BaseUnsupervised, self).__init__(**kwargs)
+
+        if "prompt_labels" in kwargs:
+            raise ValueError(
+                f"{self.__class__.__name__} can not be inicializated with the "
+                f"argument `prompt_labels`."
+            )
+
+    def train(
+        self,
+        examples: List[str],
+    ) -> Self:
+        """
+        Trains the model given examples and its annotations. The training
+        process create a vector store with all the training texts in memory
+
+        Parameters
+        ----------
+
+        examples : List[str]
+
+
+        Returns
+        -------
+
+        self
+
+        """
+
+        if not isinstance(examples, list):
+            raise ValueError(
+                f"{self.__class__.__name__} error in function `train()`. "
+                f"Arguments `examples` are expected to be of type `List[str]`."
+                f"Instead they got: examples {type(examples)}"
+            )
+
+        if not all([isinstance(val, str) for val in examples]):
+            raise ValueError(
+                f"{self.__class__.__name__} error in function `train()`. "
+                f"Arguments `examples` are expected to be of type `List[str]`."
+                f"Some values seem no to be of type `str`."
+            )
+
+        self.builder.build_selector_by_train(
+            examples=examples,
+            annotations=None,
+            selector_k=self._selector_k,
+            selector_type=self.SELECTOR_TYPE,
+            selector_algorithm=self._selector_algorithm,
+        )
+
+        self._is_trained = True
 
         return self

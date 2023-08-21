@@ -2,8 +2,10 @@ import pytest
 
 from promptmeteo.models import BaseModel
 from promptmeteo.tasks import TaskBuilder
+from promptmeteo.selector import SelectorTypes
+from promptmeteo.selector.base import SelectorAlgorithms
 
-task_types = ["classification"]
+task_types = ["classification", "qa"]
 
 
 class TestTaskBuilder:
@@ -18,8 +20,8 @@ class TestTaskBuilder:
                 model_provider_token="",
             )
 
-            assert task_builder.task._model is not None
-            assert isinstance(task_builder.task._model, BaseModel)
+            assert task_builder.task.model is not None
+            assert isinstance(task_builder.task.model, BaseModel)
 
     def test_build_prompt(self):
         for task_type in task_types:
@@ -33,7 +35,7 @@ class TestTaskBuilder:
                 prompt_detail="TEST_DETAIL",
             )
 
-            assert task_builder.task._prompt is not None
+            assert task_builder.task.prompt is not None
 
     def test_selector_prompt(self):
         for task_type in task_types:
@@ -45,24 +47,39 @@ class TestTaskBuilder:
                     examples=["estoy feliz", "me da igual", "no me gusta"],
                     annotations=["positive", "neutral", "negative"],
                     selector_k=10,
+                    selector_type="supervised",
                     selector_algorithm="mmr",
                 )
 
         for task_type in task_types:
-            task_builder = TaskBuilder(
-                language="es",
-                task_type=task_type,
-            ).build_model(
-                model_name="fake-static",
-                model_provider_name="fake-llm",
-                model_provider_token="",
-            )
+            for selector_algorithm in SelectorAlgorithms:
+                task_builder = TaskBuilder(
+                    language="es",
+                    task_type=task_type,
+                ).build_model(
+                    model_name="fake-static",
+                    model_provider_name="fake-llm",
+                    model_provider_token="",
+                )
 
-            task_builder.build_selector_by_train(
-                examples=["estoy feliz", "me da igual", "no me gusta"],
-                annotations=["positive", "neutral", "negative"],
-                selector_k=10,
-                selector_algorithm="mmr",
-            )
+                # SUPERVISED TASK
+                selector_type = SelectorTypes.SUPERVISED.value
+                task_builder.build_selector_by_train(
+                    examples=["text1", "text2", "text3"],
+                    annotations=["1", "0", "1"],
+                    selector_k=10,
+                    selector_type=selector_type,
+                    selector_algorithm=selector_algorithm.value,
+                )
 
-            assert task_builder.task._selector is not None
+                # UNSUPERVISED TASK
+                selector_type = SelectorTypes.UNSUPERVISED.value
+                task_builder.build_selector_by_train(
+                    examples=["text1", "text2", "text3"],
+                    annotations=None,
+                    selector_k=10,
+                    selector_type=selector_type,
+                    selector_algorithm=selector_algorithm.value,
+                )
+
+            assert task_builder.task.selector is not None

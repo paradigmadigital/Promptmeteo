@@ -22,13 +22,13 @@
 
 from .tasks import TaskTypes
 from .tasks import TaskBuilder
-from .base import BaseSupervised
+from .base import BaseUnsupervised
 
 
-class DocumentClassifier(BaseSupervised):
+class DocumentQA(BaseUnsupervised):
 
     """
-    DocumentClassifier Task
+    Question Answering over Documents Task
     """
 
     def __init__(
@@ -39,28 +39,29 @@ class DocumentClassifier(BaseSupervised):
         Example
         -------
 
-        >>> from promptmeteo import DocumentClassifier
+        >>> from promptmeteo import DocumentQA
 
-        >>> clf = DocumentClassifier(
+        >>> clf = DocumentQA(
+        >>>     language='en',
         >>>     model_provider_name='hf_pipeline',
         >>>     model_name='google/flan-t5-small',
-        >>>     prompt_labels=['positive','negative','neutral'],
         >>> )
 
         >>> clf.train(
-        >>>     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
-        >>>     annotations = ['positive', 'neutral', 'negative']
+        >>>     examples = [
+        >>>     "The rain in spain is always in plain",
+        >>>     "The logarithm's limit is the limit's logarithm",
+        >>>     "To punish oppresors is clementy. To forgive them is cruelty"],
         >>> )
 
-        >>> clf.predict(['que guay!!'])
+        >>> clf.predict(['How is the rain in spain?'])
 
-        [['positive']]
-
+        [['in plain']]
         """
 
-        super(DocumentClassifier, self).__init__(**kwargs)
+        super(DocumentQA, self).__init__(**kwargs)
 
-        task_type = TaskTypes.CLASSIFICATION.value
+        task_type = TaskTypes.QA.value
 
         self._builder = TaskBuilder(
             language=self.language,
