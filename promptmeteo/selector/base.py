@@ -20,7 +20,10 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from abc import ABC
+from enum import Enum
 from typing import List
+from typing import Optional
 
 try:
     from typing import Self
@@ -32,9 +35,23 @@ from langchain.embeddings.base import Embeddings
 
 from langchain.prompts import PromptTemplate
 from langchain.prompts import FewShotPromptTemplate
+from langchain.prompts.example_selector import (
+    SemanticSimilarityExampleSelector,
+    MaxMarginalRelevanceExampleSelector,
+)
 
 
-class BaseSelector:
+class SelectorAlgorithms(str, Enum):
+
+    """
+    Enum with the avaialable selector algorithms.
+    """
+
+    RELEVANCE: str = "relevance"
+    SIMILARITY: str = "similarity"
+
+
+class BaseSelector(ABC):
 
     """
     Base Selector Interface
@@ -46,25 +63,64 @@ class BaseSelector:
         self,
         language: str,
         embeddings: Embeddings,
-        k: int,
+        selector_k: int,
+        selector_algorithm: str,
     ) -> None:
-        self._k = k
-        self._selector = None
         self._language = language
         self._embeddings = embeddings
+        self._selector_k = selector_k
+
+        if selector_algorithm == SelectorAlgorithms.SIMILARITY.value:
+            self.selector = SemanticSimilarityExampleSelector
+
+        elif selector_algorithm == SelectorAlgorithms.RELEVANCE.value:
+            self.selector = MaxMarginalRelevanceExampleSelector
+
+        else:
+            raise ValueError(
+                f"`{self.__class__.__name__}` error in __init__. "
+                f"`selector_algorithm` value `{selector_algorithm}` is not in "
+                f"the available values:{[i.value for i in SelectorAlgorithms]}"
+            )
 
     @property
     def vectorstore(self):
-        """Selector Vectorstore."""
+        """
+        Selector Vectorstore.
+        """
         return self._selector.vectorstore
 
     @property
     def template(
         self,
     ) -> str:
-        """Selector Template"""
+        """
+        Selector Template
+        """
         return self.run().format(__INPUT__="{__INPUT__}")
 
+    def load_example_selector(
+        self,
+        model_path: str,
+    ) -> Self:
+        """
+        Load a vectorstore database from a disk file
+        """
+
+        vectorstore = FAISS.load_local(
+            model_path,
+            self._embeddings,
+        )
+
+        self._selector = self.selector(
+            vectorstore=vectorstore,
+            k=self._selector_k,
+        )
+
+        return self
+
+
+class BaseSelectorSupervised(BaseSelector):
     def train(
         self,
         examples: List[str],
@@ -79,26 +135,12 @@ class BaseSelector:
             for example, annotation in zip(examples, annotations)
         ]
 
-        self._selector = self.SELECTOR.from_examples(
+        self._selector = self.selector.from_examples(
             examples=examples,
             embeddings=self._embeddings,
             vectorstore_cls=FAISS,
-            k=self._k,
+            k=self._selector_k,
         )
-
-        return self
-
-    def load_example_selector(
-        self,
-        model_path: str,
-    ) -> Self:
-        """
-        Load a vectorstore database from a disk file
-        """
-
-        vectorstore = FAISS.load_local(model_path, self._embeddings)
-
-        self._selector = self.SELECTOR(vectorstore=vectorstore, k=self._k)
 
         return self
 
@@ -134,5 +176,61 @@ class BaseSelector:
             example_selector=self._selector,
             example_prompt=example_prompt,
             suffix=template.format(__INPUT__="{__INPUT__}", __OUTPUT__=""),
+            input_variables=["__INPUT__"],
+        )
+
+
+class BaseSelectorUnsupervised(BaseSelector):
+    def train(
+        self,
+        examples: List[str],
+        annotations: Optional[List[str]],
+    ) -> Self:
+        """
+        Creates the vectorstor with the training samples.
+        """
+
+        if annotations is not None:
+            raise ValueError(
+                f"{self.__class__.__name__} error in __init__. "
+                f"`annotations` value has to be `None` for this "
+                f"king of task."
+            )
+
+        examples = [{"__INPUT__": example} for example in examples]
+
+        self._selector = self.selector.from_examples(
+            examples=examples,
+            embeddings=self._embeddings,
+            vectorstore_cls=FAISS,
+            k=1,
+        )
+
+        return self
+
+    def run(
+        self,
+    ) -> FewShotPromptTemplate:
+        """
+        Creates the FewShotPromptTemplate from the samples of the vectorstore.
+        """
+
+        if self._selector is None:
+            raise RuntimeError(
+                f"`{self.__class__.__name__}` object has no vector store "
+                f"created when executing `run()` method. You should call "
+                f"method `load_example_selector()` `train()` befoto create "
+                f"a vector store before."
+            )
+
+        example_prompt = PromptTemplate(
+            input_variables=["__INPUT__"],
+            template="\n{__INPUT__}\n",
+        )
+
+        return FewShotPromptTemplate(
+            example_selector=self._selector,
+            example_prompt=example_prompt,
+            suffix="Question: {__INPUT__}",
             input_variables=["__INPUT__"],
         )

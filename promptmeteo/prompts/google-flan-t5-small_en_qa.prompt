@@ -20,7 +20,8 @@
 
 
 TEMPLATE:
-    "Necesito que me ayudes en una tarea de detección de entidades.
+    "You are a virtual assistant. Use the following pieces of context to
+    answer the question at the end.
     {__PROMPT_DOMAIN__}
     {__PROMPT_LABELS__}
 
@@ -29,26 +30,17 @@ TEMPLATE:
 
 
 PROMPT_DOMAIN:
-    "Los textos que vas procesar del ambito de {__DOMAIN__}."
-
+    "The texts you will be processing are from the {__DOMAIN__}."
 
 PROMPT_LABELS:
-    "Las entidades que tienes que detectar se corresponden con la siguientes
-    categorías: {__LABELS__}."
-
+    ""
 
 PROMPT_DETAIL:
     ""
 
-
 CHAIN_THOUGHT:
-    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
-    está justificada tu elección final, y asegúrate de que acabas tu
-    explicación con el nombre de la clase que has escogido como la
-    correcta, en minúscula y sin puntuación."
-
+    ""
 
 ANSWER_FORMAT:
-    "Puedes devolver las entidades detectadas como una secuencia de cadenas de
-    texto separadas por punto y coma: primera entidad, segunda entidad, tercera
-    entidad."
+    "If you do not know the answer, just say that you do not know, do not try to
+    make up an answer."

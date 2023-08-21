@@ -54,42 +54,54 @@ class Task:
     def language(
         self,
     ) -> str:
-        """Get Task Language."""
+        """
+        Get Task Language.
+        """
         return self._language
 
     @property
     def task_type(
         self,
     ) -> str:
-        """Get Task type."""
+        """
+        Get Task type.
+        """
         return self._task_type
 
     @property
     def prompt(
         self,
     ) -> BasePrompt:
-        """Get Task Prompt."""
+        """
+        Get Task Prompt.
+        """
         return self._prompt
 
     @property
     def model(
         self,
     ) -> BaseModel:
-        """Get Task Model."""
+        """
+        Get Task Model.
+        """
         return self._model
 
     @property
     def selector(
         self,
     ) -> BaseSelector:
-        """Get Task Selector."""
+        """
+        Get Task Selector.
+        """
         return self._selector
 
     @property
     def parser(
         self,
     ) -> BaseParser:
-        """Task Parser"""
+        """
+        Get Task Parser.
+        """
         return self._parser
 
     # Setters
@@ -98,7 +110,9 @@ class Task:
         self,
         prompt: BasePrompt,
     ) -> None:
-        """Set Task Prompt."""
+        """
+        Set Task Prompt.
+        """
         self._prompt = prompt
 
     @model.setter
@@ -106,7 +120,9 @@ class Task:
         self,
         model: BaseModel,
     ) -> None:
-        """Set Task Model."""
+        """
+        Set Task Model.
+        """
         self._model = model
 
     @selector.setter
@@ -114,7 +130,9 @@ class Task:
         self,
         selector: BaseSelector,
     ) -> None:
-        """Set Task Selector."""
+        """
+        Set Task Selector.
+        """
         self._selector = selector
 
     @parser.setter
@@ -122,7 +140,9 @@ class Task:
         self,
         parser: BaseParser,
     ) -> None:
-        """Task Parser"""
+        """
+        Task Parser
+        """
         self._parser = parser
 
     def _get_prompt(

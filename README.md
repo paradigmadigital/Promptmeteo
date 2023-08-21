@@ -180,6 +180,16 @@ make test
 
 ## 📋 Current capacilities
 
+### ✅ Available tasks
+
+The current available tasks in Promptmeteo are:
+
+|       task_type       |            description             |
+|          ---          |                ---                 |
+|      `DocumentQA`     |  Document-level question answering |
+|  `DocumentClassifier` |    Document-level classification   |
+
+
 ### ✅ Available Model
 
 The current available `model_name` and `language` values are:
@@ -190,20 +200,5 @@ The current available `model_name` and `language` values are:
 |     openai     |     text-davinci-003      |    en    |
 |   hf_hub_api   |    google/flan-t5-xxl     |    es    |
 |   hf_hub_api   |    google/flan-t5-xxl     |    en    |
-|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
-|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
-|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
-|   hf_hub_api   | tiiuae/falcon-7b-instruct |    en    |
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
-
-
-### ✅ Available tasks
-
-The current available `tasks_type` values are:
-
-|     task_type     |          description           |
-|        ---        |              ---               |
-|  `classification` |  Document-level classification |
-|       `ner`       |    Word-level classification   |
-| `code-generation` | Document-level text generation |

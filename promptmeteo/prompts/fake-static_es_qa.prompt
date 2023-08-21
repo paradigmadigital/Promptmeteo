@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,16 +18,29 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from langchain.prompts.example_selector import SemanticSimilarityExampleSelector
 
-from .base import BaseSelector
+TEMPLATE:
+    "Eres un asistente virtual. Usa el siguiente contexto para responder la
+    pregunta al final.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_LABELS__}
+
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
 
 
-class SimSelector(BaseSelector):
+PROMPT_DOMAIN:
+    "Los textos que vas a procesar son del dominio de {__DOMAIN__}."
 
-    """
-    Selector that uses the Semantic Similarity algorithm with the embeddings
-    from the samples texts and the new sample.
-    """
+PROMPT_LABELS:
+    ""
 
-    SELECTOR = SemanticSimilarityExampleSelector
+PROMPT_DETAIL:
+    ""
+
+CHAIN_THOUGHT:
+    ""
+
+ANSWER_FORMAT:
+    "Si no sabes la respuesta, solo di que no lo sabes, no intentes inventar
+    una respuesta."

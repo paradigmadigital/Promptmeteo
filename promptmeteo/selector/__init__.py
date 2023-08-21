@@ -28,18 +28,18 @@ from typing import Dict
 from langchain.embeddings.base import Embeddings
 
 from .base import BaseSelector
-from .marginal_relevance_selector import MMRSelector
-from .semantic_similarity_selector import SimSelector
+from .base import BaseSelectorSupervised
+from .base import BaseSelectorUnsupervised
 
 
 class SelectorTypes(str, Enum):
 
     """
-    Enum with the avaialable selector algorithms.
+    Enum with the avaialable selector types.
     """
 
-    SELECTOR_1: str = "mmr"
-    SELECTOR_2: str = "semantic_similarity"
+    SUPERVISED: str = "supervised"
+    UNSUPERVISED: str = "unsupervised"
 
 
 class SelectorFactory:
@@ -54,6 +54,7 @@ class SelectorFactory:
         language: str,
         embeddings: Embeddings,
         selector_k: int,
+        selector_type: str,
         selector_algorithm: str,
     ) -> BaseSelector:
         """
@@ -61,21 +62,22 @@ class SelectorFactory:
         `selector_algorithm`.
         """
 
-        if selector_algorithm == SelectorTypes.SELECTOR_1.value:
-            selector_cls = MMRSelector
+        if selector_type == SelectorTypes.SUPERVISED.value:
+            selector_cls = BaseSelectorSupervised
 
-        elif selector_algorithm == SelectorTypes.SELECTOR_2.value:
-            selector_cls = SimSelector
+        elif selector_type == SelectorTypes.UNSUPERVISED.value:
+            selector_cls = BaseSelectorUnsupervised
 
         else:
             raise ValueError(
                 f"`{cls.__name__}` error in `factory_method()` . "
-                f"{selector_algorithm} is not in the list of supported "
+                f"{selector_type} is not in the list of supported "
                 f"providers: {[i.value for i in SelectorTypes]}"
             )
 
         return selector_cls(
             language=language,
             embeddings=embeddings,
-            k=selector_k,
+            selector_k=selector_k,
+            selector_algorithm=selector_algorithm,
         )
