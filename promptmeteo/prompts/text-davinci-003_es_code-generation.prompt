@@ -37,6 +37,10 @@ PROMPT_LABELS:
     "El objetivo del script es que haga {__LABELS__}."
 
 
+PROMPT_DETAIL:
+    "El script debe cumplir: {__DETAIL__}"
+
+
 CHAIN_THOUGHT:
     ""
 

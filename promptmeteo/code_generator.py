@@ -22,17 +22,15 @@
 
 from .tasks import TaskTypes
 from .tasks import TaskBuilder
-from .base import BaseUnsupervised
-from .tools import add_docstring_from
+from .base import BaseSupervised
 
 
-class DocumentQA(BaseUnsupervised):
+class CodeGenerator(BaseSupervised):
 
     """
-    Question Answering over Documents Task
+    Code Generator Task.
     """
 
-    @add_docstring_from(BaseUnupervised.__init__)
     def __init__(
         self,
         **kwargs,
@@ -41,29 +39,37 @@ class DocumentQA(BaseUnsupervised):
         Example
         -------
 
-        >>> from promptmeteo import DocumentQA
+        >>> from promptmeteo import CodeGenerator
 
-        >>> clf = DocumentQA(
+        >>> model = CodeGenerator(
         >>>     language='en',
-        >>>     model_provider_name='hf_pipeline',
-        >>>     model_name='google/flan-t5-small',
-        >>> )
+        >>>     prompt_domain='python',
+        >>>     model_provider_name='openai',
+        >>>     model_name='text-davinci-003',
+        >>>     model_provider_token=model_token,
+        >>>     prompt_detail=[
+        >>>         "add docstring in function definitions",
+        >>>         "add argumment typing annotations"]
+        >>>     )
 
-        >>> clf.train(
-        >>>     examples = [
-        >>>     "The rain in spain is always in plain",
-        >>>     "The logarithm's limit is the limit's logarithm",
-        >>>     "To punish oppresors is clementy. To forgive them is cruelty"],
-        >>> )
+        >>> pred=model.predict(['A function that receives the argument `foo`
+        >>>     and prints it.'])
 
-        >>> clf.predict(['How is the rain in spain?'])
+        def print_foo(foo: str):
+            '''Prints the argument passed into the function'''
+            print(foo)
 
-        [['in plain']]
         """
 
-        super(DocumentQA, self).__init__(**kwargs)
+        super(CodeGenerator, self).__init__(**kwargs)
 
-        task_type = TaskTypes.QA.value
+        #        if self.prompt_detail is None:
+        #            raise ValueError(
+        #                f"{self.__class__.__name__} error in initialization. "
+        #                f"argument `prompt_detail` can not be None."
+        #            )
+
+        task_type = TaskTypes.CODE_GENERATION.value
 
         self._builder = TaskBuilder(
             language=self.language,

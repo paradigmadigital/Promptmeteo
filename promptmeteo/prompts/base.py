@@ -50,7 +50,7 @@ class BasePrompt(ABC):
             "Here you give the {__LABELS__} if required."
 
         PROMPT_DETAIL:
-            "Here you can give some help"
+            "Here you can give some {__DETAIL__}"
 
         CHAIN_THOUGHT:
             "Explain your answer step by step."
@@ -131,6 +131,7 @@ class BasePrompt(ABC):
             cls.TEMPLATE = prompt["TEMPLATE"]
             cls.PROMPT_DOMAIN = prompt["PROMPT_DOMAIN"]
             cls.PROMPT_LABELS = prompt["PROMPT_LABELS"]
+            cls.PROMPT_DETAIL = prompt["PROMPT_DETAIL"]
             cls.ANSWER_FORMAT = prompt["ANSWER_FORMAT"]
             cls.CHAIN_THOUGHT = prompt["CHAIN_THOUGHT"]
 
@@ -150,9 +151,13 @@ class BasePrompt(ABC):
         """
 
         # Labels
-        prompt_labels = ", ".join(self._prompt_labels)
         prompt_labels = (
-            self.PROMPT_LABELS.format(__LABELS__=self._prompt_labels)
+            ", ".join(self._prompt_labels)
+            if isinstance(self._prompt_labels, list)
+            else self._prompt_detail
+        )
+        prompt_labels = (
+            self.PROMPT_LABELS.format(__LABELS__=prompt_labels)
             if self._prompt_labels
             else ""
         )
@@ -161,6 +166,18 @@ class BasePrompt(ABC):
         prompt_domain = (
             self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
             if self._prompt_domain
+            else ""
+        )
+
+        # Detail
+        prompt_detail = (
+            "\n - ".join([""] + self._prompt_detail)
+            if isinstance(self._prompt_detail, list)
+            else self._prompt_detail
+        )
+        prompt_detail = (
+            self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
+            if self._prompt_detail
             else ""
         )
 
@@ -180,6 +197,10 @@ class BasePrompt(ABC):
                 (
                     "__PROMPT_LABELS__",
                     PromptTemplate.from_template(prompt_labels),
+                ),
+                (
+                    "__PROMPT_DETAIL__",
+                    PromptTemplate.from_template(prompt_detail),
                 ),
                 (
                     "__ANSWER_FORMAT__",
