@@ -23,7 +23,9 @@
 import os
 import tarfile
 import tempfile
+import json
 from abc import ABC
+from inspect import signature
 from typing import List
 from typing import Dict
 from typing import Optional
@@ -44,6 +46,7 @@ class Base(ABC):
 
                                          - Padme Amidala, mother of Leia -
     """
+    SELECTOR_TYPE: str = ''
 
     def __init__(
         self,
@@ -58,6 +61,7 @@ class Base(ABC):
         selector_k: int = 10,
         selector_algorithm: str = "relevance",
         verbose: bool = False,
+        **kwargs
     ) -> None:
         """
         Prompmeteo is tool, powered by LLMs, which is able to solve NLP models
@@ -94,12 +98,26 @@ class Base(ABC):
 
         None
         """
+
+        _init_params: dict = {}
+        _local = locals()
+        for param in signature(self.__class__).parameters:
+            if 'kwargs' in param:
+                continue
+            _init_params[param] = _local.get(param, kwargs.get(param))
+        for parent in self.__class__.__bases__:
+            sig = signature(parent)
+            for param in sig.parameters:
+                if 'kwargs' in param:
+                    continue
+                _init_params[param] = _local.get(param, kwargs.get(param))
+        self._init_params: dict = _init_params
+
         self.language: str = language
         self.model_name: str = model_name
         self.model_provider_name: str = model_provider_name
         self.model_provider_token: Optional[str] = model_provider_token
         self.model_params: Dict = model_params or {}
-        self.language: str = language
         self.prompt_domain: Optional[str] = prompt_domain
         self.prompt_labels: List[str] = prompt_labels or []
         self.prompt_detail: Optional[str] = prompt_detail
@@ -223,13 +241,19 @@ class Base(ABC):
             tmp_path = os.path.join(tmp, model_name.replace(".meteo", ""))
             self.task.selector.vectorstore.save_local(tmp_path)
 
+            init_tmp_path = f"{tmp_path}.init"
+            with open(init_tmp_path, mode='w') as f:
+                json.dump(self._init_params, f)
+
             with tarfile.open(model_path, mode="w:gz") as tar:
                 tar.add(tmp_path, arcname=model_name)
+                tar.add(init_tmp_path, arcname=os.path.basename(init_tmp_path))
 
         return self
 
+    @classmethod
     def load_model(
-        self,
+        cls,
         model_path: str,
     ) -> Self:
         """
@@ -253,20 +277,24 @@ class Base(ABC):
 
         if not model_name.endswith(".meteo"):
             raise ValueError(
-                f"{self.__class__.__name__} error in `load_model()`. "
+                f"{cls.__name__} error in `load_model()`. "
                 f'model_path="{model_path}" has a bad model name extension. '
                 f"Model name must end with `.meteo` (i.e. `./model.meteo`)"
             )
 
         if not os.path.exists(model_path):
             raise ValueError(
-                f"{self.__class__.__name__} error in `load_model()`. "
+                f"{cls.__name__} error in `load_model()`. "
                 f"directory {model_dir} does not exists."
             )
 
         with tempfile.TemporaryDirectory() as tmp:
             with tarfile.open(model_path, "r:gz") as tar:
                 tar.extractall(tmp)
+
+            init_tmp_path = os.path.join(tmp, f"{os.path.splitext(model_name)[0]}.init")
+            with open(init_tmp_path) as f:
+                self = cls(**json.load(f))
 
             self.builder.build_selector_by_load(
                 model_path=os.path.join(tmp, model_name),
@@ -287,14 +315,6 @@ class BaseSupervised(Base):
     """
 
     SELECTOR_TYPE = "supervised"
-
-    def __init__(
-        self,
-        **kwargs,
-    ) -> None:
-        """ """
-
-        super(BaseSupervised, self).__init__(**kwargs)
 
     def train(
         self,
@@ -383,13 +403,13 @@ class BaseUnsupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        super(BaseUnsupervised, self).__init__(**kwargs)
-
         if "prompt_labels" in kwargs:
             raise ValueError(
                 f"{self.__class__.__name__} can not be inicializated with the "
                 f"argument `prompt_labels`."
             )
+
+        super(BaseUnsupervised, self).__init__(**kwargs)
 
     def train(
         self,
