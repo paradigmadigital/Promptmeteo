@@ -37,12 +37,14 @@ from ..selector import SelectorFactory
 
 
 class TaskTypes(str, Enum):
+
     """
     Enum with all the available task types
     """
 
     QA: str = "qa"
     CLASSIFICATION: str = "classification"
+    CODE_GENERATION: str = "code-generation"
 
 
 class TaskBuilder:

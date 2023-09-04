@@ -20,9 +20,17 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from typing import List
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 from .tasks import TaskTypes
 from .tasks import TaskBuilder
 from .base import BaseSupervised
+from .tools import add_docstring_from
 
 
 class DocumentClassifier(BaseSupervised):
@@ -31,6 +39,7 @@ class DocumentClassifier(BaseSupervised):
     DocumentClassifier Task
     """
 
+    @add_docstring_from(BaseSupervised.__init__)
     def __init__(
         self,
         **kwargs,
@@ -88,3 +97,23 @@ class DocumentClassifier(BaseSupervised):
         self._builder.build_parser(
             prompt_labels=self.prompt_labels,
         )
+
+    @add_docstring_from(BaseSupervised.train)
+    def train(
+        self,
+        examples: List[str],
+        annotations: List[str],
+    ) -> Self:
+        """ """
+
+        super(DocumentClassifier, self).train(
+            examples=examples, annotations=annotations
+        )
+
+        if not self.prompt_labels:
+            self.prompt_labels = list(set(annotations))
+            self._builder.build_parser(
+                prompt_labels=self.prompt_labels,
+            )
+
+        return self

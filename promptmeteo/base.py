@@ -35,8 +35,9 @@ try:
 except ImportError:
     from typing_extensions import Self
 
-from promptmeteo.tasks import Task
-from promptmeteo.tasks import TaskBuilder
+from .tasks import Task
+from .tasks import TaskBuilder
+from .tools import add_docstring_from
 
 
 class Base(ABC):
@@ -316,6 +317,15 @@ class BaseSupervised(Base):
 
     SELECTOR_TYPE = "supervised"
 
+    @add_docstring_from(Base.__init__)
+    def __init__(
+        self,
+        **kwargs,
+    ) -> None:
+        """ """
+
+        super(BaseSupervised, self).__init__(**kwargs)
+
     def train(
         self,
         examples: List[str],
@@ -383,12 +393,6 @@ class BaseSupervised(Base):
 
         self._is_trained = True
 
-        if not self.prompt_labels:
-            self.prompt_labels = list(set(annotations))
-            self._builder.build_parser(
-                prompt_labels=self.prompt_labels,
-            )
-
         return self
 
 
@@ -399,6 +403,7 @@ class BaseUnsupervised(Base):
 
     SELECTOR_TYPE = "unsupervised"
 
+    @add_docstring_from(Base.__init__)
     def __init__(
         self,
         **kwargs,

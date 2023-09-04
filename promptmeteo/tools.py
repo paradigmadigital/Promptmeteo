@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,30 +21,40 @@
 #  THE SOFTWARE.
 
 
-TEMPLATE:
-    "I need you to help me write a code script.
-    {__PROMPT_DOMAIN__}
-    {__PROMPT_LABELS__}
-    {__PROMPT_DETAIL__}
-    {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}"
+def add_docstring_from(parent_function):
+    """
+    Decorator function used to concatenate a docstring from another function
+    at the beginning.
 
+    Example
+    -------
 
-PROMPT_DOMAIN:
-    "I want the script you generate to be written in {__DOMAIN__}."
+    >>> def foo():
+    >>>     '''documentation for foo'''
+    >>>     pass
 
+    >>> @add_docstring_from(foo)
+    >>> def bar():
+    >>>     '''additional notes for bar'''
+    >>>     pass
 
-PROMPT_LABELS:
-    "The goal of the script is to {__LABELS__}."
+    >>> print(bar.__doc__)
+    documentation for foo
 
+    additional notes for bar
+    """
 
-PROMPT_DETAIL:
-    "The script must fulfill: {__DETAIL__}"
+    def decorator(inherit_function):
+        parent_docstring = (
+            parent_function.__doc__ if parent_function.__doc__ else ""
+        )
 
+        inherit_docstring = (
+            inherit_function.__doc__ if inherit_function.__doc__ else ""
+        )
 
-CHAIN_THOUGHT:
-    ""
+        inherit_function.__doc__ = parent_docstring + "\n" + inherit_docstring
 
-ANSWER_FORMAT:
-    "In your response, I only want you to include code. Make sure the syntax
-    is correct."
+        return inherit_function
+
+    return decorator
