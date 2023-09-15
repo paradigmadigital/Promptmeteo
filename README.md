@@ -45,7 +45,7 @@ LLMs can improve the results by including examples in their prompt. Promptmeteo 
 
 #### ⚙️ LLMs integration 
 
-Prompmeteo include the integration of different LLMs throught LangChain. This includes models that can be executed locally as well as remote API calls from providers such as OpenAI and HuggingFace. 
+Prompmeteo include the integration of different LLMs throught LangChain. This includes models that can be executed locally as well as remote API calls from providers such as OpenAI, Google and HuggingFace. 
 
 #### 📄 Prompt Templating
 
@@ -202,3 +202,9 @@ The current available `model_name` and `language` values are:
 |   hf_hub_api   |    google/flan-t5-xxl     |    en    |
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
+|  google        |   text-bison              |    es    |
+|  google        |   text-bison              |    en    |
+|  google        |   text-bison@001          |    es    |
+|  google        |   text-bison@001          |    en    |
+|  google        |   text-bison-32k          |    es    |
+|  google        |   text-bison-32k          |    en    |

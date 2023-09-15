@@ -147,3 +147,5 @@ examples/*/*.csv
 
 # Pycharm
 .idea/
+.vscode/launch.json
+tests/my_test.py
