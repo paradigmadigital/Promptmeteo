@@ -23,6 +23,7 @@
 from .tasks import TaskTypes
 from .tasks import TaskBuilder
 from .base import BaseSupervised
+from .tools import add_docstring_from
 
 
 class CodeGenerator(BaseSupervised):
@@ -31,6 +32,7 @@ class CodeGenerator(BaseSupervised):
     Code Generator Task.
     """
 
+    @add_docstring_from(BaseSupervised.__init__)
     def __init__(
         self,
         **kwargs,
