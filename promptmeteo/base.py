@@ -102,16 +102,17 @@ class Base(ABC):
 
         _init_params: dict = {}
         _local = locals()
+
         for param in signature(self.__class__).parameters:
             if 'kwargs' in param:
                 continue
             _init_params[param] = _local.get(param, kwargs.get(param))
-        for parent in self.__class__.__bases__:
-            sig = signature(parent)
-            for param in sig.parameters:
-                if 'kwargs' in param:
-                    continue
-                _init_params[param] = _local.get(param, kwargs.get(param))
+
+        for param in signature(Base).parameters:
+            if 'kwargs' in param:
+                continue
+            _init_params[param] = _local.get(param, kwargs.get(param))
+
         self._init_params: dict = _init_params
 
         self.language: str = language
@@ -322,7 +323,8 @@ class BaseSupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        """ """
+        """
+        """
 
         super(BaseSupervised, self).__init__(**kwargs)
 
