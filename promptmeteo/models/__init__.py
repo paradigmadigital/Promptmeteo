@@ -28,6 +28,7 @@ from .openai import OpenAILLM
 from .fake_llm import FakeLLM
 from .hf_hub_api import HFHubApiLLM
 from .hf_pipeline import HFPipelineLLM
+from .google_vertexai import GoogleVertexAILLM
 
 
 class ModelProvider(str, Enum):
@@ -40,6 +41,8 @@ class ModelProvider(str, Enum):
     PROVIDER_1: str = "openai"
     PROVIDER_2: str = "hf_hub_api"
     PROVIDER_3: str = "hf_pipeline"
+    PROVIDER_4: str = "google-vertexai"
+
 
 
 class ModelFactory:
@@ -54,6 +57,7 @@ class ModelFactory:
         ModelProvider.PROVIDER_1: OpenAILLM,
         ModelProvider.PROVIDER_2: HFHubApiLLM,
         ModelProvider.PROVIDER_3: HFPipelineLLM,
+        ModelProvider.PROVIDER_3: GoogleVertexAILLM,
     }
 
     @classmethod
@@ -81,6 +85,9 @@ class ModelFactory:
 
         elif model_provider_name == ModelProvider.PROVIDER_3.value:
             model_cls = HFPipelineLLM
+        
+        elif model_provider_name == ModelProvider.PROVIDER_4.value:
+            model_cls = GoogleVertexAILLM
 
         else:
             raise ValueError(
