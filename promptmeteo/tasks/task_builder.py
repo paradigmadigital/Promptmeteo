@@ -23,6 +23,7 @@
 from enum import Enum
 from typing import List
 from typing import Dict
+from typing import Optional
 
 try:
     from typing import Self
@@ -138,7 +139,7 @@ class TaskBuilder:
         self,
         model_name: str = "",
         model_provider_name: str = "",
-        model_provider_token: str = "",
+        model_provider_token: Optional[str] = "",
         model_params: Dict = None,
     ) -> Self:
         """
