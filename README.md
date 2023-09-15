@@ -202,3 +202,9 @@ The current available `model_name` and `language` values are:
 |   hf_hub_api   |    google/flan-t5-xxl     |    en    |
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
+|  google        |   text-bison              |    es    |
+|  google        |   text-bison              |    en    |
+|  google        |   text-bison@001          |    es    |
+|  google        |   text-bison@001          |    en    |
+|  google        |   text-bison-32k          |    es    |
+|  google        |   text-bison-32k          |    en    |
