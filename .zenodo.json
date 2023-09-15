@@ -1,0 +1,20 @@
+{
+    "creators": [
+        {
+            "affiliation": "Netherlands eScience Center",
+            "name": "Delgado-Panadero",
+            "orcid": "0000-0002-8189-9251"
+        }
+    ],
+    "description": "CLI to manage depositions on Zenodo or Zenodo Sandbox.",
+    "keywords": [
+        "zenodo",
+        "cli"
+    ],
+    "license": {
+        "id": "Apache-2.0"
+    },
+    "title": "zenodraft",
+    "upload_type": "software",
+    "version": "0.9.0"
+}
