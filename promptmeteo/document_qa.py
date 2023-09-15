@@ -32,7 +32,7 @@ class DocumentQA(BaseUnsupervised):
     Question Answering over Documents Task
     """
 
-    @add_docstring_from(BaseUnupervised.__init__)
+    @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,
         **kwargs,
