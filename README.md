@@ -188,7 +188,7 @@ The current available tasks in Promptmeteo are:
 |          ---          |                ---                 |
 |      `DocumentQA`     |  Document-level question answering |
 |  `DocumentClassifier` |    Document-level classification   |
-
+|     `CodeGenerator`   |          Code generation           |
 
 ### ✅ Available Model
 
