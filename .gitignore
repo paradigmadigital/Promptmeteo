@@ -147,3 +147,4 @@ examples/*/*.csv
 
 # Pycharm
 .idea/
+.vscode/
