@@ -83,7 +83,7 @@ class ModelParams(Enum):
         Default parameters for text-bison-32 model in their lastest version
         """
 
-        model_task: str = "text-bison-32"
+        model_task: str = "text-bison-32k"
         model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
 
 
@@ -115,7 +115,6 @@ class GoogleVertexAILLM(BaseModel):
         self._llm = VertexAI(
             model_name=model_name,
             project=model_provider_project or os.environ.get("GOOGLE_CLOUD_PROJECT_ID"),
-            credentials= model_provider_token or os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
         )
 
         self._embeddings = VertexAIEmbeddings()
