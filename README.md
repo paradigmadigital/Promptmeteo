@@ -1,9 +1,9 @@
 ![python-versions](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)
-![code-lint](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/code_lint.yml/badge.svg)
-![code-testing](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/code_testing.yml/badge.svg)
-![publish-docker](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/publish_docker.yml/badge.svg)
-![publish-pypi](https://github.com/DelgadoPanadero/PromptMeteo/actions/workflows/publish_package.yml/badge.svg)
-[![codecov](https://codecov.io/gh/DelgadoPanadero/PromptMeteo/branch/main/graph/badge.svg?token=KFJS6BGFH8)](https://codecov.io/gh/DelgadoPanadero/PromptMeteo)
+![code-lint](https://github.com/paradigmadigital/Promptmeteo/actions/workflows/code_lint.yml/badge.svg)
+![code-testing](https://github.com/paradigmadigital/Promptmeteo/actions/workflows/code_testing.yml/badge.svg)
+![publish-docker](https://github.com/paradigmadigital/Promptmeteo/actions/workflows/publish_docker.yml/badge.svg)
+![publish-pypi](https://github.com/paradigmadigital/Promptmeteo/actions/workflows/publish_package.yml/badge.svg)
+[![codecov](https://codecov.io/gh/paradigmadigital/Promptmeteo/branch/main/graph/badge.svg?token=KFJS6BGFH8)](https://codecov.io/gh/DelgadoPanadero/PromptMeteo)
 
 # PromptMeteo 🔥🧔
 
@@ -45,7 +45,7 @@ LLMs can improve the results by including examples in their prompt. Promptmeteo 
 
 #### ⚙️ LLMs integration 
 
-Prompmeteo include the integration of different LLMs throught LangChain. This includes models that can be executed locally as well as remote API calls from providers such as OpenAI, Google and HuggingFace. 
+Prompmeteo include the integration of different LLMs throught LangChain. This includes models that can be executed locally as well as remote API calls from providers such as OpenAI and HuggingFace. 
 
 #### 📄 Prompt Templating
 
@@ -188,7 +188,7 @@ The current available tasks in Promptmeteo are:
 |          ---          |                ---                 |
 |      `DocumentQA`     |  Document-level question answering |
 |  `DocumentClassifier` |    Document-level classification   |
-
+|     `CodeGenerator`   |          Code generation           |
 
 ### ✅ Available Model
 
@@ -202,9 +202,6 @@ The current available `model_name` and `language` values are:
 |   hf_hub_api   |    google/flan-t5-xxl     |    en    |
 |  hf_pipeline   |   google/flan-t5-small    |    es    |
 |  hf_pipeline   |   google/flan-t5-small    |    en    |
-|  google        |   text-bison              |    es    |
 |  google        |   text-bison              |    en    |
-|  google        |   text-bison@001          |    es    |
 |  google        |   text-bison@001          |    en    |
-|  google        |   text-bison-32k          |    es    |
 |  google        |   text-bison-32k          |    en    |
