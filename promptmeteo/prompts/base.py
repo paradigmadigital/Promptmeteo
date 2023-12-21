@@ -24,7 +24,7 @@ from abc import ABC
 from typing import List
 
 import yaml
-from langchain import PromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain.prompts.pipeline import PipelinePromptTemplate
 
 

@@ -18,7 +18,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "langchain == 0.0.234",
+    "langchain == 0.0.351",
     "torch == 2.0.1",
     "pydantic == 1.10.11",
     "faiss-cpu == 1.7.4",

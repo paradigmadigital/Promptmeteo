@@ -23,7 +23,7 @@
 from enum import Enum
 from typing import Optional
 
-from langchain import HuggingFaceHub
+from langchain.llms import HuggingFaceHub
 from langchain.embeddings import HuggingFaceHubEmbeddings
 
 from .base import BaseModel
