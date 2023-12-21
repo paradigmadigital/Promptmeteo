@@ -1,8 +1,6 @@
 import os
 import tempfile
 
-import pytest
-
 from promptmeteo import CodeGenerator
 
 

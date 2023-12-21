@@ -24,7 +24,7 @@ import os
 from enum import Enum
 from typing import Optional
 
-from langchain import HuggingFacePipeline
+from langchain.llms import HuggingFacePipeline
 from langchain.embeddings import HuggingFaceEmbeddings
 
 from .base import BaseModel
