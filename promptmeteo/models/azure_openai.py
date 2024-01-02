@@ -25,8 +25,9 @@ from enum import Enum
 from typing import Dict
 from typing import Optional
 
-from langchain.llms import VertexAI
-from langchain.embeddings import VertexAIEmbeddings
+from langchain.chat_models import AzureChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.llms import AzureOpenAI
 
 from .base import BaseModel
 
@@ -37,10 +38,8 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextBison: str = "text-bison"  # latest version
-    TextBison001: str = "text-bison@001"
-    TextBison32k: str = "text-bison-32k"
-    # latest version of text-bison with 32k token input
+    TextDavinci003: str = "text-davinci-003"
+    GPT35Turbo: str = "gpt-35-turbo-16k"
 
     @classmethod
     def has_value(
@@ -60,38 +59,43 @@ class ModelEnum(Enum):
     Model types with their parameters.
     """
 
-    class TextBison001:
+    class TextDavinci003:
 
         """
-        Default parameters for text-bison model.
+        Default parameters for TextDavinci003 model.
         """
 
-        model_task: str = "text-bison@001"
-        model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
+        client = AzureOpenAI
+        embedding = OpenAIEmbeddings
 
-    class TextBison:
+        params = {
+            "model_name": "text-davinci-003",
+            "temperature": 0.0,
+            # "max_tokens": 4000,
+            "max_retries": 3,
+        }
 
-        """
-        Default parameters for text-bison model in their latest version
-        """
-
-        model_task: str = "text-bison"
-        model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
-
-    class TextBison32k:
+    class GPT35Turbo:
 
         """
-        Default parameters for text-bison-32 model in their latest version
+        Default parameters for GPT35Turbo model.
         """
 
-        model_task: str = "text-bison-32k"
-        model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
+        client = AzureChatOpenAI
+        embedding = OpenAIEmbeddings
+
+        params: dict = {
+            "deployment_name": "gpt-35-turbo-16k",
+            "temperature": 0.0,
+            # "max_tokens": 16384,
+            "max_retries": 3,
+        }
 
 
-class GoogleVertexAILLM(BaseModel):
+class AzureOpenAILLM(BaseModel):
 
     """
-    Google VertexAI LLM model.
+    OpenAI LLM model.
     """
 
     def __init__(
@@ -99,34 +103,42 @@ class GoogleVertexAILLM(BaseModel):
         model_name: Optional[str] = "",
         model_params: Optional[Dict] = None,
         model_provider_token: Optional[str] = "",
-        model_provider_project: Optional[str] = None,
+        **kwargs,
     ) -> None:
         """
-        Make predictions using a model from Google Vertex AI.
-        It will use the os environment called GOOGLE_PROJECT_ID for instance the LLM
+        Make predictions using a model from OpenAI.
+        It will use the os environment called OPENAI_ORGANIZATION for instance
+        the LLM
         """
 
         if not ModelTypes.has_value(model_name):
             raise ValueError(
                 f"`model_name`={model_name} not in supported model names: "
-                f"{[i.name for i in ModelTypes]}"
+                f"{[i.value for i in ModelTypes]}"
             )
 
-        super(GoogleVertexAILLM, self).__init__()
+        super(AzureOpenAILLM, self).__init__()
 
         # Model name
         model = ModelTypes(model_name).name
 
-        self._llm = VertexAI(
-            model_name=model_name,
-            project=model_provider_project
-            or os.environ.get("GOOGLE_CLOUD_PROJECT_ID"),
+        # Model Parameters
+        if not model_params:
+            model_params = (
+                ModelEnum[model].value.params if not model_params else model_params
+            )
+        self.model_params = model_params
+
+        # Model
+        self._llm = ModelEnum[model].value.client(
+            openai_api_key=model_provider_token,
+            **self.model_params
         )
 
         # Embeddings
-        self._embeddings = VertexAIEmbeddings()
-
-        # Model Parameters
-        if not model_params:
-            model_params = ModelEnum[model].value
-        self.model_params = model_params
+        self._embeddings = ModelEnum[model].value.embedding(
+            deployment="text-embedding-ada-002-v2",
+            openai_api_key=os.environ.get("EMBEDDINGS_API_KEY", None)
+            or model_provider_token,
+            openai_api_base=os.environ.get("EMBEDDINGS_API_BASE", ""),
+        )

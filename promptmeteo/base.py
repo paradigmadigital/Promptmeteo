@@ -47,7 +47,8 @@ class Base(ABC):
 
                                          - Padme Amidala, mother of Leia -
     """
-    SELECTOR_TYPE: str = ''
+
+    SELECTOR_TYPE: str = ""
 
     def __init__(
         self,
@@ -62,10 +63,10 @@ class Base(ABC):
         selector_k: int = 10,
         selector_algorithm: str = "relevance",
         verbose: bool = False,
-        **kwargs
+        **kwargs,
     ) -> None:
         """
-        Prompmeteo is tool, powered by LLMs, which is able to solve NLP models
+        Promptmeteo is tool, powered by LLMs, which is able to solve NLP models
         such as text classification and Named Entity Recognition. Its interface
         is similar to a conventional ML model, which allows Prometeo to be used
         in a MLOps pipeline easily.
@@ -73,7 +74,7 @@ class Base(ABC):
         Parameters
         ----------
 
-        task_type : str
+        language : str
 
         model_name : str
 
@@ -81,11 +82,13 @@ class Base(ABC):
 
         model_provider_token : Optional[str]
 
-        prompt_domain : str
+        model_params: Optional[str]
+
+        prompt_domain : Optional[str]
 
         prompt_labels : List[str]
 
-        prompt_task_info : Optional[str]
+        prompt_detail : Optional[str]
 
         selector_k : int
 
@@ -104,17 +107,16 @@ class Base(ABC):
         _local = locals()
 
         for param in signature(self.__class__).parameters:
-            if 'kwargs' in param:
+            if "kwargs" in param:
                 continue
             _init_params[param] = _local.get(param, kwargs.get(param))
 
         for param in signature(Base).parameters:
-            if 'kwargs' in param:
+            if "kwargs" in param:
                 continue
             _init_params[param] = _local.get(param, kwargs.get(param))
 
         self._init_params: dict = _init_params
-
         self.language: str = language
         self.model_name: str = model_name
         self.model_provider_name: str = model_provider_name
@@ -153,7 +155,7 @@ class Base(ABC):
         self,
     ) -> bool:
         """
-        Check if model intance is trained.
+        Check if model instance is trained.
         """
         return self._is_trained
 
@@ -244,7 +246,7 @@ class Base(ABC):
             self.task.selector.vectorstore.save_local(tmp_path)
 
             init_tmp_path = f"{tmp_path}.init"
-            with open(init_tmp_path, mode='w') as f:
+            with open(init_tmp_path, mode="w") as f:
                 json.dump(self._init_params, f)
 
             with tarfile.open(model_path, mode="w:gz") as tar:
@@ -294,7 +296,9 @@ class Base(ABC):
             with tarfile.open(model_path, "r:gz") as tar:
                 tar.extractall(tmp)
 
-            init_tmp_path = os.path.join(tmp, f"{os.path.splitext(model_name)[0]}.init")
+            init_tmp_path = os.path.join(
+                tmp, f"{os.path.splitext(model_name)[0]}.init"
+            )
             with open(init_tmp_path) as f:
                 self = cls(**json.load(f))
 
@@ -313,7 +317,7 @@ class Base(ABC):
 class BaseSupervised(Base):
 
     """
-    Model Inferface for supervised training tasks.
+    Model Interface for supervised training tasks.
     """
 
     SELECTOR_TYPE = "supervised"
@@ -323,8 +327,7 @@ class BaseSupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        """
-        """
+        """ """
 
         super(BaseSupervised, self).__init__(**kwargs)
 
@@ -385,6 +388,16 @@ class BaseSupervised(Base):
                         f"is not in the expected values: {self.prompt_labels}"
                     )
 
+        examples = [
+            example.replace("{", "{{").replace("}", "}}")
+            for example in examples
+        ]
+
+        annotations = [
+            annotation.replace("{", "{{").replace("}", "}}")
+            for annotation in annotations
+        ]
+
         self.builder.build_selector_by_train(
             examples=examples,
             annotations=annotations,
@@ -400,7 +413,7 @@ class BaseSupervised(Base):
 
 class BaseUnsupervised(Base):
     """
-    Model Inferface for unsupervised training tasks.
+    Model Interface for unsupervised training tasks.
     """
 
     SELECTOR_TYPE = "unsupervised"
@@ -411,10 +424,11 @@ class BaseUnsupervised(Base):
         **kwargs,
     ) -> None:
         if "prompt_labels" in kwargs:
-            raise ValueError(
-                f"{self.__class__.__name__} can not be inicializated with the "
-                f"argument `prompt_labels`."
-            )
+            if kwargs["prompt_labels"]:
+                raise ValueError(
+                    f"{self.__class__.__name__} can not be inicializated with the "
+                    f"argument `prompt_labels`."
+                )
 
         super(BaseUnsupervised, self).__init__(**kwargs)
 
