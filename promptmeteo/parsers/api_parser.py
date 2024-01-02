@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import re
 
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
@@ -20,37 +21,33 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from abc import ABC
-from abc import abstractmethod
-
-from typing import List
+from .base import BaseParser, ParserException
 
 
-class ParserException(Exception):
-    pass
+class ApiParser(BaseParser):
 
-
-class BaseParser(ABC):
     """
-    Parser class interface.
+    Dummy parser, returns what it receives.
     """
 
-    def __init__(
-        self,
-        prompt_labels: List[str],
-    ) -> None:
-        self._labels = prompt_labels
-        self._labels_separator = ","
-        self._chain_of_thoughts = True
-
-    @abstractmethod
     def run(
         self,
         text: str,
-    ) -> List[str]:
+    ) -> str:
         """
         Given a response string from an LLM, returns the response expected for
         the task.
         """
 
-        raise NotImplementedError
+        if "as an AI language model" in text:
+            raise ParserException("There's no API definition in this response")
+
+        pattern = re.findall(r"```[a-zA-Z]+?\n(.*?)```", text, re.DOTALL)
+        text = pattern[0] if pattern else text
+
+        pattern = re.findall(r"```(.*?)```", text, re.DOTALL)
+        text = pattern[0] if pattern else text
+
+        text = re.sub(r"([\s\S]*?)openapi:", "openapi:", text)
+
+        return text.replace("```", "")

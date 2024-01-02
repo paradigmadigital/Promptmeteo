@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,37 +18,42 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from abc import ABC
-from abc import abstractmethod
 
-from typing import List
-
-
-class ParserException(Exception):
-    pass
+TEMPLATE:
+    "You are an API Designer that has to create an API file for your company.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_DETAIL__}
+    {__SHOT_EXAMPLES__}
 
 
-class BaseParser(ABC):
-    """
-    Parser class interface.
-    """
+    {__PROMPT_SAMPLE__}  
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
 
-    def __init__(
-        self,
-        prompt_labels: List[str],
-    ) -> None:
-        self._labels = prompt_labels
-        self._labels_separator = ","
-        self._chain_of_thoughts = True
+PROMPT_SAMPLE:
+    "The API purpose is: \"{__SAMPLE__}.\""
 
-    @abstractmethod
-    def run(
-        self,
-        text: str,
-    ) -> List[str]:
-        """
-        Given a response string from an LLM, returns the response expected for
-        the task.
-        """
+PROMPT_DOMAIN:
+    "The expected file should be {__DOMAIN__}."
 
-        raise NotImplementedError
+PROMPT_DETAIL:
+    "\n\n### RULES ###\n\n The API should fulfill the following rules:
+    {__DETAIL__}"
+
+SHOT_EXAMPLES:
+    "\n\n### EXAMPLES ###\n\nFor doing so take into consideration `paths`,
+    `schemas` and `parameters` from the following API (They are not complete,
+    they just include the scaffolding):
+    
+
+    {__EXAMPLES__}
+
+    "
+
+CHAIN_THOUGHT:
+    ""
+
+ANSWER_FORMAT:
+    "Please create a complete API and answer just with the code, following
+    the previous RULES and the `paths`, `schemas` and `parameters` from the
+    EXAMPLES."
