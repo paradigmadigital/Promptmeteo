@@ -46,6 +46,8 @@ class TaskTypes(str, Enum):
     QA: str = "qa"
     CLASSIFICATION: str = "classification"
     CODE_GENERATION: str = "code-generation"
+    API_GENERATION: str = "api-generation"
+    API_CORRECTION: str = "api-correction"
 
 
 class TaskBuilder:
@@ -70,7 +72,7 @@ class TaskBuilder:
     def task(
         self,
     ) -> Task:
-        """Task to built."""
+        """Task to build."""
         return self._task
 
     def build_prompt(
@@ -104,7 +106,7 @@ class TaskBuilder:
         selector_algorithm: str,
     ) -> Self:
         """
-        Builds a the selector for the task by training a new selector.
+        Builds the selector for the task by training a new selector.
         """
 
         if not self._task.model:
@@ -117,7 +119,7 @@ class TaskBuilder:
         if not self._task.model.embeddings:
             raise RuntimeError(
                 "Selector algorithm is trying yo be built but there is no"
-                "embeddigns for model {self._task._model.__name__}."
+                "embeddings for model {self._task._model.__name__}."
             )
 
         embeddings = self._task.model.embeddings
@@ -160,7 +162,7 @@ class TaskBuilder:
         prompt_labels: List[str],
     ) -> Self:
         """
-        Builds a the parser for the task.
+        Builds the parser for the task.
         """
 
         self._task.parser = ParserFactory.factory_method(
@@ -191,7 +193,7 @@ class TaskBuilder:
         if not self._task.model.embeddings:
             raise RuntimeError(
                 "Selector algorithm is trying to be built but there is no"
-                "embeddigns for model {self._task._model.__name__}."
+                "embeddings for model {self._task._model.__name__}."
             )
 
         embeddings = self._task.model.embeddings

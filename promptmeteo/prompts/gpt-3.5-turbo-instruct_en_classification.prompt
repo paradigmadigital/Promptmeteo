@@ -23,6 +23,7 @@ TEMPLATE:
     "I need you to help me with a text classification task.
     {__PROMPT_DOMAIN__}
     {__PROMPT_LABELS__}
+    {__SHOT_EXAMPLES__}
 
     {__CHAIN_THOUGHT__}
     {__ANSWER_FORMAT__}"
@@ -38,6 +39,9 @@ PROMPT_LABELS:
 
 
 PROMPT_DETAIL:
+    ""
+
+SHOT_EXAMPLES:
     ""
 
 

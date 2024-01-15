@@ -38,8 +38,8 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextDavinci003: str = "text-davinci-003"
-    GPT35Turbo: str = "gpt-35-turbo-16k"
+    GPT35TurboInstruct: str = "gpt-3.5-turbo-instruct"
+    GPT35Turbo: str = "gpt-3.5-turbo-16k"
 
     @classmethod
     def has_value(
@@ -59,7 +59,7 @@ class ModelEnum(Enum):
     Model types with their parameters.
     """
 
-    class TextDavinci003:
+    class GPT35TurboInstruct:
 
         """
         Default parameters for TextDavinci003 model.
@@ -69,7 +69,7 @@ class ModelEnum(Enum):
         embedding = OpenAIEmbeddings
 
         params = {
-            "model_name": "text-davinci-003",
+            "model_name": "gpt-3.5-turbo-instruct",
             "temperature": 0.0,
             # "max_tokens": 4000,
             "max_retries": 3,
@@ -85,7 +85,7 @@ class ModelEnum(Enum):
         embedding = OpenAIEmbeddings
 
         params: dict = {
-            "deployment_name": "gpt-35-turbo-16k",
+            "deployment_name": "gpt-3.5-turbo-16k",
             "temperature": 0.0,
             # "max_tokens": 16384,
             "max_retries": 3,
@@ -125,14 +125,15 @@ class AzureOpenAILLM(BaseModel):
         # Model Parameters
         if not model_params:
             model_params = (
-                ModelEnum[model].value.params if not model_params else model_params
+                ModelEnum[model].value.params
+                if not model_params
+                else model_params
             )
         self.model_params = model_params
 
         # Model
         self._llm = ModelEnum[model].value.client(
-            openai_api_key=model_provider_token,
-            **self.model_params
+            openai_api_key=model_provider_token, **self.model_params
         )
 
         # Embeddings

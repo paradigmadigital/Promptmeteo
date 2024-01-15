@@ -20,40 +20,38 @@
 
 
 TEMPLATE:
-    "You are an API Designer that has to create an API file for your company.
+    "Necesito que me ayudes en una tarea de clasificación de texto.
     {__PROMPT_DOMAIN__}
-    {__PROMPT_DETAIL__}
+    {__PROMPT_LABELS__}
     {__SHOT_EXAMPLES__}
 
-
-    {__PROMPT_SAMPLE__}  
     {__CHAIN_THOUGHT__}
     {__ANSWER_FORMAT__}"
 
-PROMPT_SAMPLE:
-    "The API purpose is: \"{__SAMPLE__}.\""
 
 PROMPT_DOMAIN:
-    "The expected file should be {__DOMAIN__}."
+    "Los textos que vas procesar del ambito de {__DOMAIN__}."
+
+
+PROMPT_LABELS:
+    "Quiero que me clasifiques los textos una de las siguientes categorías:
+    {__LABELS__}."
+
 
 PROMPT_DETAIL:
-    "\n\n### RULES ###\n\n The API should fulfill the following rules:
-    {__DETAIL__}"
-
-SHOT_EXAMPLES:
-    "\n\n### EXAMPLES ###\n\nFor doing so take into consideration `paths`,
-    `schemas` and `parameters` from the following API (They are not complete,
-    they just include the scaffolding):
-    
-
-    {__EXAMPLES__}
-
-    "
-
-CHAIN_THOUGHT:
     ""
 
+SHOT_EXAMPLES:
+    ""
+
+CHAIN_THOUGHT:
+    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
+    está justificada tu elección final, y asegúrate de que acabas tu
+    explicación con el nombre de la clase que has escogido como la
+    correcta, en minúscula y sin puntuación."
+
+
 ANSWER_FORMAT:
-    "Please create a complete API and answer just with the code, following
-    the previous RULES and the `paths`, `schemas` and `parameters` from the
-    EXAMPLES."
+    "En tu respuesta incluye sólo el nombre de la clase, como una única
+    palabra, en minúscula, sin puntuación, y sin añadir ninguna otra
+    afirmación o palabra."

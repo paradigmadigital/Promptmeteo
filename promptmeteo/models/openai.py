@@ -20,7 +20,6 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
 from enum import Enum
 from typing import Dict
 from typing import Optional
@@ -38,7 +37,7 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextDavinci003: str = "text-davinci-003"
+    GPT35TurboInstruct: str = "gpt-3.5-turbo-instruct"
     GPT35Turbo: str = "gpt-3.5-turbo-16k"
 
     @classmethod
@@ -59,7 +58,7 @@ class ModelEnum(Enum):
     Model Parameters.
     """
 
-    class TextDavinci003:
+    class GPT35TurboInstruct:
 
         """
         Default parameters for TextDavinci003 model.
@@ -70,7 +69,7 @@ class ModelEnum(Enum):
 
         model_task: str = "text2text-generation"
         params: dict = {
-            "model_name": "text-davinci-003",
+            "model_name": "gpt-3.5-turbo-instruct",
             "temperature": 0.7,
             "max_tokens": 256,
             "max_retries": 3,
@@ -123,7 +122,9 @@ class OpenAILLM(BaseModel):
         # Model parameters
         if not model_params:
             model_params = (
-                ModelEnum[model].value.params if not model_params else model_params
+                ModelEnum[model].value.params
+                if not model_params
+                else model_params
             )
         self.model_params = model_params
 
@@ -138,4 +139,3 @@ class OpenAILLM(BaseModel):
             deployment="text-embedding-ada-002-v2",
             openai_api_key=model_provider_token,
         )
-

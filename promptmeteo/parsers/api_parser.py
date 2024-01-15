@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import re
 
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
@@ -21,6 +20,8 @@ import re
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+import re
+
 from .base import BaseParser, ParserException
 
 
@@ -38,6 +39,8 @@ class ApiParser(BaseParser):
         Given a response string from an LLM, returns the response expected for
         the task.
         """
+
+        text = text.replace("{{", "{").replace("}}", "}")
 
         if "as an AI language model" in text:
             raise ParserException("There's no API definition in this response")
