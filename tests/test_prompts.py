@@ -150,7 +150,7 @@ class TestPrompts:
 
             check = DictionaryChecker(language)
 
-            for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*_~""":
+            for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*`_~""":
                 text = text.replace(symbol, " ")
 
             for word in text.split():

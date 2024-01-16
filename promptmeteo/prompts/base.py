@@ -101,7 +101,10 @@ class BasePrompt(ABC):
         self,
     ) -> str:
         """Prompt Template."""
-        return self.run().format()
+        return self.run().format(
+            __SAMPLE__="{__SAMPLE__}", __EXAMPLES__="{__EXAMPLES__}"
+        )
+
 
     @classmethod
     def read_prompt(
