@@ -39,6 +39,7 @@ from langchain.prompts.example_selector import (
     SemanticSimilarityExampleSelector,
     MaxMarginalRelevanceExampleSelector,
 )
+from .custom_selectors import BalancedSemanticSamplesSelector
 
 
 class SelectorAlgorithms(str, Enum):
@@ -49,6 +50,7 @@ class SelectorAlgorithms(str, Enum):
 
     RELEVANCE: str = "relevance"
     SIMILARITY: str = "similarity"
+    SIMILARITY_CLASS_BALANCED: str = "similarity_class_balanced"
 
 
 class BaseSelector(ABC):
@@ -65,16 +67,21 @@ class BaseSelector(ABC):
         embeddings: Embeddings,
         selector_k: int,
         selector_algorithm: str,
+        selector_k_per_class: Optional[int]
     ) -> None:
         self._language = language
         self._embeddings = embeddings
         self._selector_k = selector_k
+        self._selector_k_per_class = selector_k_per_class
 
         if selector_algorithm == SelectorAlgorithms.SIMILARITY.value:
             self.selector = SemanticSimilarityExampleSelector
 
         elif selector_algorithm == SelectorAlgorithms.RELEVANCE.value:
             self.selector = MaxMarginalRelevanceExampleSelector
+            
+        elif selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value:
+            self.selector = BalancedSemanticSamplesSelector
 
         else:
             raise ValueError(
@@ -89,6 +96,7 @@ class BaseSelector(ABC):
         Selector Vectorstore.
         """
         return self._selector.vectorstore
+    
 
     @property
     def template(
@@ -102,6 +110,7 @@ class BaseSelector(ABC):
     def load_example_selector(
         self,
         model_path: str,
+        **kwargs
     ) -> Self:
         """
         Load a vectorstore database from a disk file
@@ -115,6 +124,7 @@ class BaseSelector(ABC):
         self._selector = self.selector(
             vectorstore=vectorstore,
             k=self._selector_k,
+            **kwargs
         )
 
         return self
@@ -134,13 +144,23 @@ class BaseSelectorSupervised(BaseSelector):
             {"__INPUT__": example, "__OUTPUT__": annotation}
             for example, annotation in zip(examples, annotations)
         ]
-
-        self._selector = self.selector.from_examples(
-            examples=examples,
-            embeddings=self._embeddings,
-            vectorstore_cls=FAISS,
-            k=self._selector_k,
-        )
+        if self.selector == BalancedSemanticSamplesSelector:
+            self._selector = self.selector.from_examples(
+                examples=examples,
+                class_list=list(set(annotations)),
+                class_key="__OUTPUT__",
+                embeddings=self._embeddings,
+                vectorstore_cls=FAISS,
+                selector_k_per_class=self._selector_k_per_class,
+                input_keys=["__INPUT__"],
+            )
+        else:
+            self._selector = self.selector.from_examples(
+                examples=examples,
+                embeddings=self._embeddings,
+                vectorstore_cls=FAISS,
+                k=self._selector_k,
+            )
 
         return self
 
@@ -198,6 +218,7 @@ class BaseSelectorUnsupervised(BaseSelector):
             )
 
         examples = [{"__INPUT__": example} for example in examples]
+
 
         self._selector = self.selector.from_examples(
             examples=examples,

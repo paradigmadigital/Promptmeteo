@@ -102,6 +102,7 @@ class TaskBuilder:
         selector_k: int,
         selector_type: str,
         selector_algorithm: str,
+        selector_k_per_class: int = None,
     ) -> Self:
         """
         Builds a the selector for the task by training a new selector.
@@ -126,6 +127,7 @@ class TaskBuilder:
             language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
+            selector_k_per_class=selector_k_per_class,
             selector_type=selector_type,
             selector_algorithm=selector_algorithm,
         ).train(
@@ -174,8 +176,10 @@ class TaskBuilder:
         self,
         model_path: str,
         selector_k: int,
+        selector_k_per_class: int,
         selector_type: str,
         selector_algorithm: str,
+        **kwargs
     ) -> Self:
         """
         Builds the selector for the task by loading a pretrained selector.
@@ -196,12 +200,14 @@ class TaskBuilder:
 
         embeddings = self._task.model.embeddings
 
+         
         self._task.selector = SelectorFactory.factory_method(
             language=self._task.language,
             embeddings=embeddings,
             selector_k=selector_k,
+            selector_k_per_class=selector_k_per_class,
             selector_type=selector_type,
             selector_algorithm=selector_algorithm,
-        ).load_example_selector(model_path=model_path)
+        ).load_example_selector(model_path=model_path, **kwargs)
 
         return self
