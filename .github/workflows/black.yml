@@ -1,0 +1,14 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: black formatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: "--line-length 80 --verbose --diff --color"
+          src: "./promptmeteo"
