@@ -67,7 +67,7 @@ class BaseSelector(ABC):
         embeddings: Embeddings,
         selector_k: int,
         selector_algorithm: str,
-        selector_k_per_class: Optional[int]
+        selector_k_per_class: Optional[int],
     ) -> None:
         self._language = language
         self._embeddings = embeddings
@@ -79,8 +79,11 @@ class BaseSelector(ABC):
 
         elif selector_algorithm == SelectorAlgorithms.RELEVANCE.value:
             self.selector = MaxMarginalRelevanceExampleSelector
-            
-        elif selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value:
+
+        elif (
+            selector_algorithm
+            == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value
+        ):
             self.selector = BalancedSemanticSamplesSelector
 
         else:
@@ -96,7 +99,6 @@ class BaseSelector(ABC):
         Selector Vectorstore.
         """
         return self._selector.vectorstore
-    
 
     @property
     def template(
@@ -107,11 +109,7 @@ class BaseSelector(ABC):
         """
         return self.run().format(__INPUT__="{__INPUT__}")
 
-    def load_example_selector(
-        self,
-        model_path: str,
-        **kwargs
-    ) -> Self:
+    def load_example_selector(self, model_path: str, **kwargs) -> Self:
         """
         Load a vectorstore database from a disk file
         """
@@ -122,9 +120,7 @@ class BaseSelector(ABC):
         )
 
         self._selector = self.selector(
-            vectorstore=vectorstore,
-            k=self._selector_k,
-            **kwargs
+            vectorstore=vectorstore, k=self._selector_k, **kwargs
         )
 
         return self
@@ -218,7 +214,6 @@ class BaseSelectorUnsupervised(BaseSelector):
             )
 
         examples = [{"__INPUT__": example} for example in examples]
-
 
         self._selector = self.selector.from_examples(
             examples=examples,

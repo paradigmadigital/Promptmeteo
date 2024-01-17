@@ -37,9 +37,11 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextBison: str = "text-bison" #latest version
-    TextBison001: str = "text-bison@001" 
-    TextBison32k: str = "text-bison-32k" # latest version of text-bison with 32k token input
+    TextBison: str = "text-bison"  # latest version
+    TextBison001: str = "text-bison@001"
+    TextBison32k: str = (
+        "text-bison-32k"  # latest version of text-bison with 32k token input
+    )
 
     @classmethod
     def has_value(
@@ -67,7 +69,7 @@ class ModelParams(Enum):
 
         model_task: str = "text-bison@001"
         model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
-    
+
     class TextBison:
 
         """
@@ -76,7 +78,7 @@ class ModelParams(Enum):
 
         model_task: str = "text-bison"
         model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
-    
+
     class TextBison32k:
 
         """
@@ -114,7 +116,8 @@ class GoogleVertexAILLM(BaseModel):
 
         self._llm = VertexAI(
             model_name=model_name,
-            project=model_provider_project or os.environ.get("GOOGLE_CLOUD_PROJECT_ID"),
+            project=model_provider_project
+            or os.environ.get("GOOGLE_CLOUD_PROJECT_ID"),
         )
 
         self._embeddings = VertexAIEmbeddings()

@@ -81,5 +81,5 @@ class SelectorFactory:
             embeddings=embeddings,
             selector_k=selector_k,
             selector_algorithm=selector_algorithm,
-            selector_k_per_class=selector_k_per_class
+            selector_k_per_class=selector_k_per_class,
         )

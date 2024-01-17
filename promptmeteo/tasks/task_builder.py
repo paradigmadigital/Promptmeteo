@@ -179,7 +179,7 @@ class TaskBuilder:
         selector_k_per_class: int,
         selector_type: str,
         selector_algorithm: str,
-        **kwargs
+        **kwargs,
     ) -> Self:
         """
         Builds the selector for the task by loading a pretrained selector.
@@ -200,7 +200,6 @@ class TaskBuilder:
 
         embeddings = self._task.model.embeddings
 
-         
         self._task.selector = SelectorFactory.factory_method(
             language=self._task.language,
             embeddings=embeddings,

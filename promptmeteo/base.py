@@ -48,7 +48,8 @@ class Base(ABC):
 
                                          - Padme Amidala, mother of Leia -
     """
-    SELECTOR_TYPE: str = ''
+
+    SELECTOR_TYPE: str = ""
 
     def __init__(
         self,
@@ -64,7 +65,7 @@ class Base(ABC):
         selector_algorithm: str = "relevance",
         selector_k_per_class: Optional[int] = 2,
         verbose: bool = False,
-        **kwargs
+        **kwargs,
     ) -> None:
         """
         Prompmeteo is tool, powered by LLMs, which is able to solve NLP models
@@ -90,7 +91,7 @@ class Base(ABC):
         prompt_task_info : Optional[str]
 
         selector_k : int
-        
+
         selector_k_per_class: Optional[int]
 
         selector_algorithm : str
@@ -108,12 +109,12 @@ class Base(ABC):
         _local = locals()
 
         for param in signature(self.__class__).parameters:
-            if 'kwargs' in param:
+            if "kwargs" in param:
                 continue
             _init_params[param] = _local.get(param, kwargs.get(param))
 
         for param in signature(Base).parameters:
-            if 'kwargs' in param:
+            if "kwargs" in param:
                 continue
             _init_params[param] = _local.get(param, kwargs.get(param))
 
@@ -130,7 +131,10 @@ class Base(ABC):
         self._selector_k: int = selector_k
         self._selector_k_per_class: int = selector_k_per_class
         self._selector_algorithm: str = selector_algorithm
-        if (self._selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value) and (self.__class__.__name__ != "DocumentClassifier"):
+        if (
+            self._selector_algorithm
+            == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value
+        ) and (self.__class__.__name__ != "DocumentClassifier"):
             raise ValueError(
                 f"{self.__class__.__name__} error in function `__init__`. "
                 f"Selector algorithm {self._selector_algorithm} "
@@ -255,7 +259,7 @@ class Base(ABC):
             self.task.selector.vectorstore.save_local(tmp_path)
 
             init_tmp_path = f"{tmp_path}.init"
-            with open(init_tmp_path, mode='w') as f:
+            with open(init_tmp_path, mode="w") as f:
                 json.dump(self._init_params, f)
 
             with tarfile.open(model_path, mode="w:gz") as tar:
@@ -305,7 +309,9 @@ class Base(ABC):
             with tarfile.open(model_path, "r:gz") as tar:
                 tar.extractall(tmp)
 
-            init_tmp_path = os.path.join(tmp, f"{os.path.splitext(model_name)[0]}.init")
+            init_tmp_path = os.path.join(
+                tmp, f"{os.path.splitext(model_name)[0]}.init"
+            )
             with open(init_tmp_path) as f:
                 self = cls(**json.load(f))
 
@@ -317,7 +323,7 @@ class Base(ABC):
                 selector_algorithm=self._selector_algorithm,
                 input_keys=["__INPUT__"],
                 class_list=self.prompt_labels,
-                class_key="__OUTPUT__"
+                class_key="__OUTPUT__",
             )
 
             self._is_trained = True
@@ -338,8 +344,7 @@ class BaseSupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        """
-        """
+        """ """
 
         super(BaseSupervised, self).__init__(**kwargs)
 
@@ -468,7 +473,6 @@ class BaseUnsupervised(Base):
                 f"Arguments `examples` are expected to be of type `List[str]`."
                 f"Some values seem no to be of type `str`."
             )
-
 
         self.builder.build_selector_by_train(
             examples=examples,

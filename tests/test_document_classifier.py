@@ -70,8 +70,8 @@ class TestDocumentClassifier:
             assert os.path.exists(os.path.join(tmp, "model.meteo"))
             tar = tarfile.open(os.path.join(tmp, "model.meteo"), "r:gz")
             items = [t.path for t in list(tar)]
-            assert 'model.meteo' in items
-            assert 'model.init' in items
+            assert "model.meteo" in items
+            assert "model.init" in items
 
     def test_load_model(self):
         model = DocumentClassifier(
@@ -86,7 +86,9 @@ class TestDocumentClassifier:
 
         with tempfile.TemporaryDirectory() as tmp:
             model.save_model(os.path.join(tmp, "model.meteo"))
-            load_model = DocumentClassifier.load_model(os.path.join(tmp, "model.meteo"))
+            load_model = DocumentClassifier.load_model(
+                os.path.join(tmp, "model.meteo")
+            )
 
             assert load_model.language == model.language
             assert load_model.model_provider_name == model.model_provider_name
