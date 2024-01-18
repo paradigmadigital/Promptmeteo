@@ -20,12 +20,12 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
 from enum import Enum
 from typing import Dict
 from typing import Optional
 
 from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
 
 from .base import BaseModel
@@ -37,7 +37,8 @@ class ModelTypes(str, Enum):
     Enum of available model types.
     """
 
-    TextDavinci003: str = "text-davinci-003"
+    GPT35TurboInstruct: str = "gpt-3.5-turbo-instruct"
+    GPT35Turbo: str = "gpt-3.5-turbo-16k"
 
     @classmethod
     def has_value(
@@ -51,20 +52,43 @@ class ModelTypes(str, Enum):
         return value in cls._value2member_map_
 
 
-class ModelParams(Enum):
+class ModelEnum(Enum):
 
     """
     Model Parameters.
     """
 
-    class TextDavinci003:
+    class GPT35TurboInstruct:
 
         """
         Default parameters for TextDavinci003 model.
         """
 
+        client = OpenAI
+        embedding = OpenAIEmbeddings
+
         model_task: str = "text2text-generation"
-        model_kwargs = {"temperature": 0.7, "max_tokens": 256, "max_retries": 3}
+        params: dict = {
+            "model_name": "gpt-3.5-turbo-instruct",
+            "temperature": 0.7,
+            "max_tokens": 256,
+            "max_retries": 3,
+        }
+
+    class GPT35Turbo:
+
+        """
+        Default parameters for GPT3.5Turbo model.
+        """
+
+        client = ChatOpenAI
+        embedding = OpenAIEmbeddings
+
+        params: dict = {
+            "model_name": "gpt-3.5-turbo-16k",
+            "temperature": 0.0,
+            "max_retries": 3,
+        }
 
 
 class OpenAILLM(BaseModel):
@@ -89,16 +113,29 @@ class OpenAILLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.name for i in ModelTypes]}"
             )
+
         super(OpenAILLM, self).__init__()
 
-        self._llm = OpenAI(
-            model_name=model_name,
+        # Model name
+        model = ModelTypes(model_name).name
+
+        # Model parameters
+        if not model_params:
+            model_params = (
+                ModelEnum[model].value.params
+                if not model_params
+                else model_params
+            )
+        self.model_params = model_params
+
+        # Model
+        self._llm = ModelEnum[model].value.client(
             openai_api_key=model_provider_token,
-            openai_organization=os.environ.get("OPENAI_ORGANIZATION", ""),
+            **self.model_params,
         )
 
-        self._embeddings = OpenAIEmbeddings(openai_api_key=model_provider_token)
-
-        if not model_params:
-            model_params = ModelParams[ModelTypes(model_name).name].value
-        self.model_params = model_params
+        # Embeddings
+        self._embeddings = ModelEnum[model].value.embedding(
+            deployment="text-embedding-ada-002-v2",
+            openai_api_key=model_provider_token,
+        )

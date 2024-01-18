@@ -13,6 +13,8 @@ class TestPrompts:
         for model_name, language, task_type in [
             ["fake-static", "es", "ner"],
             ["fake-static", "es", "classification"],
+            ["fake-static", "en", "api-generation"],
+            ["fake-static", "en", "api-correction"],
         ]:
             prompt = PromptFactory.factory_method(
                 language=language,
@@ -142,11 +144,13 @@ class TestPrompts:
                 prompt_domain="",
                 prompt_labels=["0", "1"],
                 prompt_detail="",
-            ).template
+            )
+
+            text = text.template
 
             check = DictionaryChecker(language)
 
-            for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*_~""":
+            for symbol in """!()-[]{};:'"\\,<>./?@#$%^&*`_~""":
                 text = text.replace(symbol, " ")
 
             for word in text.split():

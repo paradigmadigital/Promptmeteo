@@ -26,8 +26,11 @@ from abc import abstractmethod
 from typing import List
 
 
-class BaseParser(ABC):
+class ParserException(Exception):
+    pass
 
+
+class BaseParser(ABC):
     """
     Parser class interface.
     """

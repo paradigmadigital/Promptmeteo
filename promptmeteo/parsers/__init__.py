@@ -23,6 +23,7 @@
 from enum import Enum
 from typing import List
 
+from .api_parser import ApiParser
 from .base import BaseParser
 from .dummy_parser import DummyParser
 from .classification_parser import ClassificationParser
@@ -38,6 +39,8 @@ class ParserTypes(str, Enum):
     PARSER_2: str = "ner"
     PARSER_3: str = "qa"
     PARSER_4: str = "code-generation"
+    PARSER_5: str = "api-generation"
+    PARSER_6: str = "api-correction"
 
 
 class ParserFactory:
@@ -68,6 +71,12 @@ class ParserFactory:
 
         elif task_type == ParserTypes.PARSER_4.value:
             parser_cls = DummyParser
+
+        elif task_type == ParserTypes.PARSER_5.value:
+            parser_cls = ApiParser
+
+        elif task_type == ParserTypes.PARSER_6.value:
+            parser_cls = ApiParser
 
         else:
             raise ValueError(
