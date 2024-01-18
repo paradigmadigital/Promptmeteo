@@ -67,7 +67,7 @@ class BaseSelector(ABC):
         embeddings: Embeddings,
         selector_k: int,
         selector_algorithm: str,
-        selector_k_per_class: Optional[int],
+        selector_k_per_class: Optional[int] = 2,
     ) -> None:
         self._language = language
         self._embeddings = embeddings
@@ -119,9 +119,14 @@ class BaseSelector(ABC):
             self._embeddings,
         )
 
-        self._selector = self.selector(
-            vectorstore=vectorstore, k=self._selector_k, **kwargs
-        )
+        if self.selector == BalancedSemanticSamplesSelector:
+            self._selector = self.selector(
+                vectorstore=vectorstore, k=self._selector_k, **kwargs
+            )
+        else:
+            self._selector = self.selector(
+                vectorstore=vectorstore, k=self._selector_k
+            )
 
         return self
 

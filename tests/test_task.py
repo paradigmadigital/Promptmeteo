@@ -71,15 +71,28 @@ class TestTaskBuilder:
                     selector_type=selector_type,
                     selector_algorithm=selector_algorithm.value,
                 )
-
+                
                 # UNSUPERVISED TASK
                 selector_type = SelectorTypes.UNSUPERVISED.value
-                task_builder.build_selector_by_train(
-                    examples=["text1", "text2", "text3"],
-                    annotations=None,
-                    selector_k=10,
-                    selector_type=selector_type,
-                    selector_algorithm=selector_algorithm.value,
+                if selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value:
+                    # If the selection algorithm is the balanced one
+                    # it must arise an error in unsupervised task
+                    with pytest.raises(ValueError):
+                        selector_type = SelectorTypes.UNSUPERVISED.value
+                        task_builder.build_selector_by_train(
+                            examples=["text1", "text2", "text3"],
+                            annotations=None,
+                            selector_k=10,
+                            selector_type=selector_type,
+                            selector_algorithm=selector_algorithm.value,
                 )
+                else:
+                    task_builder.build_selector_by_train(
+                        examples=["text1", "text2", "text3"],
+                        annotations=None,
+                        selector_k=10,
+                        selector_type=selector_type,
+                        selector_algorithm=selector_algorithm.value,
+                    )
 
             assert task_builder.task.selector is not None

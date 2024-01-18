@@ -13,13 +13,23 @@ class TestSelectors:
     def test_selector_factory(self):
         for selector_type in SelectorTypes:
             for selector_algorithm in SelectorAlgorithms:
-                SelectorFactory.factory_method(
-                    language="es",
-                    selector_k=1,
-                    selector_type=selector_type.value,
-                    selector_algorithm=selector_algorithm.value,
-                    embeddings=FakeEmbeddings(size=64),
-                )
+                if (selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED) and selector_type == SelectorTypes.UNSUPERVISED.value:
+                    with pytest.raises(ValueError):
+                        SelectorFactory.factory_method(
+                            language="es",
+                            selector_k=1,
+                            selector_type=selector_type.value,
+                            selector_algorithm=selector_algorithm.value,
+                            embeddings=FakeEmbeddings(size=64),
+                        )
+                else:
+                    SelectorFactory.factory_method(
+                            language="es",
+                            selector_k=1,
+                            selector_type=selector_type.value,
+                            selector_algorithm=selector_algorithm.value,
+                            embeddings=FakeEmbeddings(size=64),
+                        )
 
         with pytest.raises(ValueError) as error:
             SelectorFactory.factory_method(

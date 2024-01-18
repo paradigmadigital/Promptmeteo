@@ -102,7 +102,7 @@ class TaskBuilder:
         selector_k: int,
         selector_type: str,
         selector_algorithm: str,
-        selector_k_per_class: int = None,
+        selector_k_per_class: int = 2,
     ) -> Self:
         """
         Builds a the selector for the task by training a new selector.
