@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from string import Formatter
 
 #  Copyright (c) 2023 Paradigma Digital S.L.
 

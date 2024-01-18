@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,7 +36,7 @@ except ImportError:
     from typing_extensions import Self
 
 from .base import BaseUnsupervised
-from .tasks import TaskTypes
+from .tasks import TaskTypes, TaskBuilder
 from .tools import add_docstring_from
 from .validations import version_validation
 
@@ -265,7 +264,10 @@ class APIFormatter(BaseUnsupervised):
         ----------
 
         api_codes : List[str]
+<<<<<<< HEAD
         external_info: dict
+=======
+>>>>>>> 8ceaf0d ([Feature: New model] API Generation (#6))
 
 
         Returns
