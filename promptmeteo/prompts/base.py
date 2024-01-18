@@ -21,6 +21,7 @@
 #  THE SOFTWARE.
 
 from abc import ABC
+from string import Formatter
 from typing import List
 
 import yaml
@@ -29,35 +30,43 @@ from langchain.prompts.pipeline import PipelinePromptTemplate
 
 
 class BasePrompt(ABC):
-
     """
     Prompt class interface.
     """
 
     PROMPT_EXAMPLE = """
-        TEMPLATE:
-            "Here you exaplain the task.
-            {__PROMPT_DOMAIN__}
-            {__PROMPT_LABELS__}
+            TEMPLATE:
+                "Here you explain the task.
+                    {__PROMPT_DOMAIN__}
+                    {__PROMPT_DETAIL__}
 
-            {__CHAIN_THOUGHT__}
-            {__ANSWER_FORMAT__}"
+                    {__SHOT_EXAMPLES__}
 
-        PROMPT_DOMAIN:
-            "Here you explain the {__DOMAIN__} from the texts."
+                    {__PROMPT_SAMPLE__}
+                    {__CHAIN_THOUGHT__}
+                    {__ANSWER_FORMAT__}"
 
-        PROMPT_LABELS:
-            "Here you give the {__LABELS__} if required."
+            PROMPT_SAMPLE:
+                "Here you describe the task."
 
-        PROMPT_DETAIL:
-            "Here you can give some {__DETAIL__}"
+            SHOT_EXAMPLES:
+                "Here you set the {__EXAMPLES__} to take into consideration."
 
-        CHAIN_THOUGHT:
-            "Explain your answer step by step."
+            PROMPT_DOMAIN:
+                "Here you explain the {__DOMAIN__} from the texts."
 
-        ANSWER_FORMAT:
-            "Response just with the asnwer."
-    """
+            PROMPT_LABELS:
+                "Here you give the {__LABELS__} if required."
+
+            PROMPT_DETAIL:
+                "Here you can give some {__DETAIL__}"
+
+            CHAIN_THOUGHT:
+                "Explain your answer step by step."
+
+            ANSWER_FORMAT:
+                "Response just with the answer."
+        """
 
     def __init__(
         self,
@@ -92,7 +101,10 @@ class BasePrompt(ABC):
         self,
     ) -> str:
         """Prompt Template."""
-        return self.run().format()
+        return self.run().format(
+            __SAMPLE__="{__SAMPLE__}", __EXAMPLES__="{__EXAMPLES__}"
+        )
+
 
     @classmethod
     def read_prompt(
@@ -129,11 +141,13 @@ class BasePrompt(ABC):
 
         try:
             cls.TEMPLATE = prompt["TEMPLATE"]
-            cls.PROMPT_DOMAIN = prompt["PROMPT_DOMAIN"]
-            cls.PROMPT_LABELS = prompt["PROMPT_LABELS"]
-            cls.PROMPT_DETAIL = prompt["PROMPT_DETAIL"]
-            cls.ANSWER_FORMAT = prompt["ANSWER_FORMAT"]
-            cls.CHAIN_THOUGHT = prompt["CHAIN_THOUGHT"]
+            cls.PROMPT_DOMAIN = prompt.get("PROMPT_DOMAIN", "")
+            cls.PROMPT_LABELS = prompt.get("PROMPT_LABELS", "")
+            cls.PROMPT_DETAIL = prompt.get("PROMPT_DETAIL", "")
+            cls.PROMPT_SAMPLE = prompt.get("PROMPT_SAMPLE", "")
+            cls.ANSWER_FORMAT = prompt.get("ANSWER_FORMAT", "")
+            cls.CHAIN_THOUGHT = prompt.get("CHAIN_THOUGHT", "")
+            cls.SHOT_EXAMPLES = prompt.get("SHOT_EXAMPLES", "")
 
             cls.PROMPT_EXAMPLE = prompt_text
 
@@ -150,20 +164,38 @@ class BasePrompt(ABC):
         Returns the prompt template for the current task.
         """
 
+        prompt_variables = dict(
+            __PROMPT_SAMPLE__=self.PROMPT_SAMPLE
+            if hasattr(self, "PROMPT_SAMPLE")
+            else "",
+            __PROMPT_LABELS__="",
+            __PROMPT_DOMAIN__="",
+            __PROMPT_DETAIL__="",
+            __SHOT_EXAMPLES__=self.SHOT_EXAMPLES
+            if hasattr(self, "SHOT_EXAMPLES")
+            else "",
+            __ANSWER_FORMAT__=self.ANSWER_FORMAT
+            if hasattr(self, "ANSWER_FORMAT")
+            else "",
+            __CHAIN_THOUGHT__=self.CHAIN_THOUGHT
+            if hasattr(self, "CHAIN_THOUGHT")
+            else "",
+        )
+
         # Labels
         prompt_labels = (
             ", ".join(self._prompt_labels)
             if isinstance(self._prompt_labels, list)
             else self._prompt_detail
         )
-        prompt_labels = (
+        prompt_variables["__PROMPT_LABELS__"] = (
             self.PROMPT_LABELS.format(__LABELS__=prompt_labels)
             if self._prompt_labels
             else ""
         )
 
         # Domain
-        prompt_domain = (
+        prompt_variables["__PROMPT_DOMAIN__"] = (
             self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
             if self._prompt_domain
             else ""
@@ -175,40 +207,18 @@ class BasePrompt(ABC):
             if isinstance(self._prompt_detail, list)
             else self._prompt_detail
         )
-        prompt_detail = (
+        prompt_variables["__PROMPT_DETAIL__"] = (
             self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
             if self._prompt_detail
             else ""
         )
 
-        # Answer format
-        answer_format = self.ANSWER_FORMAT
-
-        # Chain of thoughts
-        chain_thought = self.CHAIN_THOUGHT
-
-        return PipelinePromptTemplate(
-            final_prompt=PromptTemplate.from_template(self.TEMPLATE),
-            pipeline_prompts=[
-                (
-                    "__PROMPT_DOMAIN__",
-                    PromptTemplate.from_template(prompt_domain),
-                ),
-                (
-                    "__PROMPT_LABELS__",
-                    PromptTemplate.from_template(prompt_labels),
-                ),
-                (
-                    "__PROMPT_DETAIL__",
-                    PromptTemplate.from_template(prompt_detail),
-                ),
-                (
-                    "__ANSWER_FORMAT__",
-                    PromptTemplate.from_template(answer_format),
-                ),
-                (
-                    "__CHAIN_THOUGHT__",
-                    PromptTemplate.from_template(chain_thought),
-                ),
-            ],
+        return PromptTemplate.from_template(
+            PromptTemplate.from_template(self.TEMPLATE).format(
+                **{
+                    k: v
+                    for (k, v) in prompt_variables.items()
+                    if k in [i[1] for i in Formatter().parse(self.TEMPLATE)]
+                }
+            )
         )

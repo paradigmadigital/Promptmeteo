@@ -1,0 +1,59 @@
+#  Copyright (c) 2023 Paradigma Digital S.L.
+
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+
+
+TEMPLATE:
+    "You are an API Designer that has to create an API file for your company.
+    {__PROMPT_DOMAIN__}
+    {__PROMPT_DETAIL__}
+    {__SHOT_EXAMPLES__}
+
+
+    {__PROMPT_SAMPLE__}  
+    {__CHAIN_THOUGHT__}
+    {__ANSWER_FORMAT__}"
+
+PROMPT_SAMPLE:
+    "The API purpose is: \"{__SAMPLE__}.\""
+
+PROMPT_DOMAIN:
+    "The expected file should be {__DOMAIN__}."
+
+PROMPT_DETAIL:
+    "\n\n### RULES ###\n\n The API should fulfill the following rules:
+    {__DETAIL__}"
+
+SHOT_EXAMPLES:
+    "\n\n### EXAMPLES ###\n\nFor doing so take into consideration `paths`,
+    `schemas` and `parameters` from the following API (They are not complete,
+    they just include the scaffolding):
+    
+
+    {__EXAMPLES__}
+
+    "
+
+CHAIN_THOUGHT:
+    ""
+
+ANSWER_FORMAT:
+    "Please create a complete API and answer just with the code, following
+    the previous RULES and the `paths`, `schemas` and `parameters` from the
+    EXAMPLES."

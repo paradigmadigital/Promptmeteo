@@ -69,11 +69,8 @@ class TestSelectors:
             assert (
                 selector.template
                 == """
-                EJEMPLO: TEST_EXAMPLE
-                RESPUESTA: TEST_ANNOTATION
-
-                EJEMPLO: {__INPUT__}
-                RESPUESTA: """.replace(
+                TEST_EXAMPLE
+                TEST_ANNOTATION""".replace(
                     " " * 4, ""
                 )[
                     1:

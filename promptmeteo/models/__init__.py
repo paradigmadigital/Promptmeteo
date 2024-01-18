@@ -44,7 +44,6 @@ class ModelProvider(str, Enum):
     PROVIDER_4: str = "google-vertexai"
 
 
-
 class ModelFactory:
 
     """
@@ -85,7 +84,7 @@ class ModelFactory:
 
         elif model_provider_name == ModelProvider.PROVIDER_3.value:
             model_cls = HFPipelineLLM
-        
+
         elif model_provider_name == ModelProvider.PROVIDER_4.value:
             model_cls = GoogleVertexAILLM
 
