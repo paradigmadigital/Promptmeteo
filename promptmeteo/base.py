@@ -68,7 +68,7 @@ class Base(ABC):
         **kwargs,
     ) -> None:
         """
-        Prompmeteo is tool, powered by LLMs, which is able to solve NLP models
+        Promptmeteo is tool, powered by LLMs, which is able to solve NLP models
         such as text classification and Named Entity Recognition. Its interface
         is similar to a conventional ML model, which allows Prometeo to be used
         in a MLOps pipeline easily.
@@ -76,7 +76,7 @@ class Base(ABC):
         Parameters
         ----------
 
-        task_type : str
+        language : str
 
         model_name : str
 
@@ -84,11 +84,13 @@ class Base(ABC):
 
         model_provider_token : Optional[str]
 
-        prompt_domain : str
+        model_params: Optional[str]
+
+        prompt_domain : Optional[str]
 
         prompt_labels : List[str]
 
-        prompt_task_info : Optional[str]
+        prompt_detail : Optional[str]
 
         selector_k : int
 
@@ -119,7 +121,6 @@ class Base(ABC):
             _init_params[param] = _local.get(param, kwargs.get(param))
 
         self._init_params: dict = _init_params
-
         self.language: str = language
         self.model_name: str = model_name
         self.model_provider_name: str = model_provider_name
@@ -168,7 +169,7 @@ class Base(ABC):
         self,
     ) -> bool:
         """
-        Check if model intance is trained.
+        Check if model instance is trained.
         """
         return self._is_trained
 
@@ -334,7 +335,7 @@ class Base(ABC):
 class BaseSupervised(Base):
 
     """
-    Model Inferface for supervised training tasks.
+    Model Interface for supervised training tasks.
     """
 
     SELECTOR_TYPE = "supervised"
@@ -405,6 +406,16 @@ class BaseSupervised(Base):
                         f"is not in the expected values: {self.prompt_labels}"
                     )
 
+        examples = [
+            example.replace("{", "{{").replace("}", "}}")
+            for example in examples
+        ]
+
+        annotations = [
+            annotation.replace("{", "{{").replace("}", "}}")
+            for annotation in annotations
+        ]
+
         self.builder.build_selector_by_train(
             examples=examples,
             annotations=annotations,
@@ -421,7 +432,7 @@ class BaseSupervised(Base):
 
 class BaseUnsupervised(Base):
     """
-    Model Inferface for unsupervised training tasks.
+    Model Interface for unsupervised training tasks.
     """
 
     SELECTOR_TYPE = "unsupervised"
@@ -431,7 +442,7 @@ class BaseUnsupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        if "prompt_labels" in kwargs:
+        if kwargs.get("prompt_labels", None):
             raise ValueError(
                 f"{self.__class__.__name__} can not be inicializated with the "
                 f"argument `prompt_labels`."

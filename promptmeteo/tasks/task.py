@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from string import Formatter
 
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
@@ -26,7 +27,11 @@ from langchain.prompts.pipeline import PipelinePromptTemplate
 from ..models import BaseModel
 from ..prompts import BasePrompt
 from ..parsers import BaseParser
-from ..selector import BaseSelector
+from ..selector import (
+    BaseSelector,
+    BaseSelectorSupervised,
+    BaseSelectorUnsupervised,
+)
 
 
 class Task:
@@ -147,7 +152,7 @@ class Task:
 
     def _get_prompt(
         self,
-        example: str,
+        sample: str,
     ) -> str:
         """
         Create a PipelinePromptTemplate by merging the PromptTemplate and the
@@ -156,40 +161,24 @@ class Task:
 
         intro_prompt = self.prompt.run()
 
-        no_examples_prompt = PromptTemplate.from_template("{__INPUT__}")
+        if isinstance(self.selector, BaseSelectorSupervised):
+            examples = self.selector.run(sample)
+        elif isinstance(self.selector, BaseSelectorUnsupervised):
+            examples = self.selector.run()
+        else:
+            examples = ""
 
-        if self._language == "es":
-            no_examples_prompt = PromptTemplate.from_template(
-                "Texto de entrada: {__INPUT__}"
-            )
+        variables = dict(__SAMPLE__=sample, __EXAMPLES__=examples)
 
-        if self._language == "en":
-            no_examples_prompt = PromptTemplate.from_template(
-                "Input text: {__INPUT__}"
-            )
-
-        examples_prompt = (
-            self.selector.run() if self.selector else no_examples_prompt
+        final_prompt = intro_prompt.format(
+            **{
+                k: v
+                for (k, v) in variables.items()
+                if k in intro_prompt.input_variables
+            }
         )
 
-        return PipelinePromptTemplate(
-            final_prompt=PromptTemplate.from_template(
-                """
-                {__INSTRUCTION__}
-
-                {__EXAMPLES__}
-                """.replace(
-                    " " * 4, ""
-                )
-                .replace("\n\n", "|")
-                .replace("\n", " ")
-                .replace("|", "\n\n")
-            ),
-            pipeline_prompts=[
-                ("__INSTRUCTION__", intro_prompt),
-                ("__EXAMPLES__", examples_prompt),
-            ],
-        ).format(__INPUT__=example)
+        return final_prompt
 
     def run(
         self,
@@ -199,13 +188,18 @@ class Task:
         Given a text sample, return the text predicted by Promptmeteo.
         """
 
-        prompt = self._get_prompt(example)
-        output = self.model.run(prompt)
-        result = self.parser.run(output)
+        sample = example.replace("{", "{{").replace("}", "}}")
 
+        prompt = self._get_prompt(sample)
         if self._verbose:
             print("\n\nPROMPT INPUT\n\n", prompt)
+
+        output = self.model.run(prompt)
+        if self._verbose:
             print("\n\nMODEL OUTPUT\n\n", output)
+
+        result = self.parser.run(output)
+        if self._verbose:
             print("\n\nPARSE RESULT\n\n", result)
 
         return result

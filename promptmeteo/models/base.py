@@ -22,6 +22,7 @@
 
 from abc import ABC
 from langchain.llms.base import BaseLLM
+from langchain.schema import HumanMessage
 from langchain.embeddings.base import Embeddings
 
 
@@ -59,6 +60,9 @@ class BaseModel(ABC):
 
         try:
             return self._llm(prompt=sample)
+
+        except TypeError:
+            return self._llm([HumanMessage(content=sample)]).content
 
         except Exception as error:
             raise RuntimeError(

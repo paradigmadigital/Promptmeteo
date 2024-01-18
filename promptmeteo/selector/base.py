@@ -107,7 +107,7 @@ class BaseSelector(ABC):
         """
         Selector Template
         """
-        return self.run().format(__INPUT__="{__INPUT__}")
+        return self.run("").format(__INPUT__="{__INPUT__}")
 
     def load_example_selector(self, model_path: str, **kwargs) -> Self:
         """
@@ -165,9 +165,7 @@ class BaseSelectorSupervised(BaseSelector):
 
         return self
 
-    def run(
-        self,
-    ) -> FewShotPromptTemplate:
+    def run(self, sample: str) -> FewShotPromptTemplate:
         """
         Creates the FewShotPromptTemplate from the samples of the vectorstore.
         """
@@ -176,28 +174,17 @@ class BaseSelectorSupervised(BaseSelector):
             raise RuntimeError(
                 f"`{self.__class__.__name__}` object has no vector store "
                 f"created when executing `run()` method. You should call "
-                f"method `load_example_selector()` `train()` befoto create "
+                f"method `load_example_selector()` `train()` to create "
                 f"a vector store before."
             )
 
-        template = "{__INPUT__}\n{__OUTPUT__}"
+        examples = self._selector.select_examples({"__INPUT__": sample})
 
-        if self._language == "es":
-            template = "EJEMPLO: {__INPUT__}\nRESPUESTA: {__OUTPUT__}"
-
-        if self._language == "en":
-            template = "INPUT: {__INPUT__}\nOUTPUT: {__OUTPUT__}"
-
-        example_prompt = PromptTemplate(
-            input_variables=["__INPUT__", "__OUTPUT__"],
-            template=template,
-        )
-
-        return FewShotPromptTemplate(
-            example_selector=self._selector,
-            example_prompt=example_prompt,
-            suffix=template.format(__INPUT__="{__INPUT__}", __OUTPUT__=""),
-            input_variables=["__INPUT__"],
+        return "\n\n".join(
+            [
+                f'{example["__INPUT__"]}\n{example["__OUTPUT__"]}'
+                for example in examples
+            ]
         )
 
 
@@ -208,7 +195,7 @@ class BaseSelectorUnsupervised(BaseSelector):
         annotations: Optional[List[str]],
     ) -> Self:
         """
-        Creates the vectorstor with the training samples.
+        Creates the vectorstore with the training samples.
         """
 
         if annotations is not None:

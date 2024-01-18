@@ -49,7 +49,7 @@ class ModelTypes(str, Enum):
         return value in cls._value2member_map_
 
 
-class ModelParams(Enum):
+class ModelEnum(Enum):
 
     """
     Model Parameters Enum
@@ -74,7 +74,7 @@ class HFHubApiLLM(BaseModel):
     def __init__(
         self,
         model_name: Optional[str] = "",
-        model_params: Optional[ModelParams] = None,
+        model_params: Optional[ModelEnum] = None,
         model_provider_token: Optional[str] = "",
     ) -> None:
         """
@@ -82,7 +82,7 @@ class HFHubApiLLM(BaseModel):
         """
 
         if ModelTypes.has_value(model_name):
-            model_params = ModelParams[ModelTypes(model_name).name].value
+            model_params = ModelEnum[ModelTypes(model_name).name].value
         elif not model_params:
             raise ValueError(
                 f"`model_name`={model_name} not in supported model names: "
