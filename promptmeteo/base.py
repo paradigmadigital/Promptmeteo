@@ -423,12 +423,11 @@ class BaseUnsupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        if "prompt_labels" in kwargs:
-            if kwargs["prompt_labels"]:
-                raise ValueError(
-                    f"{self.__class__.__name__} can not be inicializated with the "
-                    f"argument `prompt_labels`."
-                )
+        if kwargs.get("prompt_labels", None):
+            raise ValueError(
+                f"{self.__class__.__name__} can not be inicializated with the "
+                f"argument `prompt_labels`."
+            )
 
         super(BaseUnsupervised, self).__init__(**kwargs)
 

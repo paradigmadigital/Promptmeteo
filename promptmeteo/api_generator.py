@@ -20,10 +20,9 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import re
 import yaml
 from copy import deepcopy
-from typing import List
+from typing import List, Optional
 
 try:
     from typing import Self
@@ -33,6 +32,7 @@ except ImportError:
 from .base import BaseSupervised
 from .tasks import TaskTypes, TaskBuilder
 from .tools import add_docstring_from
+from .validations import version_validation
 
 
 class APIGenerator(BaseSupervised):
@@ -41,6 +41,8 @@ class APIGenerator(BaseSupervised):
     API Generator Task.
     """
 
+    ALLOWED_PROTOCOLS = ["REST"]
+
     @add_docstring_from(BaseSupervised.__init__)
     def __init__(
         self,
@@ -48,7 +50,7 @@ class APIGenerator(BaseSupervised):
         n_samples: int,
         api_version: str,
         api_protocol: str,
-        api_style_instructions: List[str] = None,
+        api_style_instructions: Optional[List[str]],
         **kwargs,
     ) -> None:
         """
@@ -74,17 +76,14 @@ class APIGenerator(BaseSupervised):
         >>> model.predict("API for managing account access")
         """
 
-        if api_protocol not in ["REST"]:
+        if api_protocol not in self.ALLOWED_PROTOCOLS:
             raise ValueError(
                 f"{self.__class__.__name__} error in init function. "
                 f"Available values for argument `api_protocol` are "
-                f"{['gRPC', 'REST']}."
+                f"{self.ALLOWED_PROTOCOLS}."
             )
 
-        if (
-            not re.compile(r"\d{1}\.\d\.\d").fullmatch(api_version)
-            and api_protocol == "REST"
-        ):
+        if version_validation(api_version, api_protocol):
             raise ValueError(
                 f"{self.__class__.__name__} error in init function. "
                 f"Variable `api version` should be a correct version"
@@ -99,10 +98,10 @@ class APIGenerator(BaseSupervised):
                     f"of strings."
                 )
 
-            kwargs["prompt_detail"] = api_style_instructions
+        kwargs.setdefault("prompt_detail", api_style_instructions)
 
         if api_protocol == "REST":
-            kwargs["prompt_domain"] = f"OpenAPI {api_version} REST API YAML"
+            kwargs.setdefault("prompt_domain", f"OpenAPI {api_version} REST API YAML.")
 
         kwargs["labels"] = None
         kwargs["language"] = language
@@ -174,7 +173,6 @@ class APIGenerator(BaseSupervised):
         for idx, api in enumerate(_api_codes):
             api = yaml.safe_load(api)
             api = self._prune_dict(api, max_depth=3)
-            # api = self._sort_dict(api)
             api = yaml.dump(api, default_flow_style=False, sort_keys=False)
 
             _api_codes[idx] = "```\n" + api + "```"
@@ -214,29 +212,3 @@ class APIGenerator(BaseSupervised):
         new_dict = old_dict if max_depth == -1 else new_dict
 
         return new_dict
-
-    def _sort_dict(
-        self,
-        old_dict: dict,
-    ):
-        """
-        Sort the API dictionary in a concrete order for REST APIs
-        """
-
-        new_dict = {
-            key: old_dict[key]
-            for key in [
-                "openapi",
-                "info",
-                "security",
-                "servers",
-                "tags",
-                "paths",
-                "components",
-            ]
-            if key in old_dict
-        }
-
-        new_dict.update(old_dict)
-
-        return old_dict

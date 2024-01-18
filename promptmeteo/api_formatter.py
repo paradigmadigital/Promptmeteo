@@ -36,6 +36,7 @@ except ImportError:
 from .base import BaseUnsupervised
 from .tasks import TaskTypes, TaskBuilder
 from .tools import add_docstring_from
+from .validations import version_validation
 
 
 class APIFormatter(BaseUnsupervised):
@@ -43,6 +44,8 @@ class APIFormatter(BaseUnsupervised):
     """
     API Generator Task.
     """
+
+    ALLOWED_PROTOCOLS = ["REST"]
 
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
@@ -70,22 +73,27 @@ class APIFormatter(BaseUnsupervised):
         >>>     model_provider_name='openai',
         >>>     model_name='gpt-3.5-turbo-16k',
         >>>     model_provider_token=model_token,
+        >>>     external_info={
+        >>>                     "servers": [
+        >>>                         {
+        >>>                             "url": "http://localhost:8080/",
+        >>>                             "description": "Local environment",
+        >>>                         }
+        >>>                     ],
+        >>>                 }
         >>>     )
 
         >>> model.predict(api)
         """
 
-        if api_protocol not in ["REST"]:
+        if api_protocol not in self.ALLOWED_PROTOCOLS:
             raise ValueError(
                 f"{self.__class__.__name__} error in init function. "
                 f"Available values for argument `api_protocol` are "
-                f"{['REST']}."
+                f"{self.ALLOWED_PROTOCOLS}."
             )
 
-        if (
-            not re.compile(r"\d{1}\.\d\.\d").fullmatch(api_version)
-            and api_protocol == "REST"
-        ):
+        if version_validation(api_version, api_protocol):
             raise ValueError(
                 f"{self.__class__.__name__} error in init function. "
                 f"Variable `api version` should be a correct version"
@@ -100,10 +108,10 @@ class APIFormatter(BaseUnsupervised):
                     f"of strings."
                 )
 
-            kwargs["prompt_detail"] = api_style_instructions
+        kwargs.setdefault("prompt_detail", api_style_instructions)
 
         if api_protocol == "REST":
-            kwargs["prompt_domain"] = f"OpenAPI {api_version} REST API YAML."
+            kwargs.setdefault("prompt_domain", f"OpenAPI {api_version} REST API YAML.")
 
         kwargs["labels"] = None
         kwargs["language"] = language
