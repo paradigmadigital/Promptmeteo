@@ -50,6 +50,7 @@ class TaskTypes(str, Enum):
     CODE_GENERATION: str = "code-generation"
     API_GENERATION: str = "api-generation"
     API_CORRECTION: str = "api-correction"
+    JSON_SUMMARIZER: str = "json-summarizer"
 
 
 class TaskBuilder:

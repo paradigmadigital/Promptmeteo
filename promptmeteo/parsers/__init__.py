@@ -41,6 +41,7 @@ class ParserTypes(str, Enum):
     PARSER_4: str = "code-generation"
     PARSER_5: str = "api-generation"
     PARSER_6: str = "api-correction"
+    PARSER_7: str = "json-summarizer"
 
 
 class ParserFactory:
@@ -77,6 +78,9 @@ class ParserFactory:
 
         elif task_type == ParserTypes.PARSER_6.value:
             parser_cls = ApiParser
+            
+        elif task_type == ParserTypes.PARSER_7.value:
+            parser_cls = DummyParser
 
         else:
             raise ValueError(
