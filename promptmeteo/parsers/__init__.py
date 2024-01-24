@@ -27,6 +27,7 @@ from .api_parser import ApiParser
 from .base import BaseParser
 from .dummy_parser import DummyParser
 from .classification_parser import ClassificationParser
+from .json_parser import JSONParser
 
 
 class ParserTypes(str, Enum):
@@ -80,7 +81,7 @@ class ParserFactory:
             parser_cls = ApiParser
             
         elif task_type == ParserTypes.PARSER_7.value:
-            parser_cls = DummyParser
+            parser_cls = JSONParser
 
         else:
             raise ValueError(
