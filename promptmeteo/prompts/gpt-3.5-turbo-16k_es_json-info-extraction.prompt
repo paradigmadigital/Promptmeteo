@@ -29,7 +29,7 @@ TEMPLATE:
 PROMPT_SAMPLE:
     "Dado el texto:
 
-    ```\n{__SAMPLE__}\n```
+    \n\"{__SAMPLE__}\"\n
     "
 
 PROMPT_DOMAIN:

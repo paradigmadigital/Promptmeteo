@@ -5,3 +5,4 @@ from .document_classifier import DocumentClassifier
 from .api_generator import APIGenerator
 from .api_formatter import APIFormatter
 from .json_info_extraction import JSONInfoExtraction
+from .summarizer import Summarizer

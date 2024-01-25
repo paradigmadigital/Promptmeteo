@@ -41,47 +41,30 @@ from .tools import add_docstring_from
 from .validations import version_validation
 
 
-class JSONInfoExtraction(BaseUnsupervised):
+class Summarizer(BaseUnsupervised):
 
     """
-    Task for information extraction from text in JSON format.
+    Class for text summarization
     """
-
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,
+        prompt_domain,
         language,
-        fields_description: dict,
         **kwargs,
     ) -> None:
         """
         Example
         -------
-
-        >>> from promptmeteo import JSONInfoExtraction
-
-        >>> JSONInfoExtraction(
-        >>>                  language="es",
-        >>>                  fields_description = {
-        >>>                         "topic":"Motivo de la llamada",
-        >>>                         "sentiment":"Sentimiento del cliente",
-        >>>                         "summary":"Resumen de la llamada",
-        >>>                         "negative_tags":"Entidades y tópicos negativos en la llamada",
-        >>>                         "positive_tags":"Entidades y tópicos positivos en la llamada"
-        >>>                     },
-        >>>                  model_name = "anthropic.claude-v2",
-        >>>                  model_provider_name = "bedrock"
-        >>>            )
-
-        >>> model.predict(text)
         """
 
         kwargs["labels"] = None
         kwargs["language"] = language
-        kwargs["fields_description"] = fields_description
+        kwargs["prompt_domain"] = prompt_domain
 
-        task_type = TaskTypes.JSON_INFO_EXTRACTION.value
-        super(JSONInfoExtraction, self).__init__(**kwargs)
+
+        task_type = TaskTypes.SUMMARIZATION.value
+        super(Summarizer, self).__init__(**kwargs)
 
         self._builder = TaskBuilder(
             language=self.language,
@@ -105,26 +88,6 @@ class JSONInfoExtraction(BaseUnsupervised):
             prompt_detail=self.prompt_detail,
         )
         
-        # Setting the prompt description according to necessities
-        prompt_detail = PromptTemplate.from_template(self.task.prompt.PROMPT_DETAIL)
-        if len(set(prompt_detail.input_variables).intersection(set(["__FIELDS_DESCRIPTION__","__FIELDS__"]))) != 2:
-            raise RuntimeError("Prompt file misses fields __FIELDS_DESCRIPTION__ or __FIELDS__")
-        
-        description_fields_str = "\n".join([f"{i+1}. {description} ({field})" 
-                                            for i,field,description in 
-                                            zip(range(len(fields_description)), 
-                                                fields_description.keys(), fields_description.values())])
-        prompt_detail = prompt_detail.format(__FIELDS__=",".join([i for i in fields_description.keys()]),
-                        __FIELDS_DESCRIPTION__=description_fields_str)
-        
-        self.prompt_detail = prompt_detail
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
-        self.builder.task.prompt.PROMPT_DETAIL = prompt_detail
         ##
         # Build parser
         self._builder.build_parser(
@@ -132,7 +95,6 @@ class JSONInfoExtraction(BaseUnsupervised):
         )
         
 
-        
         
 
     @add_docstring_from(BaseUnsupervised.train)
@@ -154,7 +116,7 @@ class JSONInfoExtraction(BaseUnsupervised):
         self
 
         """
-        super(JSONInfoExtraction, self).train(examples=[""])
+        super(Summarizer, self).train(examples=[""])
 
         return self
 
@@ -219,3 +181,38 @@ class JSONInfoExtraction(BaseUnsupervised):
             self._is_trained = True
 
         return self
+
+    # @add_docstring_from(BaseUnsupervised.predict)
+    # def predict(self, api_codes: List[str], external_info: dict) -> List[str]:
+    #     """
+    #     Receibe a list of API codes and return a list with the corrected APIs.
+
+    #     Parameters
+    #     ----------
+
+    #     api_codes : List[str]
+
+
+    #     Returns
+    #     -------
+
+    #     List[str]
+
+    #     """
+
+    #     _api_codes = deepcopy(api_codes)
+    #     _api_codes = super(JSONInfoExtractor, self).predict(examples=_api_codes)
+    #     _api_codes = [self._replace(api) for api in _api_codes]
+    #     _api_codes = [
+    #         self._add_external_information(api, external_info)
+    #         for api in _api_codes
+    #     ]
+    #     return _api_codes
+
+#%%
+# JSON_SUMMARIZATION = JSONInfoExtractor(language="es",
+#                                  json_fields=["summary","sentiment","topic","keywords"],
+#                                  fields_description={"summary":"",
+#                                                      "sentiment":"",
+#                                                      "topic":"",
+#                                                      "keywords":""})

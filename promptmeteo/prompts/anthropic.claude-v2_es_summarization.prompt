@@ -27,20 +27,18 @@ TEMPLATE:
     {__ANSWER_FORMAT__}"
 
 PROMPT_SAMPLE:
-    "Dado el texto:
-
+    "
     \n\"{__SAMPLE__}\"\n
     "
 
 PROMPT_DOMAIN:
-    ""
+    "{__DOMAIN__}"
 
 PROMPT_DETAIL:
     "
-    extrae la información en formato json donde tendremos los siguientes campos ({__FIELDS__}):\n
-    {__FIELDS_DESCRIPTION__}
+    Basado en el segmento de texto, por favor genera un resumen preciso y no invente información.
 
-    Assistant: A continuación el JSON obtenido:
+    Assistant: A continuación muestro el resumen:
     "
 
 SHOT_EXAMPLES:
