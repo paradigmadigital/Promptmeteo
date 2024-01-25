@@ -191,38 +191,3 @@ class Summarizer(BaseUnsupervised):
             self._is_trained = True
 
         return self
-
-    # @add_docstring_from(BaseUnsupervised.predict)
-    # def predict(self, api_codes: List[str], external_info: dict) -> List[str]:
-    #     """
-    #     Receibe a list of API codes and return a list with the corrected APIs.
-
-    #     Parameters
-    #     ----------
-
-    #     api_codes : List[str]
-
-
-    #     Returns
-    #     -------
-
-    #     List[str]
-
-    #     """
-
-    #     _api_codes = deepcopy(api_codes)
-    #     _api_codes = super(JSONInfoExtractor, self).predict(examples=_api_codes)
-    #     _api_codes = [self._replace(api) for api in _api_codes]
-    #     _api_codes = [
-    #         self._add_external_information(api, external_info)
-    #         for api in _api_codes
-    #     ]
-    #     return _api_codes
-
-#%%
-# JSON_SUMMARIZATION = JSONInfoExtractor(language="es",
-#                                  json_fields=["summary","sentiment","topic","keywords"],
-#                                  fields_description={"summary":"",
-#                                                      "sentiment":"",
-#                                                      "topic":"",
-#                                                      "keywords":""})
