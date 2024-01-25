@@ -42,7 +42,7 @@ class ParserTypes(str, Enum):
     PARSER_4: str = "code-generation"
     PARSER_5: str = "api-generation"
     PARSER_6: str = "api-correction"
-    PARSER_7: str = "json-summarizer"
+    PARSER_7: str = "json-info-extraction"
 
 
 class ParserFactory:

@@ -41,7 +41,7 @@ from .tools import add_docstring_from
 from .validations import version_validation
 
 
-class JSONSummarizer(BaseUnsupervised):
+class JSONInfoExtraction(BaseUnsupervised):
 
     """
     API Generator Task.
@@ -92,8 +92,8 @@ class JSONSummarizer(BaseUnsupervised):
         kwargs["json_fields"] = json_fields
         kwargs["fields_description"] = fields_description
 
-        task_type = TaskTypes.JSON_SUMMARIZER.value
-        super(JSONSummarizer, self).__init__(**kwargs)
+        task_type = TaskTypes.JSON_INFO_EXTRACTION.value
+        super(JSONInfoExtraction, self).__init__(**kwargs)
 
         self._builder = TaskBuilder(
             language=self.language,
@@ -166,7 +166,7 @@ class JSONSummarizer(BaseUnsupervised):
         self
 
         """
-        super(JSONSummarizer, self).train(examples=[""])
+        super(JSONInfoExtraction, self).train(examples=[""])
 
         return self
 
@@ -231,38 +231,3 @@ class JSONSummarizer(BaseUnsupervised):
             self._is_trained = True
 
         return self
-
-    # @add_docstring_from(BaseUnsupervised.predict)
-    # def predict(self, api_codes: List[str], external_info: dict) -> List[str]:
-    #     """
-    #     Receibe a list of API codes and return a list with the corrected APIs.
-
-    #     Parameters
-    #     ----------
-
-    #     api_codes : List[str]
-
-
-    #     Returns
-    #     -------
-
-    #     List[str]
-
-    #     """
-
-    #     _api_codes = deepcopy(api_codes)
-    #     _api_codes = super(JSONSummarizer, self).predict(examples=_api_codes)
-    #     _api_codes = [self._replace(api) for api in _api_codes]
-    #     _api_codes = [
-    #         self._add_external_information(api, external_info)
-    #         for api in _api_codes
-    #     ]
-    #     return _api_codes
-
-#%%
-# json_summarizer = JSONSummarizer(language="es",
-#                                  json_fields=["summary","sentiment","topic","keywords"],
-#                                  fields_description={"summary":"",
-#                                                      "sentiment":"",
-#                                                      "topic":"",
-#                                                      "keywords":""})

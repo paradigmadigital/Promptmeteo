@@ -29,6 +29,7 @@ from .fake_llm import FakeLLM
 from .hf_hub_api import HFHubApiLLM
 from .hf_pipeline import HFPipelineLLM
 from .google_vertexai import GoogleVertexAILLM
+from .bedrock import BedrockLLM
 
 
 class ModelProvider(str, Enum):
@@ -42,6 +43,7 @@ class ModelProvider(str, Enum):
     PROVIDER_2: str = "hf_hub_api"
     PROVIDER_3: str = "hf_pipeline"
     PROVIDER_4: str = "google-vertexai"
+    PROVIDER_5: str = "bedrock"
 
 
 class ModelFactory:
@@ -57,6 +59,7 @@ class ModelFactory:
         ModelProvider.PROVIDER_2: HFHubApiLLM,
         ModelProvider.PROVIDER_3: HFPipelineLLM,
         ModelProvider.PROVIDER_3: GoogleVertexAILLM,
+        ModelProvider.PROVIDER_5: BedrockLLM
     }
 
     @classmethod
@@ -87,6 +90,9 @@ class ModelFactory:
 
         elif model_provider_name == ModelProvider.PROVIDER_4.value:
             model_cls = GoogleVertexAILLM
+            
+        elif model_provider_name == ModelProvider.PROVIDER_5.value:
+            model_cls = BedrockLLM
 
         else:
             raise ValueError(
