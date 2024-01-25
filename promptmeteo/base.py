@@ -63,7 +63,6 @@ class Base(ABC):
         prompt_detail: Optional[str] = None,
         selector_k: int = 10,
         selector_algorithm: str = "relevance",
-        selector_k_per_class: Optional[int] = 2,
         verbose: bool = False,
         **kwargs,
     ) -> None:
@@ -93,8 +92,6 @@ class Base(ABC):
         prompt_detail : Optional[str]
 
         selector_k : int
-
-        selector_k_per_class: Optional[int]
 
         selector_algorithm : str
 
@@ -130,7 +127,6 @@ class Base(ABC):
         self.prompt_labels: List[str] = prompt_labels or []
         self.prompt_detail: Optional[str] = prompt_detail
         self._selector_k: int = selector_k
-        self._selector_k_per_class: int = selector_k_per_class
         self._selector_algorithm: str = selector_algorithm
         if (
             self._selector_algorithm
@@ -320,7 +316,6 @@ class Base(ABC):
                 model_path=os.path.join(tmp, model_name),
                 selector_type=self.SELECTOR_TYPE,
                 selector_k=self._selector_k,
-                selector_k_per_class=self._selector_k_per_class,
                 selector_algorithm=self._selector_algorithm,
                 input_keys=["__INPUT__"],
                 class_list=self.prompt_labels,
@@ -422,7 +417,6 @@ class BaseSupervised(Base):
             selector_k=self._selector_k,
             selector_type=self.SELECTOR_TYPE,
             selector_algorithm=self._selector_algorithm,
-            selector_k_per_class=self._selector_k_per_class,
         )
 
         self._is_trained = True

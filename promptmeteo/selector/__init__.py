@@ -57,7 +57,6 @@ class SelectorFactory:
         selector_k: int,
         selector_type: str,
         selector_algorithm: str,
-        selector_k_per_class: int = 2,
     ) -> BaseSelector:
         """
         Returns and instance of a BaseSelector object depending on the
@@ -88,5 +87,4 @@ class SelectorFactory:
             embeddings=embeddings,
             selector_k=selector_k,
             selector_algorithm=selector_algorithm,
-            selector_k_per_class=selector_k_per_class,
         )

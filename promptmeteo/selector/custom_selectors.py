@@ -6,6 +6,7 @@ from langchain_core.pydantic_v1 import BaseModel, Extra
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.vectorstores import VectorStore
 from langchain_core.embeddings import Embeddings
+from math import ceil
 
 
 def sorted_values(values: Dict[str, str]) -> List[Any]:
@@ -17,8 +18,8 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
     """Example selector that selects examples based on SemanticSimilarity in a balanced way."""
 
     vectorstore: VectorStore
-    """A vectorstore per class is created"""
-    selector_k_per_class: int = 2
+    """Vectorstore"""
+    selector_k: int = 6
     """Number of examples to select per class."""
     example_keys: Optional[List[str]] = None
     """Optional keys to filter examples to."""
@@ -55,7 +56,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         class_key: str,
         embeddings: Embeddings,
         vectorstore_cls: Type[VectorStore],
-        selector_k_per_class: int = 2,
+        selector_k: int = 6,
         input_keys: Optional[List[str]] = None,
         **vectorstore_cls_kwargs: Any,
     ):
@@ -69,7 +70,6 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
             class_key: key which refers to category field in the example dictionary
             embeddings: An initialized embedding API interface, e.g. OpenAIEmbeddings().
             vectorstore_cls: A vector store DB interface class, e.g. FAISS.
-            selector_k_per_class: Number of examples to select per class
             input_keys: If provided, the search is based on the input variables
                 instead of all variables.
             vectorstore_cls_kwargs: optional kwargs containing url for vector store
@@ -77,8 +77,16 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         Returns:
             The ExampleSelector instantiated, backed by a vector store.
         """
-        # for cl in class_list:
-        # examples_subset = [eg for eg in examples if eg[class_key] == cl]
+        if selector_k < len(set(class_list)):
+            raise ValueError(
+                f"selector_k value is {selector_k} and it is expected to"
+                f"be greater than number of classes ({len(class_list)} classes)"
+                f"for balanced examples selection"
+            )
+        
+        # new_class_list = class_list*ceil(selector_k/len(set(class_list)))[:selector_k]
+        
+        
         if input_keys:
             string_examples = [
                 " ".join(sorted_values({k: eg[k] for k in input_keys}))
@@ -95,7 +103,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         )
         return cls(
             vectorstore=vectorstore,
-            selector_k_per_class=selector_k_per_class,
+            selector_k=selector_k,
             input_keys=input_keys,
             class_list=class_list,
             class_key=class_key,
@@ -104,9 +112,14 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
     def select_examples(self, input_variables: Dict[str, str]) -> List[dict]:
         """Select which examples to use based on semantic similarity."""
         final_examples = []
-
+        new_class_list = self.class_list.copy()
+        random.shuffle(new_class_list)
+        new_class_list =(self.class_list*ceil(self.selector_k/len(set(self.class_list))))[:self.selector_k]
+        
+        dict_k_per_class = {i:new_class_list.count(i) for i in new_class_list}
+        
         # Get the docs with the highest similarity.
-        for cl in self.class_list:
+        for cl,k in dict_k_per_class.items():
             if self.input_keys:
                 input_variables = {
                     key: input_variables[key] for key in self.input_keys
@@ -115,7 +128,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
             query = " ".join(sorted_values(input_variables))
             example_docs = self.vectorstore.similarity_search(
                 query,
-                k=self.selector_k_per_class,
+                k=k,
                 **vectorstore_kwargs,
                 filter={self.class_key: cl},
             )

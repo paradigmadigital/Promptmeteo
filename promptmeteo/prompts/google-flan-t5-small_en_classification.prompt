@@ -25,7 +25,10 @@ TEMPLATE:
     {__PROMPT_LABELS__}
 
     {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}"
+    {__ANSWER_FORMAT__}
+    {__SHOT_EXAMPLES__}
+    {__PROMPT_SAMPLE__}
+    "
 
 
 PROMPT_DOMAIN:
@@ -40,6 +43,11 @@ PROMPT_LABELS:
 PROMPT_DETAIL:
     ""
 
+SHOT_EXAMPLES:
+    "Examples:\n\n{__EXAMPLES__}"
+
+PROMPT_SAMPLE:
+    "\n\n{__SAMPLE__}\n"
 
 CHAIN_THOUGHT:
     ""

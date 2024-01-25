@@ -67,12 +67,10 @@ class BaseSelector(ABC):
         embeddings: Embeddings,
         selector_k: int,
         selector_algorithm: str,
-        selector_k_per_class: Optional[int] = 2,
     ) -> None:
         self._language = language
         self._embeddings = embeddings
         self._selector_k = selector_k
-        self._selector_k_per_class = selector_k_per_class
 
         if selector_algorithm == SelectorAlgorithms.SIMILARITY.value:
             self.selector = SemanticSimilarityExampleSelector
@@ -152,7 +150,7 @@ class BaseSelectorSupervised(BaseSelector):
                 class_key="__OUTPUT__",
                 embeddings=self._embeddings,
                 vectorstore_cls=FAISS,
-                selector_k_per_class=self._selector_k_per_class,
+                selector_k=self._selector_k,
                 input_keys=["__INPUT__"],
             )
         else:
