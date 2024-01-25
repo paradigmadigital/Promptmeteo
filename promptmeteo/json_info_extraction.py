@@ -60,7 +60,7 @@ class JSONInfoExtraction(BaseUnsupervised):
 
         >>> from promptmeteo import JSONInfoExtraction
 
-        >>> JSONInfoExtraction(
+        >>> model = JSONInfoExtraction(
         >>>                  language="es",
         >>>                  fields_description = {
         >>>                         "topic":"Motivo de la llamada",

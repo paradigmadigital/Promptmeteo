@@ -56,6 +56,16 @@ class Summarizer(BaseUnsupervised):
         """
         Example
         -------
+
+        >>> from promptmeteo import Summarizer
+
+        >>> model = Summarizer(
+        >>>                     language="es",
+        >>>                     prompt_domain="A partir del siguiente texto:",
+        >>>                     model_name="anthropic.claude-v2",
+        >>>                     model_provider_name = "bedrock"
+        >>>                    )
+        >>> model.predict([text])
         """
 
         kwargs["labels"] = None
