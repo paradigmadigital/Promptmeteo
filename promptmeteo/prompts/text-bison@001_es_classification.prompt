@@ -25,8 +25,9 @@ TEMPLATE:
     {__PROMPT_LABELS__}
 
     {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}"
-
+    {__ANSWER_FORMAT__}
+    {__SHOT_EXAMPLES__}
+    {__PROMPT_SAMPLE__}"
 
 PROMPT_DOMAIN:
     "Los textos que vas procesar del ambito de {__DOMAIN__}."
@@ -40,6 +41,11 @@ PROMPT_LABELS:
 PROMPT_DETAIL:
     ""
 
+SHOT_EXAMPLES:
+    "Ejemplos:\n\n{__EXAMPLES__}"
+
+PROMPT_SAMPLE:
+    "\n\n{__SAMPLE__}\n"
 
 CHAIN_THOUGHT:
     "Por favor argumenta tu respuesta paso a paso, explica por qué crees que

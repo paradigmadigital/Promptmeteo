@@ -27,8 +27,7 @@ TEMPLATE:
     {__CHAIN_THOUGHT__}
     {__ANSWER_FORMAT__}
     {__SHOT_EXAMPLES__}
-    {__PROMPT_SAMPLE__}
-    "
+    {__PROMPT_SAMPLE__}"
 
 
 PROMPT_DOMAIN:

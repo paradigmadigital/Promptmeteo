@@ -23,10 +23,11 @@ TEMPLATE:
     "Necesito que me ayudes en una tarea de clasificación de texto.
     {__PROMPT_DOMAIN__}
     {__PROMPT_LABELS__}
-    {__SHOT_EXAMPLES__}
 
     {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}"
+    {__ANSWER_FORMAT__}
+    {__SHOT_EXAMPLES__}
+    {__PROMPT_SAMPLE__}"
 
 
 PROMPT_DOMAIN:
@@ -42,7 +43,10 @@ PROMPT_DETAIL:
     ""
 
 SHOT_EXAMPLES:
-    ""
+    "Ejemplos:\n\n{__EXAMPLES__}"
+
+PROMPT_SAMPLE:
+    "\n\n{__SAMPLE__}\n"
 
 CHAIN_THOUGHT:
     "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
