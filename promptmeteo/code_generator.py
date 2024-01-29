@@ -21,7 +21,6 @@
 #  THE SOFTWARE.
 
 from .tasks import TaskTypes
-from .tasks import TaskBuilder
 from .base import BaseSupervised
 from .tools import add_docstring_from
 
@@ -31,6 +30,8 @@ class CodeGenerator(BaseSupervised):
     """
     Code Generator Task.
     """
+
+    TASK_TYPE = TaskTypes.CODE_GENERATION.value
 
     @add_docstring_from(BaseSupervised.__init__)
     def __init__(
@@ -70,32 +71,3 @@ class CodeGenerator(BaseSupervised):
         #                f"{self.__class__.__name__} error in initialization. "
         #                f"argument `prompt_detail` can not be None."
         #            )
-
-        task_type = TaskTypes.CODE_GENERATION.value
-
-        self._builder = TaskBuilder(
-            language=self.language,
-            task_type=task_type,
-            verbose=self.verbose,
-        )
-
-        # Build model
-        self._builder.build_model(
-            model_name=self.model_name,
-            model_provider_name=self.model_provider_name,
-            model_provider_token=self.model_provider_token,
-            model_params=self.model_params,
-        )
-
-        # Build prompt
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
-
-        # Build parser
-        self._builder.build_parser(
-            prompt_labels=self.prompt_labels,
-        )
