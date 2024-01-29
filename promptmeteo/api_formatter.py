@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,13 +29,15 @@ import yaml
 from copy import deepcopy
 from typing import List
 
+from .constants import REST_PROTOCOL
+
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
 from .base import BaseUnsupervised
-from .tasks import TaskTypes, TaskBuilder
+from .tasks import TaskTypes
 from .tools import add_docstring_from
 from .validations import version_validation
 
@@ -45,12 +48,15 @@ class APIFormatter(BaseUnsupervised):
     API Generator Task.
     """
 
-    ALLOWED_PROTOCOLS = ["REST"]
+    TASK_TYPE = TaskTypes.API_CORRECTION.value
+    ALLOWED_PROTOCOLS = [REST_PROTOCOL]
 
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,
-        language,
+        language: str,
+        model_name: str,
+        model_provider_name: str,
         api_version: str,
         api_protocol: str,
         api_style_instructions: List[str] = None,
@@ -110,43 +116,22 @@ class APIFormatter(BaseUnsupervised):
 
         kwargs.setdefault("prompt_detail", api_style_instructions)
 
-        if api_protocol == "REST":
-            kwargs.setdefault("prompt_domain", f"OpenAPI {api_version} REST API YAML.")
+        if api_protocol == REST_PROTOCOL:
+            kwargs.setdefault(
+                "prompt_domain", f"OpenAPI {api_version} REST API YAML."
+            )
 
-        kwargs["labels"] = None
         kwargs["language"] = language
-        kwargs["api_version"] = api_version
-        kwargs["api_protocol"] = api_protocol
-        kwargs["api_style_instructions"] = api_style_instructions
+        kwargs["model_name"] = model_name
+        kwargs["model_provider_name"] = model_provider_name
 
-        task_type = TaskTypes.API_CORRECTION.value
         super(APIFormatter, self).__init__(**kwargs)
-
-        self._builder = TaskBuilder(
-            language=self.language,
-            task_type=task_type,
-            verbose=self.verbose,
-        )
-
-        # Build model
-        self._builder.build_model(
-            model_name=self.model_name,
-            model_provider_name=self.model_provider_name,
-            model_provider_token=self.model_provider_token,
-            model_params=self.model_params,
-        )
-
-        # Build prompt
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
-
-        # Build parser
-        self._builder.build_parser(
-            prompt_labels=self.prompt_labels,
+        self._init_params.update(
+            {
+                "api_version": api_version,
+                "api_protocol": api_protocol,
+                "api_style_instructions": api_style_instructions,
+            }
         )
 
     @add_docstring_from(BaseUnsupervised.train)
@@ -280,6 +265,7 @@ class APIFormatter(BaseUnsupervised):
         ----------
 
         api_codes : List[str]
+        external_info: dict
 
 
         Returns

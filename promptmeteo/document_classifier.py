@@ -28,7 +28,6 @@ except ImportError:
     from typing_extensions import Self
 
 from .tasks import TaskTypes
-from .tasks import TaskBuilder
 from .base import BaseSupervised
 from .tools import add_docstring_from
 
@@ -38,6 +37,8 @@ class DocumentClassifier(BaseSupervised):
     """
     DocumentClassifier Task
     """
+
+    TASK_TYPE = TaskTypes.CLASSIFICATION.value
 
     @add_docstring_from(BaseSupervised.__init__)
     def __init__(
@@ -69,35 +70,6 @@ class DocumentClassifier(BaseSupervised):
 
         super(DocumentClassifier, self).__init__(**kwargs)
 
-        task_type = TaskTypes.CLASSIFICATION.value
-
-        self._builder = TaskBuilder(
-            language=self.language,
-            task_type=task_type,
-            verbose=self.verbose,
-        )
-
-        # Build model
-        self._builder.build_model(
-            model_name=self.model_name,
-            model_provider_name=self.model_provider_name,
-            model_provider_token=self.model_provider_token,
-            model_params=self.model_params,
-        )
-
-        # Build prompt
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
-
-        # Build parser
-        self._builder.build_parser(
-            prompt_labels=self.prompt_labels,
-        )
-
     @add_docstring_from(BaseSupervised.train)
     def train(
         self,
@@ -112,7 +84,7 @@ class DocumentClassifier(BaseSupervised):
 
         if not self.prompt_labels:
             self.prompt_labels = list(set(annotations))
-            self._builder.build_parser(
+            self.builder.build_parser(
                 prompt_labels=self.prompt_labels,
             )
 

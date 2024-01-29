@@ -25,10 +25,12 @@ import tarfile
 import tempfile
 import json
 from abc import ABC
-from inspect import signature
-from typing import List
-from typing import Dict
-from typing import Optional
+from typing import (
+    List,
+    Any,
+    Dict,
+    Optional,
+)
 
 try:
     from typing import Self
@@ -48,6 +50,7 @@ class Base(ABC):
                                          - Padme Amidala, mother of Leia -
     """
 
+    TASK_TYPE: str = ""
     SELECTOR_TYPE: str = ""
 
     def __init__(
@@ -103,20 +106,21 @@ class Base(ABC):
         None
         """
 
-        _init_params: dict = {}
-        _local = locals()
+        self._init_params: Dict[str, Any] = {
+            "language": language,
+            "model_name": model_name,
+            "model_provider_name": model_provider_name,
+            "model_provider_token": model_provider_token,
+            "model_params": model_params,
+            "prompt_domain": prompt_domain,
+            "prompt_labels": prompt_labels,
+            "prompt_detail": prompt_detail,
+            "selector_k": selector_k,
+            "selector_algorithm": selector_algorithm,
+            "verbose": verbose,
+        }
+        self._init_params.update(kwargs)
 
-        for param in signature(self.__class__).parameters:
-            if "kwargs" in param:
-                continue
-            _init_params[param] = _local.get(param, kwargs.get(param))
-
-        for param in signature(Base).parameters:
-            if "kwargs" in param:
-                continue
-            _init_params[param] = _local.get(param, kwargs.get(param))
-
-        self._init_params: dict = _init_params
         self.language: str = language
         self.model_name: str = model_name
         self.model_provider_name: str = model_provider_name
@@ -133,13 +137,48 @@ class Base(ABC):
         self._is_trained = False
 
     @property
+    def init_params(self):
+        return self._init_params
+
+    @property
     def builder(
         self,
     ) -> TaskBuilder:
         """
         Get TaskBuilder.
         """
+        if self._builder is None:
+            self._builder = self.create_builder()
         return self._builder
+
+    def create_builder(self) -> TaskBuilder:
+        builder = TaskBuilder(
+            language=self.language,
+            task_type=self.TASK_TYPE,
+            verbose=self.verbose,
+        )
+
+        # Build model
+        builder.build_model(
+            model_name=self.model_name,
+            model_provider_name=self.model_provider_name,
+            model_provider_token=self.model_provider_token,
+            model_params=self.model_params,
+        )
+
+        # Build prompt
+        builder.build_prompt(
+            model_name=self.model_name,
+            prompt_domain=self.prompt_domain,
+            prompt_labels=self.prompt_labels,
+            prompt_detail=self.prompt_detail,
+        )
+
+        # Build parser
+        builder.build_parser(
+            prompt_labels=self.prompt_labels,
+        )
+        return builder
 
     @property
     def task(
@@ -148,7 +187,7 @@ class Base(ABC):
         """
         Get Task.
         """
-        return self._builder.task
+        return self.builder.task
 
     @property
     def is_trained(
@@ -247,7 +286,7 @@ class Base(ABC):
 
             init_tmp_path = f"{tmp_path}.init"
             with open(init_tmp_path, mode="w") as f:
-                json.dump(self._init_params, f)
+                json.dump(self.init_params, f)
 
             with tarfile.open(model_path, mode="w:gz") as tar:
                 tar.add(tmp_path, arcname=model_name)
@@ -302,16 +341,18 @@ class Base(ABC):
             with open(init_tmp_path) as f:
                 self = cls(**json.load(f))
 
-            self.builder.build_selector_by_load(
-                model_path=os.path.join(tmp, model_name),
-                selector_type=self.SELECTOR_TYPE,
-                selector_k=self._selector_k,
-                selector_algorithm=self._selector_algorithm,
-            )
+            self._load_builder(model_path=os.path.join(tmp, model_name))
 
             self._is_trained = True
 
         return self
+
+    def _load_builder(self, **kwargs) -> TaskBuilder:
+        kwargs.setdefault("selector_type", self.SELECTOR_TYPE)
+        kwargs.setdefault("selector_k", self._selector_k)
+        kwargs.setdefault("selector_algorithm", self._selector_algorithm)
+
+        return self.builder.build_selector_by_load(**kwargs)
 
 
 class BaseSupervised(Base):

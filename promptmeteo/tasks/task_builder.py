@@ -21,9 +21,11 @@
 #  THE SOFTWARE.
 
 from enum import Enum
-from typing import List
-from typing import Dict
-from typing import Optional
+from typing import (
+    List,
+    Dict,
+    Optional,
+)
 
 try:
     from typing import Self

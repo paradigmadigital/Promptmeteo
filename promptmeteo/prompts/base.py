@@ -26,7 +26,6 @@ from typing import List
 
 import yaml
 from langchain.prompts import PromptTemplate
-from langchain.prompts.pipeline import PipelinePromptTemplate
 
 
 class BasePrompt(ABC):
@@ -104,7 +103,6 @@ class BasePrompt(ABC):
         return self.run().format(
             __SAMPLE__="{__SAMPLE__}", __EXAMPLES__="{__EXAMPLES__}"
         )
-
 
     @classmethod
     def read_prompt(
