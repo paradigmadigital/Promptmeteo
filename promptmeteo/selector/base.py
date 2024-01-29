@@ -117,14 +117,9 @@ class BaseSelector(ABC):
             self._embeddings,
         )
 
-        if self.selector == BalancedSemanticSamplesSelector:
-            self._selector = self.selector(
-                vectorstore=vectorstore, k=self._selector_k, **kwargs
-            )
-        else:
-            self._selector = self.selector(
-                vectorstore=vectorstore, k=self._selector_k
-            )
+        self._selector = self.selector(
+            vectorstore=vectorstore, k=self._selector_k, **kwargs
+        )
 
         return self
 
@@ -150,7 +145,7 @@ class BaseSelectorSupervised(BaseSelector):
                 class_key="__OUTPUT__",
                 embeddings=self._embeddings,
                 vectorstore_cls=FAISS,
-                selector_k=self._selector_k,
+                k=self._selector_k,
                 input_keys=["__INPUT__"],
             )
         else:

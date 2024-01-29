@@ -19,7 +19,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
 
     vectorstore: VectorStore
     """Vectorstore"""
-    selector_k: int = 6
+    k: int = 6
     """Number of examples to select per class."""
     example_keys: Optional[List[str]] = None
     """Optional keys to filter examples to."""
@@ -56,7 +56,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         class_key: str,
         embeddings: Embeddings,
         vectorstore_cls: Type[VectorStore],
-        selector_k: int = 6,
+        k: int = 6,
         input_keys: Optional[List[str]] = None,
         **vectorstore_cls_kwargs: Any,
     ):
@@ -77,14 +77,14 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         Returns:
             The ExampleSelector instantiated, backed by a vector store.
         """
-        if selector_k < len(set(class_list)):
+        if k < len(set(class_list)):
             raise ValueError(
-                f"selector_k value is {selector_k} and it is expected to"
+                f"k value is {k} and it is expected to"
                 f"be greater than number of classes ({len(class_list)} classes)"
                 f"for balanced examples selection"
             )
         
-        # new_class_list = class_list*ceil(selector_k/len(set(class_list)))[:selector_k]
+        # new_class_list = class_list*ceil(k/len(set(class_list)))[:k]
         
         
         if input_keys:
@@ -103,7 +103,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         )
         return cls(
             vectorstore=vectorstore,
-            selector_k=selector_k,
+            k=k,
             input_keys=input_keys,
             class_list=class_list,
             class_key=class_key,
@@ -114,7 +114,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         final_examples = []
         new_class_list = self.class_list.copy()
         random.shuffle(new_class_list)
-        new_class_list =(self.class_list*ceil(self.selector_k/len(set(self.class_list))))[:self.selector_k]
+        new_class_list =(self.class_list*ceil(self.k/len(set(self.class_list))))[:self.k]
         
         dict_k_per_class = {i:new_class_list.count(i) for i in new_class_list}
         
