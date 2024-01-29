@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from string import Formatter
 
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
@@ -20,9 +19,6 @@ from string import Formatter
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
-
-from langchain.prompts.prompt import PromptTemplate
-from langchain.prompts.pipeline import PipelinePromptTemplate
 
 from ..models import BaseModel
 from ..prompts import BasePrompt
