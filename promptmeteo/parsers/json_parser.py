@@ -30,7 +30,7 @@ import json
 class JSONParser(BaseParser):
 
     """
-    Parser for the classification task.
+    Parser for potential JSON outputs
     """
 
     def run(
