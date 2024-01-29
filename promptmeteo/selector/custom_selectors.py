@@ -83,9 +83,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
                 f"be greater than number of classes ({len(class_list)} classes)"
                 f"for balanced examples selection"
             )
-        
-        # new_class_list = class_list*ceil(k/len(set(class_list)))[:k]
-        
+                
         
         if input_keys:
             string_examples = [
