@@ -65,7 +65,7 @@ class ModelEnum(Enum):
 
         client = Bedrock
         embedding = HuggingFaceEmbeddings
-        boto3_bedrock = boto3.client('bedrock-runtime')
+        boto3_bedrock = boto3.client('bedrock-runtime', region_name="us-east-1")
         model_task: str = "text2text-generation"
         params: dict = {
             'max_tokens_to_sample': 2048,
