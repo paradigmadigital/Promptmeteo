@@ -46,11 +46,11 @@ class JSONInfoExtraction(BaseUnsupervised):
     """
     Task for information extraction from text in JSON format.
     """
+    TASK_TYPE = TaskTypes.JSON_INFO_EXTRACTION.value
 
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,
-        language,
         fields_description: dict,
         **kwargs,
     ) -> None:
@@ -75,41 +75,17 @@ class JSONInfoExtraction(BaseUnsupervised):
 
         >>> model.predict(text)
         """
-
-        kwargs["labels"] = None
-        kwargs["language"] = language
         kwargs["fields_description"] = fields_description
 
-        task_type = TaskTypes.JSON_INFO_EXTRACTION.value
         super(JSONInfoExtraction, self).__init__(**kwargs)
-
-        self._builder = TaskBuilder(
-            language=self.language,
-            task_type=task_type,
-            verbose=self.verbose,
-        )
-
-        # Build model
-        self._builder.build_model(
-            model_name=self.model_name,
-            model_provider_name=self.model_provider_name,
-            model_provider_token=self.model_provider_token,
-            model_params=self.model_params,
-        )
-
-        # Building prompt
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
+        
         
         # Setting the prompt description according to necessities
         prompt_detail = PromptTemplate.from_template(self.task.prompt.PROMPT_DETAIL)
         if len(set(prompt_detail.input_variables).intersection(set(["__FIELDS_DESCRIPTION__","__FIELDS__"]))) != 2:
             raise RuntimeError("Prompt file misses fields __FIELDS_DESCRIPTION__ or __FIELDS__")
         
+        # Building description to inject in the prompt
         description_fields_str = "\n".join([f"{i+1}. {description} ({field})" 
                                             for i,field,description in 
                                             zip(range(len(fields_description)), 
@@ -117,6 +93,7 @@ class JSONInfoExtraction(BaseUnsupervised):
         prompt_detail = prompt_detail.format(__FIELDS__=",".join([i for i in fields_description.keys()]),
                         __FIELDS_DESCRIPTION__=description_fields_str)
         
+        # Setting the prompt detail field
         self.prompt_detail = prompt_detail
         self._builder.build_prompt(
             model_name=self.model_name,
@@ -125,13 +102,6 @@ class JSONInfoExtraction(BaseUnsupervised):
             prompt_detail=self.prompt_detail,
         )
         self.builder.task.prompt.PROMPT_DETAIL = prompt_detail
-        ##
-        # Build parser
-        self._builder.build_parser(
-            prompt_labels=self.prompt_labels,
-        )
-        
-
         
         
 

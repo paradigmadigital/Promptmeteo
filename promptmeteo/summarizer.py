@@ -46,11 +46,11 @@ class Summarizer(BaseUnsupervised):
     """
     Class for text summarization
     """
+    TASK_TYPE = TaskTypes.SUMMARIZATION.value
+        
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,
-        prompt_domain,
-        language,
         **kwargs,
     ) -> None:
         """
@@ -67,42 +67,8 @@ class Summarizer(BaseUnsupervised):
         >>>                    )
         >>> model.predict([text])
         """
-
-        kwargs["labels"] = None
-        kwargs["language"] = language
-        kwargs["prompt_domain"] = prompt_domain
-
-
-        task_type = TaskTypes.SUMMARIZATION.value
         super(Summarizer, self).__init__(**kwargs)
 
-        self._builder = TaskBuilder(
-            language=self.language,
-            task_type=task_type,
-            verbose=self.verbose,
-        )
-
-        # Build model
-        self._builder.build_model(
-            model_name=self.model_name,
-            model_provider_name=self.model_provider_name,
-            model_provider_token=self.model_provider_token,
-            model_params=self.model_params,
-        )
-
-        # Building prompt
-        self._builder.build_prompt(
-            model_name=self.model_name,
-            prompt_domain=self.prompt_domain,
-            prompt_labels=self.prompt_labels,
-            prompt_detail=self.prompt_detail,
-        )
-        
-        ##
-        # Build parser
-        self._builder.build_parser(
-            prompt_labels=self.prompt_labels,
-        )
         
 
         
