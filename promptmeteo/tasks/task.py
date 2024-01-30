@@ -164,6 +164,10 @@ class Task:
         else:
             examples = ""
 
+        # eliminamos todos los signos de puntuación y lo convertimos a minúsculas
+        import string
+        sample = sample.translate(str.maketrans("", "", string.punctuation)).lower()
+
         variables = dict(__SAMPLE__=sample, __EXAMPLES__=examples)
 
         final_prompt = intro_prompt.format(
