@@ -40,6 +40,7 @@ except ImportError:
 from .tasks import Task
 from .tasks import TaskBuilder
 from .tools import add_docstring_from
+from .selector.base import SelectorAlgorithms
 
 
 class Base(ABC):
@@ -131,6 +132,15 @@ class Base(ABC):
         self.prompt_detail: Optional[str] = prompt_detail
         self._selector_k: int = selector_k
         self._selector_algorithm: str = selector_algorithm
+        if (
+            self._selector_algorithm
+            == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value
+        ) and (self.__class__.__name__ != "DocumentClassifier"):
+            raise ValueError(
+                f"{self.__class__.__name__} error in function `__init__`. "
+                f"Selector algorithm {self._selector_algorithm} "
+                f"is only valid for DocumentClassifier models"
+            )
         self.verbose: bool = verbose
 
         self._builder = None
@@ -351,6 +361,9 @@ class Base(ABC):
         kwargs.setdefault("selector_type", self.SELECTOR_TYPE)
         kwargs.setdefault("selector_k", self._selector_k)
         kwargs.setdefault("selector_algorithm", self._selector_algorithm)
+        kwargs.setdefault("input_keys", ["__INPUT__"]),
+        kwargs.setdefault("class_list", self.prompt_labels)
+        kwargs.setdefault("class_key", "__OUTPUT__")
 
         return self.builder.build_selector_by_load(**kwargs)
 

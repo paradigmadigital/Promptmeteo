@@ -180,6 +180,7 @@ class TaskBuilder:
         selector_k: int,
         selector_type: str,
         selector_algorithm: str,
+        **kwargs,
     ) -> Self:
         """
         Builds the selector for the task by loading a pretrained selector.
@@ -206,6 +207,6 @@ class TaskBuilder:
             selector_k=selector_k,
             selector_type=selector_type,
             selector_algorithm=selector_algorithm,
-        ).load_example_selector(model_path=model_path)
+        ).load_example_selector(model_path=model_path, **kwargs)
 
         return self

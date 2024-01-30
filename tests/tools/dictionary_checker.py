@@ -9,7 +9,7 @@ module_dir = os.path.abspath(os.path.join(__file__, os.path.pardir))
 class DictionaryChecker:
     ADDED_WORDS = {
         "en": {"openapi": 1, "api": 1, "schema": 1, "schemas": 1},
-        "es": {"openapi": 1, "api": 1},
+        "es": {"openapi": 1, "api": 1, "sample":1, "examples":1},
     }
 
     def __init__(self, language: str):

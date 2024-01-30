@@ -30,6 +30,7 @@ from langchain.embeddings.base import Embeddings
 from .base import BaseSelector
 from .base import BaseSelectorSupervised
 from .base import BaseSelectorUnsupervised
+from .base import SelectorAlgorithms
 
 
 class SelectorTypes(str, Enum):
@@ -66,6 +67,12 @@ class SelectorFactory:
             selector_cls = BaseSelectorSupervised
 
         elif selector_type == SelectorTypes.UNSUPERVISED.value:
+            if selector_algorithm == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value:
+                raise ValueError(
+                f"{cls.__name__} error in class method `factory_method`. "
+                f"Selector algorithm {selector_algorithm} "
+                f"is only valid for DocumentClassifier models"
+            )
             selector_cls = BaseSelectorUnsupervised
 
         else:

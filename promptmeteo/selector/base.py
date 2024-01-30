@@ -39,6 +39,7 @@ from langchain.prompts.example_selector import (
     SemanticSimilarityExampleSelector,
     MaxMarginalRelevanceExampleSelector,
 )
+from .custom_selectors import BalancedSemanticSamplesSelector
 
 
 class SelectorAlgorithms(str, Enum):
@@ -49,6 +50,7 @@ class SelectorAlgorithms(str, Enum):
 
     RELEVANCE: str = "relevance"
     SIMILARITY: str = "similarity"
+    SIMILARITY_CLASS_BALANCED: str = "similarity_class_balanced"
 
 
 class BaseSelector(ABC):
@@ -76,6 +78,12 @@ class BaseSelector(ABC):
         elif selector_algorithm == SelectorAlgorithms.RELEVANCE.value:
             self.selector = MaxMarginalRelevanceExampleSelector
 
+        elif (
+            selector_algorithm
+            == SelectorAlgorithms.SIMILARITY_CLASS_BALANCED.value
+        ):
+            self.selector = BalancedSemanticSamplesSelector
+
         else:
             raise ValueError(
                 f"`{self.__class__.__name__}` error in __init__. "
@@ -99,10 +107,7 @@ class BaseSelector(ABC):
         """
         return self.run("").format(__INPUT__="{__INPUT__}")
 
-    def load_example_selector(
-        self,
-        model_path: str,
-    ) -> Self:
+    def load_example_selector(self, model_path: str, **kwargs) -> Self:
         """
         Load a vectorstore database from a disk file
         """
@@ -112,10 +117,14 @@ class BaseSelector(ABC):
             self._embeddings,
         )
 
-        self._selector = self.selector(
-            vectorstore=vectorstore,
-            k=self._selector_k,
-        )
+        if self.selector == BalancedSemanticSamplesSelector:
+            self._selector = self.selector(
+                vectorstore=vectorstore, k=self._selector_k, **kwargs
+            )
+        else:
+            self._selector = self.selector(
+                vectorstore=vectorstore, k=self._selector_k
+            )
 
         return self
 
@@ -134,13 +143,23 @@ class BaseSelectorSupervised(BaseSelector):
             {"__INPUT__": example, "__OUTPUT__": annotation}
             for example, annotation in zip(examples, annotations)
         ]
-
-        self._selector = self.selector.from_examples(
-            examples=examples,
-            embeddings=self._embeddings,
-            vectorstore_cls=FAISS,
-            k=self._selector_k,
-        )
+        if self.selector == BalancedSemanticSamplesSelector:
+            self._selector = self.selector.from_examples(
+                examples=examples,
+                class_list=list(set(annotations)),
+                class_key="__OUTPUT__",
+                embeddings=self._embeddings,
+                vectorstore_cls=FAISS,
+                k=self._selector_k,
+                input_keys=["__INPUT__"],
+            )
+        else:
+            self._selector = self.selector.from_examples(
+                examples=examples,
+                embeddings=self._embeddings,
+                vectorstore_cls=FAISS,
+                k=self._selector_k,
+            )
 
         return self
 
