@@ -20,7 +20,7 @@
 
 
 TEMPLATE:
-    "I need you to help me with a text classification task.
+    "Necesito que me ayudes en una tarea de clasificación de texto.
     {__PROMPT_DOMAIN__}
     {__PROMPT_LABELS__}
 
@@ -31,11 +31,11 @@ TEMPLATE:
 
 
 PROMPT_DOMAIN:
-    "The texts you will be processing are from the {__DOMAIN__} domain."
+    "Los textos que vas procesar del ámbito de {__DOMAIN__}."
 
 
 PROMPT_LABELS:
-    "I want you to classify the texts into one of the following categories:
+    "Quiero que me clasifiques los textos una de las siguientes categorías:
     {__LABELS__}."
 
 
@@ -43,19 +43,15 @@ PROMPT_DETAIL:
     ""
 
 SHOT_EXAMPLES:
-    "Examples:\n\n{__EXAMPLES__}"
+    "Ejemplos:\n\n{__EXAMPLES__}"
 
 PROMPT_SAMPLE:
     "\n\n{__SAMPLE__}\n"
 
 CHAIN_THOUGHT:
-    "Please provide a step-by-step argument for your answer, explain why you
-    believe your final choice is justified, and make sure to conclude your
-    explanation with the name of the class you have selected as the correct
-    one, in lowercase and without punctuation."
+    ""
 
 
 ANSWER_FORMAT:
-    "In your response, include only the name of the class as a single word, in
-    lowercase, without punctuation, and without adding any other statements or
-    words."
+    "En tu respuesta incluye sólo el nombre de la clase, como una única
+    palabra."

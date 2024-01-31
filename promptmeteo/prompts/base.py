@@ -202,11 +202,8 @@ class BasePrompt(ABC):
             if isinstance(self._prompt_detail, list)
             else self._prompt_detail
         )
-        prompt_variables["__PROMPT_DETAIL__"] = (
-            self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
-            if self._prompt_detail
-            else self.PROMPT_DETAIL
-        )
+        prompt_variables["__PROMPT_DETAIL__"] = self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
+
 
         return PromptTemplate.from_template(
             PromptTemplate.from_template(self.TEMPLATE).format(
