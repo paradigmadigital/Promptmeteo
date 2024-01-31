@@ -204,7 +204,23 @@ HUGGINGFACEHUB_API_TOKEN="MY_HF_API_KEY"
 
 You can also pass `huggingfacehub_api_token` as a named parameter.
 
+#### AWS Bedrock
+Create your access keys in security credentials of your user in AWS.
 
+Then write in the files ```~/.aws/config``` and ````~/.aws/credentials```` for Linux and MacOS or ````%USERPROFILE%\.aws\config```` and ````%USERPROFILE%\.aws\credentials```` for Windows:
+
+In credentials:
+```shell
+[default]
+aws_access_key_id = <YOUR_CREATED_AWS_KEY>
+aws_secret_access_key = <YOUR_CREATED_AWS_SECRET_KEY>
+```
+
+In config:
+```shell
+[default]
+region = <AWS_REGION>
+```
 
 ### ⚙️ Install locally
 
@@ -238,6 +254,7 @@ The current available tasks in Promptmeteo are:
 | `CodeGenerator`      | Code generation                   |
 | `ApiGenerator`       | API REST generation               |
 | `ApiFormatter`       | API REST correction               |
+| `Summarizer`         | Text summarization                |
 
 ### ✅ Available Model
 
@@ -259,3 +276,5 @@ The current available `model_name` and `language` values are:
 | google         | text-bison@001       |    en    |
 | google         | text-bison-32k       |    es    |
 | google         | text-bison-32k       |    en    |
+| bedrock        | anthropic.claude-v2  |    en    |
+| bedrock        | anthropic.claude-v2  |    es    |
