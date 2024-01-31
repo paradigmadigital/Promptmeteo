@@ -189,7 +189,7 @@ class BasePrompt(ABC):
         prompt_variables["__PROMPT_LABELS__"] = (
             self.PROMPT_LABELS.format(__LABELS__=prompt_labels)
             if self._prompt_labels
-            else self.PROMPT_LABELS
+            else ""
         )
 
         # Domain

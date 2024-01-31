@@ -31,7 +31,7 @@ TEMPLATE:
 
 
 PROMPT_DOMAIN:
-    "Los textos que vas procesar del ambito de {__DOMAIN__}."
+    "Los textos que vas procesar del ámbito de {__DOMAIN__}."
 
 
 PROMPT_LABELS:
