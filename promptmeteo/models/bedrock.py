@@ -65,7 +65,6 @@ class ModelEnum(Enum):
 
         client = Bedrock
         embedding = HuggingFaceEmbeddings
-        boto3_bedrock = boto3.client('bedrock-runtime', region_name="us-east-1")
         model_task: str = "text2text-generation"
         params: dict = {
             'max_tokens_to_sample': 2048,
@@ -87,6 +86,7 @@ class BedrockLLM(BaseModel):
         model_name: Optional[str] = "",
         model_params: Optional[Dict] = None,
         model_provider_token: Optional[str] = "",
+        **kwargs
     ) -> None:
         """
         Make predictions using a model from OpenAI.
@@ -98,7 +98,7 @@ class BedrockLLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.name for i in ModelTypes]}"
             )
-
+        boto3_bedrock = boto3.client('bedrock-runtime', **kwargs)
         super(BedrockLLM, self).__init__()
 
         # Model name
@@ -117,7 +117,7 @@ class BedrockLLM(BaseModel):
         self._llm = ModelEnum[model].value.client(
             model_id=model_name,
             model_kwargs=self.model_params,
-            client =  ModelEnum[model].value.boto3_bedrock
+            client =  boto3_bedrock
         )
 
         embedding_name = "sentence-transformers/all-MiniLM-L6-v2"
