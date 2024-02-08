@@ -66,7 +66,8 @@ class TestModels:
             BedrockLLM(
                 model_name=model_name.value,
                 model_params={},
-                model_provider_token="TEST_TOKEN"
+                model_provider_token="TEST_TOKEN",
+                region_name="us-east-1"
             )
             
             with pytest.raises(ValueError) as error:
