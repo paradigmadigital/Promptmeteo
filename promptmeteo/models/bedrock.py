@@ -98,7 +98,7 @@ class BedrockLLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.name for i in ModelTypes]}"
             )
-        boto3_bedrock = boto3.client('bedrock-runtime', **kwargs)
+        self.boto3_bedrock = boto3.client('bedrock-runtime', **kwargs)
         super(BedrockLLM, self).__init__()
 
         # Model name
@@ -117,7 +117,7 @@ class BedrockLLM(BaseModel):
         self._llm = ModelEnum[model].value.client(
             model_id=model_name,
             model_kwargs=self.model_params,
-            client =  boto3_bedrock
+            client =  self.boto3_bedrock
         )
 
         embedding_name = "sentence-transformers/all-MiniLM-L6-v2"
