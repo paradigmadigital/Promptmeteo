@@ -20,42 +20,32 @@
 
 
 TEMPLATE:
-    "Necesito que me ayudes en una tarea de clasificación de texto.
-    {__PROMPT_DOMAIN__}
-    {__PROMPT_LABELS__}
-
+    "Human: {__PROMPT_DOMAIN__}
+    {__PROMPT_SAMPLE__}
+    {__PROMPT_DETAIL__}
     {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}
-    {__SHOT_EXAMPLES__}
-    {__PROMPT_SAMPLE__}"
-
-
-PROMPT_DOMAIN:
-    "Los textos que vas procesar del ámbito de {__DOMAIN__}."
-
-
-PROMPT_LABELS:
-    "Quiero que me clasifiques los textos una de las siguientes categorías:
-    {__LABELS__}."
-
-
-PROMPT_DETAIL:
-    ""
-
-SHOT_EXAMPLES:
-    "Ejemplos:\n\n{__EXAMPLES__}"
+    {__ANSWER_FORMAT__}"
 
 PROMPT_SAMPLE:
-    "\n\n{__SAMPLE__}\n"
+    "
+    \n\"{__SAMPLE__}\"\n
+    "
+
+PROMPT_DOMAIN:
+    "{__DOMAIN__}"
+
+PROMPT_DETAIL:
+    "
+    Basado en el segmento de texto, por favor genera un resumen preciso y no invente información.
+
+    Assistant: A continuación muestro el resumen:
+    "
+
+SHOT_EXAMPLES:
+    ""
 
 CHAIN_THOUGHT:
-    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
-    está justificada tu elección final, y asegúrate de que acabas tu
-    explicación con el nombre de la clase que has escogido como la
-    correcta, en minúscula y sin puntuación."
-
+    ""
 
 ANSWER_FORMAT:
-    "En tu respuesta incluye sólo el nombre de la clase, como una única
-    palabra, en minúscula, sin puntuación, y sin añadir ninguna otra
-    afirmación o palabra."
+    ""

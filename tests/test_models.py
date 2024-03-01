@@ -57,6 +57,34 @@ class TestModels:
         )
         assert error.value.args[0] == invalid_provider
 
+
+    def test_model_bedrock(self):
+        from promptmeteo.models.bedrock import BedrockLLM
+        from promptmeteo.models.bedrock import ModelTypes
+        
+        for model_name in ModelTypes:
+            BedrockLLM(
+                model_name=model_name.value,
+                model_params={},
+                model_provider_token="TEST_TOKEN",
+                region_name="us-east-1"
+            )
+            
+            with pytest.raises(ValueError) as error:
+                BedrockLLM(
+                    model_name="WRONG_NAME",
+                    model_params={},
+                    model_provider_token="TEST_TOKEN",
+                    region_name="us-east-1"
+                )
+                
+            invalid_provider = (
+            "`model_name`=WRONG_NAME not in supported model names: "
+            f"{[i.name for i in ModelTypes]}"
+        )
+        assert error.value.args[0] == invalid_provider
+
+
     def test_model_fakellm(self):
         from promptmeteo.models.fake_llm import ModelTypes
         from promptmeteo.models.fake_llm import FakeLLM

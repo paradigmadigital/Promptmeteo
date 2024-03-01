@@ -193,11 +193,8 @@ class BasePrompt(ABC):
         )
 
         # Domain
-        prompt_variables["__PROMPT_DOMAIN__"] = (
-            self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
-            if self._prompt_domain
-            else ""
-        )
+        prompt_variables["__PROMPT_DOMAIN__"] = self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
+
 
         # Detail
         prompt_detail = (
@@ -205,11 +202,8 @@ class BasePrompt(ABC):
             if isinstance(self._prompt_detail, list)
             else self._prompt_detail
         )
-        prompt_variables["__PROMPT_DETAIL__"] = (
-            self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
-            if self._prompt_detail
-            else ""
-        )
+        prompt_variables["__PROMPT_DETAIL__"] = self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
+
 
         return PromptTemplate.from_template(
             PromptTemplate.from_template(self.TEMPLATE).format(

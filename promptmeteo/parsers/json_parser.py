@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,44 +20,48 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-
-TEMPLATE:
-    "Necesito que me ayudes en una tarea de clasificación de texto.
-    {__PROMPT_DOMAIN__}
-    {__PROMPT_LABELS__}
-
-    {__CHAIN_THOUGHT__}
-    {__ANSWER_FORMAT__}
-    {__SHOT_EXAMPLES__}
-    {__PROMPT_SAMPLE__}"
+from typing import List
+import re
+from .base import BaseParser
+import regex
+import json
 
 
-PROMPT_DOMAIN:
-    "Los textos que vas procesar del ámbito de {__DOMAIN__}."
+class JSONParser(BaseParser):
 
+    """
+    Parser for potential JSON outputs
+    """
 
-PROMPT_LABELS:
-    "Quiero que me clasifiques los textos una de las siguientes categorías:
-    {__LABELS__}."
+    def run(
+        self,
+        text: str,
+    ) -> List[str]:
+        """
+        Given a response string from an LLM, returns the response expected for
+        the task.
+        """
 
+        try:
+            json_output = self._preprocess(text)
+            json_obtanaied = json.loads(json_output)
+            return json_output
+        except:
+            return ""
+            
 
-PROMPT_DETAIL:
-    ""
+    def _preprocess(
+        self,
+        text: str,
+    ) -> str:
+        """
+        Preprocess output string before parsing result to solve common mistakes
+        such as end-of-line presence and beginning and finishing with empty
+        space.
+        """
+        pattern = regex.compile(r'\{(?:[^{}]|(?R))*\}')
+        str_json = pattern.findall(text)[0]
+        
+        str_json = str_json.replace("'",'"')
 
-SHOT_EXAMPLES:
-    "Ejemplos:\n\n{__EXAMPLES__}"
-
-PROMPT_SAMPLE:
-    "\n\n{__SAMPLE__}\n"
-
-CHAIN_THOUGHT:
-    "Por favor argumenta tu respuesta paso a paso, explica por qué crees que
-    está justificada tu elección final, y asegúrate de que acabas tu
-    explicación con el nombre de la clase que has escogido como la
-    correcta, en minúscula y sin puntuación."
-
-
-ANSWER_FORMAT:
-    "En tu respuesta incluye sólo el nombre de la clase, como una única
-    palabra, en minúscula, sin puntuación, y sin añadir ninguna otra
-    afirmación o palabra."
+        return str_json
