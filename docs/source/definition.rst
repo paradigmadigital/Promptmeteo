@@ -7,7 +7,7 @@ LLMs have the capability to address various tasks when provided with specific in
 
 Firstly, prompts typically encapsulate application logic in their definition, yet they are treated merely as input arguments. This means that a poorly formulated prompt input has the potential to disrupt the application.
 
-Secondly, crafting concrete prompts for each task is not only a laborious task but also a complex one. Minor alterations in the input prompt can result in different outcomes, rendering them highly error-prone. Additionally, when composing prompts, considerations extend beyond the task itself to include factors such as the specific LLM being used, the model's capacity, and other relevant aspects.
+Secondly, crafting specific prompts for each task is not only a laborious task but also a complex one. Minor alterations in the input prompt can result in different outcomes, rendering them highly error-prone. Additionally, when composing prompts, considerations extend beyond the task itself to include factors such as the specific LLM being used, the model's capacity, and other relevant aspects.
 
 🚀 How do we do it?
 ------
