@@ -38,9 +38,54 @@ from .validations import version_validation
 
 
 class APIGenerator(BaseSupervised):
-
     """
     API Generator Task.
+
+    This class initializes the APIGenerator Task to create APIs based on descriptions.
+
+    Parameters
+    ----------
+    language : str
+        Language for the API descriptions.
+    model_name : str
+        Name of the model to be used for API generation.
+    model_provider_name : str
+        Name of the model provider.
+    api_version : str
+        Version of the API.
+    api_protocol : str
+        Protocol of the API.
+    api_style_instructions : Optional[List[str]]
+        Instructions for API style.
+    **kwargs : dict
+        Additional keyword arguments.
+
+    Raises
+    ------
+    ValueError
+        If `api_protocol` is not in the allowed protocols or if `api_version`
+        is not in the correct format.
+
+    Example
+    -------
+    >>> from promptmeteo import APIGenerator
+    >>> model = APIGenerator(
+    >>>     language='en',
+    >>>     selector_k=5,
+    >>>     api_version='3.0.3',
+    >>>     api_protocol='REST',
+    >>>     api_style_instructions=[
+    >>>         'Use always camel case.',
+    >>>         'Do not use acronyms.'
+    >>>     ],
+    >>>     model_provider_name='openai',
+    >>>     model_name='gpt-3.5-turbo-16k',
+    >>>     model_provider_token=model_token,
+    >>> )
+
+    >>> model.train(api_description, api_code)
+
+    >>> model.predict("API for managing account access")
     """
 
     TASK_TYPE = TaskTypes.API_GENERATION.value
@@ -57,30 +102,6 @@ class APIGenerator(BaseSupervised):
         api_style_instructions: Optional[List[str]],
         **kwargs,
     ) -> None:
-        """
-        The default value for `selector_k` is 5
-
-        Example
-        -------
-
-        >>> from promptmeteo import APIGenerator
-
-        >>> model = APIGenerator(
-        >>>     language='en',
-        >>>     selector_k=5,
-        >>>     api_version = '3.0.3',
-        >>>     api_protocol = 'REST',
-        >>>     api_style_instructions = [
-        >>>         'Use always camel case.',
-        >>>         'Do not use acronyms.'
-        >>>         ],
-        >>>     model_provider_name='openai',
-        >>>     model_name='gpt-3.5-turbo-16k',
-        >>>     model_provider_token=model_token,
-        >>>     )
-
-        >>> model.predict("API for managing account access")
-        """
 
         kwargs.setdefault("selector_k", 5)
 
@@ -133,21 +154,19 @@ class APIGenerator(BaseSupervised):
         api_codes: List[str],
     ) -> Self:
         """
-        Train the APIGenerator from a list of APIs and its descriptions.
+        Train the APIGenerator from a list of APIs descriptions and contracts.
 
         Parameters
         ----------
-
         api_descriptions : List[str]
-
+            List of API descriptions.
         api_codes : List[str]
-
+            List of API codes - contracts.
 
         Returns
         -------
-
-        self
-
+        APIGenerator
+            Returns the trained APIGenerator object.
         """
 
         _api_descriptions = [
@@ -176,7 +195,21 @@ class APIGenerator(BaseSupervised):
         current_depth: int = 1,
     ):
         """
-        Prune a dictionary to a max_depth
+        Prune a dictionary to a specified maximum depth.
+
+        Parameters
+        ----------
+        old_dict : dict
+            Dictionary to be pruned.
+        max_depth : int, optional
+            Maximum depth to which the dictionary should be pruned, by default 3.
+        current_depth : int, optional
+            Current depth of recursion, by default 1.
+
+        Returns
+        -------
+        dict
+            Pruned dictionary.
         """
 
         new_dict = {}

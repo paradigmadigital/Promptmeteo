@@ -1,5 +1,5 @@
 🤔 What is this library for?
-=====
+==============================
 
 **TL;DR: Industrialize projects powered by LLMs easily.**
 
@@ -10,43 +10,43 @@ Firstly, prompts typically encapsulate application logic in their definition, ye
 Secondly, crafting specific prompts for each task is not only a laborious task but also a complex one. Minor alterations in the input prompt can result in different outcomes, rendering them highly error-prone. Additionally, when composing prompts, considerations extend beyond the task itself to include factors such as the specific LLM being used, the model's capacity, and other relevant aspects.
 
 🚀 How do we do it?
-------
+----------------------
 
 **TL;DR: Treating prompts and code equally!!!**
 
 Promptmeteo aims to address the aforementioned issues by dividing the prompt definition into two distinct parts: the task logic, coded within prompt templates, and the concrete problem, included as argument variables. Promptmeteo incorporates high-level objects for various tasks, implemented through `.py` and `.prompt` files.
 
 🏠 Prebuilt tasks
-^^^^^
+^^^^^^^^^^^^^^^^^^
 
 The project incorporates high-level objects designed to address various NLP tasks, including text classification, Named Entity Recognition, and code generation. These objects only require configuration parameters for execution, eliminating the need to parse the output from the Language Model Models (LLMs).
 
 ⚙️ Ease of Deployment
-^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Promptmeteo modules adhere to a model interface similar to Scikit-Learn. By defining an interface with independent methods for training, predicting, saving, and loading the model, Promptmeteo enables training in a separate pipeline from prediction. This facilitates the reuse of conventional ML pipelines for LLM projects.
 
 📦 Model Artifacts
-^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To enhance results, LLMs can incorporate examples in their prompts. Promptmeteo supports training with examples, and for reproducibility, the training process can be stored as a binary model artifact. This allows storing and reusing training results multiple times with new data. The training process stores embeddings from the input text in a vector database, such as FAISS.
 
 ⚙️ LLMs Integration
-^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Promptmeteo integrates different LLMs through LangChain. This includes models that can be executed locally and remote API calls from providers like OpenAI and HuggingFace.
 
 📄 Prompt Templating
-^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Establishing a concrete format for creating prompts in Promptmeteo (`.prompt`) not only facilitates programmatic use but also enables versioning of prompts. This approach aids in understanding changes when they occur and allows for the definition of code tests oriented toward prompt testing. This testing encompasses aspects such as validating language use and ensuring the prompt size is appropriate for the model.
 
 
 📋 Current capacilities
-------
+----------------------------
 
 ✅ Available tasks
-^^^^^
+^^^^^^^^^^^^^^^^^^
 
 The current available tasks in Promptmeteo are:
 
@@ -68,8 +68,8 @@ The current available tasks in Promptmeteo are:
     * - `Summarizer`
       - Text summarization
 
-✅ Available Model
-^^^^^
+✅ Available Models
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The current available `model_name` and `language` values are:
 

@@ -391,22 +391,8 @@ class BaseSupervised(Base):
         annotations: List[str],
     ) -> Self:
         """
-        Trains the model given examples and its annotations. The training
-        process create a vector store with all the training texts in memory
-
-        Parameters
-        ----------
-
-        examples : List[str]
-
-        annotations : List[str]
-
-
-        Returns
-        -------
-
-        self
-
+        Trains the model given use cases and notes on behaviour. Check the
+        parameters and task behaviour in each specific model training docstring.
         """
 
         if not isinstance(examples, list) or not isinstance(annotations, list):

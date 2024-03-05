@@ -15,13 +15,10 @@ Promptmeteo is a Python library for Prompt Engineering built over LangChain. It 
    definition
    install
    quickstart
-
-.. autosummary::
-   :toctree: _autosummary
+   promptmeteo
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`

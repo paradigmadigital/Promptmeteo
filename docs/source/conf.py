@@ -2,8 +2,11 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+import os
+import sys
 from datetime import datetime
 
+sys.path.insert(0, os.path.abspath('../..'))  # Source code dir relative to this file
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -16,23 +19,22 @@ release = '0.1.1'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "numpydoc",
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
+napoleon_use_admonition_for_examples = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'furo'
 html_static_path = ['_static']
-html_logo = "fire.png"
 html_theme_options = {
     "navigation_with_keys": True,
 }
@@ -40,6 +42,3 @@ html_title = "🔥🧔"
 pygments_style = "default"
 pygments_dark_style = "monokai"
 
-# Autosummary
-
-autosummary_generate = True
