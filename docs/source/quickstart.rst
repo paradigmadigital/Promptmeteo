@@ -1,10 +1,10 @@
 ⚡ Quickstart
-=====
+================
 
 .. _quickstart:
 
 ✨ Create the task
-------------
+---------------------
 
 You can make a prediction directly indicating the model and calling the method `predict()`.
 
@@ -26,7 +26,7 @@ You can make a prediction directly indicating the model and calling the method `
     [['positive']]
 
 ✨ Train the task
-----------------
+-------------------------
 
 You can also include examples to improve the results by calling the method `train()`
 
@@ -44,7 +44,7 @@ You can also include examples to improve the results by calling the method `trai
     [['positive']]
 
 ✨ Save a trained task
-----------------
+-------------------------
 
 Once the model is trained it can be saved locally
 
@@ -53,7 +53,7 @@ Once the model is trained it can be saved locally
     clf.save_model("hello_world.meteo")
 
 ✨ Load a trained task
-----------------
+-------------------------
 
 and loaded again to make new predictions
 

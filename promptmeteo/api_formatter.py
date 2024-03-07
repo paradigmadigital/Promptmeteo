@@ -76,25 +76,25 @@ class APIFormatter(BaseUnsupervised):
     >>> from promptmeteo import APIFormatter
 
     >>> model = APIFormatter(
-    >>>     language='en',
-    >>>     api_version = '3.0.3',
-    >>>     api_protocol = 'REST',
-    >>>     api_style_instructions = [
-    >>>         'Use always camel case.',
-    >>>         'Do not use acronyms.'
-    >>>         ],
-    >>>     model_provider_name='openai',
-    >>>     model_name='gpt-3.5-turbo-16k',
-    >>>     model_provider_token=model_token,
-    >>>     external_info={
-    >>>                     "servers": [
-    >>>                         {
-    >>>                             "url": "http://localhost:8080/",
-    >>>                             "description": "Local environment",
-    >>>                         }
-    >>>                     ],
-    >>>                 }
-    >>>     )
+    ...     language='en',
+    ...     api_version = '3.0.3',
+    ...     api_protocol = 'REST',
+    ...     api_style_instructions = [
+    ...         'Use always camel case.',
+    ...         'Do not use acronyms.'
+    ...         ],
+    ...     model_provider_name='openai',
+    ...     model_name='gpt-3.5-turbo-16k',
+    ...     model_provider_token=model_token,
+    ...     external_info={
+    ...                     "servers": [
+    ...                         {
+    ...                             "url": "http://localhost:8080/",
+    ...                             "description": "Local environment",
+    ...                         }
+    ...                     ],
+    ...                 }
+    ...     )
 
     >>> model.train(api_code)
 

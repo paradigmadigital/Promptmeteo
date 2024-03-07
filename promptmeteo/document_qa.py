@@ -29,6 +29,28 @@ class DocumentQA(BaseUnsupervised):
 
     """
     Question Answering over Documents Task
+
+    This class represents a model for answering questions based on documents.
+
+    Example
+    -------
+    >>> from promptmeteo import DocumentQA
+    >>> clf = DocumentQA(
+    ...     language='en',
+    ...     model_provider_name='hf_pipeline',
+    ...     model_name='google/flan-t5-small',
+    ... )
+
+    >>> clf.train(
+    ...     examples = [
+    ...     "The rain in spain is always in plain",
+    ...     "The logarithm's limit is the limit's logarithm",
+    ...     "To punish oppresors is clementy. To forgive them is cruelty"],
+    ... )
+
+    >>> clf.predict(['How is the rain in spain?'])
+
+    >>> [['in plain']]
     """
 
     TASK_TYPE = TaskTypes.QA.value
@@ -39,27 +61,12 @@ class DocumentQA(BaseUnsupervised):
         **kwargs,
     ) -> None:
         """
-        Example
-        -------
+        Initialize the DocumentQA model.
 
-        >>> from promptmeteo import DocumentQA
-
-        >>> clf = DocumentQA(
-        >>>     language='en',
-        >>>     model_provider_name='hf_pipeline',
-        >>>     model_name='google/flan-t5-small',
-        >>> )
-
-        >>> clf.train(
-        >>>     examples = [
-        >>>     "The rain in spain is always in plain",
-        >>>     "The logarithm's limit is the limit's logarithm",
-        >>>     "To punish oppresors is clementy. To forgive them is cruelty"],
-        >>> )
-
-        >>> clf.predict(['How is the rain in spain?'])
-
-        [['in plain']]
+        Parameters
+        ----------
+        **kwargs : dict
+            Additional keyword arguments.
         """
 
         super(DocumentQA, self).__init__(**kwargs)

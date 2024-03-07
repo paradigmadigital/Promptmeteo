@@ -26,9 +26,35 @@ from .tools import add_docstring_from
 
 
 class CodeGenerator(BaseSupervised):
-
     """
     Code Generator Task.
+
+    This class represents a model for generating code based on natural language descriptions.
+
+    Parameters
+    ----------
+    **kwargs : dict
+        Additional keyword arguments.
+
+    Example
+    -------
+    >>> from promptmeteo import CodeGenerator
+    >>> model = CodeGenerator(
+    ...     language='en',
+    ...     prompt_domain='python',
+    ...     model_provider_name='openai',
+    ...     model_name='text-davinci-003',
+    ...     model_provider_token=model_token,
+    ...     prompt_detail=[
+    ...         "add docstring in function definitions",
+    ...         "add argument typing annotations"]
+    ...     )
+
+    >>> pred = model.predict(['A function that receives the argument `foo` and prints it.'])
+
+    Returns
+    -------
+    None
     """
 
     TASK_TYPE = TaskTypes.CODE_GENERATION.value
@@ -38,31 +64,6 @@ class CodeGenerator(BaseSupervised):
         self,
         **kwargs,
     ) -> None:
-        """
-        Example
-        -------
-
-        >>> from promptmeteo import CodeGenerator
-
-        >>> model = CodeGenerator(
-        >>>     language='en',
-        >>>     prompt_domain='python',
-        >>>     model_provider_name='openai',
-        >>>     model_name='text-davinci-003',
-        >>>     model_provider_token=model_token,
-        >>>     prompt_detail=[
-        >>>         "add docstring in function definitions",
-        >>>         "add argumment typing annotations"]
-        >>>     )
-
-        >>> pred=model.predict(['A function that receives the argument `foo`
-        >>>     and prints it.'])
-
-        def print_foo(foo: str):
-            '''Prints the argument passed into the function'''
-            print(foo)
-
-        """
 
         super(CodeGenerator, self).__init__(**kwargs)
 

@@ -46,9 +46,15 @@ from .selector.base import SelectorAlgorithms
 class Base(ABC):
 
     """
-    'Sun is setting on the New Republic. It's time for the ResistencIA to rise'
+    Promptmeteo is a tool powered by LLMs, capable of solving NLP tasks such as
+    text classification and Named Entity Recognition. Its interface resembles
+    that of a conventional ML model, making it easy to integrate into MLOps
+    pipelines.
 
-                                         - Padme Amidala, mother of Leia -
+    Notes
+    ----------
+        'Sun is setting on the New Republic. It's time for the ResistencIA to rise'
+            Padmé Amidala, mother of Leia
     """
 
     TASK_TYPE: str = ""
@@ -70,41 +76,12 @@ class Base(ABC):
         **kwargs,
     ) -> None:
         """
-        Promptmeteo is tool, powered by LLMs, which is able to solve NLP models
-        such as text classification and Named Entity Recognition. Its interface
-        is similar to a conventional ML model, which allows Prometeo to be used
-        in a MLOps pipeline easily.
+        Initialize the Promptmeteo model.
 
-        Parameters
-        ----------
-
-        language : str
-
-        model_name : str
-
-        model_provider_name : str
-
-        model_provider_token : Optional[str]
-
-        model_params: Optional[str]
-
-        prompt_domain : Optional[str]
-
-        prompt_labels : List[str]
-
-        prompt_detail : Optional[str]
-
-        selector_k : int
-
-        selector_algorithm : str
-
-        verbose : bool
-
-
-        Returns
-        -------
-
-        None
+        Raises
+        ------
+        ValueError
+            If the selector algorithm is invalid.
         """
 
         self._init_params: Dict[str, Any] = {
@@ -148,6 +125,9 @@ class Base(ABC):
 
     @property
     def init_params(self):
+        """
+        Get the initialization parameters of the model.
+        """
         return self._init_params
 
     @property
@@ -155,13 +135,16 @@ class Base(ABC):
         self,
     ) -> TaskBuilder:
         """
-        Get TaskBuilder.
+        Get the TaskBuilder instance for the model.
         """
         if self._builder is None:
             self._builder = self.create_builder()
         return self._builder
 
     def create_builder(self) -> TaskBuilder:
+        """
+        Create a TaskBuilder instance for the model.
+        """
         builder = TaskBuilder(
             language=self.language,
             task_type=self.TASK_TYPE,
@@ -195,7 +178,7 @@ class Base(ABC):
         self,
     ) -> Task:
         """
-        Get Task.
+        Get the Task instance for the model.
         """
         return self.builder.task
 
@@ -204,7 +187,7 @@ class Base(ABC):
         self,
     ) -> bool:
         """
-        Check if model instance is trained.
+        Check if the model is trained.
         """
         return self._is_trained
 
@@ -213,18 +196,17 @@ class Base(ABC):
         examples: List[str],
     ) -> List[str]:
         """
-        Predicts over new text samples.
+        Predict over new text samples.
 
         Parameters
         ----------
-
         examples : List[str]
+            List of text samples to predict.
 
         Returns
         -------
-
         List[str]
-
+            List of predictions.
         """
 
         if not isinstance(examples, list):
@@ -252,19 +234,17 @@ class Base(ABC):
         model_path: str,
     ) -> Self:
         """
-        Saves the training result of the model in disk.
+        Save the trained model to disk.
 
         Parameters
         ----------
-
         model_path : str
-
+            Path where the model will be saved.
 
         Returns
         -------
-
-        self : Promptmeteo
-
+        Base
+            Instance of the saved model.
         """
 
         model_dir = os.path.dirname(model_path)
@@ -310,19 +290,17 @@ class Base(ABC):
         model_path: str,
     ) -> Self:
         """
-        Loads a model artifact to make new predictions.
+        Load a saved model from disk.
 
         Parameters
         ----------
-
         model_path : str
-
+            Path from where the model will be loaded.
 
         Returns
         -------
-
-        self : Promptmeteo
-
+        Base
+            Loaded model instance.
         """
 
         model_dir = os.path.dirname(model_path)
@@ -371,7 +349,7 @@ class Base(ABC):
 class BaseSupervised(Base):
 
     """
-    Model Interface for supervised training tasks.
+    Base class for supervised training tasks.
     """
 
     SELECTOR_TYPE = "supervised"
@@ -381,7 +359,9 @@ class BaseSupervised(Base):
         self,
         **kwargs,
     ) -> None:
-        """ """
+        """
+        Initialize the supervised training model.
+        """
 
         super(BaseSupervised, self).__init__(**kwargs)
 
@@ -453,7 +433,7 @@ class BaseSupervised(Base):
 
 class BaseUnsupervised(Base):
     """
-    Model Interface for unsupervised training tasks.
+    Base class for unsupervised training tasks.
     """
 
     SELECTOR_TYPE = "unsupervised"
@@ -463,6 +443,9 @@ class BaseUnsupervised(Base):
         self,
         **kwargs,
     ) -> None:
+        """
+        Initialize the unsupervised training model.
+        """
         if kwargs.get("prompt_labels", None):
             raise ValueError(
                 f"{self.__class__.__name__} can not be inicializated with the "
@@ -476,20 +459,8 @@ class BaseUnsupervised(Base):
         examples: List[str],
     ) -> Self:
         """
-        Trains the model given examples and its annotations. The training
-        process create a vector store with all the training texts in memory
-
-        Parameters
-        ----------
-
-        examples : List[str]
-
-
-        Returns
-        -------
-
-        self
-
+        Trains the model given use cases and notes on behaviour. Check the
+        parameters and task behaviour in each specific model training docstring.
         """
 
         if not isinstance(examples, list):

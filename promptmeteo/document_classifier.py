@@ -36,6 +36,27 @@ class DocumentClassifier(BaseSupervised):
 
     """
     DocumentClassifier Task
+
+    This class represents a model for classifying documents into predefined categories.
+
+    Example
+    -------
+    >>> from promptmeteo import DocumentClassifier
+    >>> clf = DocumentClassifier(
+    ...     model_provider_name='hf_pipeline',
+    ...     model_name='google/flan-t5-small',
+    ...     prompt_labels=['positive','negative','neutral'],
+    ... )
+
+    >>> clf.train(
+    ...     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
+    ...     annotations = ['positive', 'neutral', 'negative']
+    ... )
+
+    >>> clf.predict(['que guay!!'])
+
+    >>> [['positive']]
+
     """
 
     TASK_TYPE = TaskTypes.CLASSIFICATION.value
@@ -46,26 +67,12 @@ class DocumentClassifier(BaseSupervised):
         **kwargs,
     ) -> None:
         """
-        Example
-        -------
+        Initialize the DocumentClassifier model.
 
-        >>> from promptmeteo import DocumentClassifier
-
-        >>> clf = DocumentClassifier(
-        >>>     model_provider_name='hf_pipeline',
-        >>>     model_name='google/flan-t5-small',
-        >>>     prompt_labels=['positive','negative','neutral'],
-        >>> )
-
-        >>> clf.train(
-        >>>     examples = ['estoy feliz', 'me da igual', 'no me gusta'],
-        >>>     annotations = ['positive', 'neutral', 'negative']
-        >>> )
-
-        >>> clf.predict(['que guay!!'])
-
-        [['positive']]
-
+        Parameters
+        ----------
+        **kwargs : dict
+            Additional keyword arguments.
         """
 
         super(DocumentClassifier, self).__init__(**kwargs)
@@ -76,7 +83,20 @@ class DocumentClassifier(BaseSupervised):
         examples: List[str],
         annotations: List[str],
     ) -> Self:
-        """ """
+        """
+        Trains the DocumentClassifier model.
+
+        Parameters
+        ----------
+        examples : List[str]
+            List of document examples.
+        annotations : List[str]
+            List of corresponding annotations.
+
+        Returns
+        -------
+        Self
+        """
 
         super(DocumentClassifier, self).train(
             examples=examples, annotations=annotations
