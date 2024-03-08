@@ -7,7 +7,7 @@
 
 # PromptMeteo 🔥🧔
 
-**Promptmeteo** is a Python library for Prompt Engineering built over LangChain. It simplifies the utilization of Language Model Models (LLMs) for various tasks through a low-code interface. To achieve this, Promptmeteo can employ different LLM models and dynamically generate prompts for specific tasks based on just a few configuration parameters.
+**Promptmeteo** is a Python library for prompt engineering built over LangChain. It simplifies the utilization of large language models (LLMs) for various tasks through a low-code interface. To achieve this, Promptmeteo can employ different LLM models and dynamically generate prompts for specific tasks based on just a few configuration parameters.
 
 
 
@@ -35,7 +35,7 @@ Promptmeteo aims to address the aforementioned issues by dividing the prompt def
 
 #### 🏠 Prebuilt tasks
 
-The project incorporates high-level objects designed to address various NLP tasks, including text classification, Named Entity Recognition, and code generation. These objects only require configuration parameters for execution, eliminating the need to parse the output from the Language Model Models (LLMs).
+The project incorporates high-level objects designed to address various NLP tasks, including text classification, named entity recognition, and code generation. These objects only require configuration parameters for execution, eliminating the need to parse the output from the LLMs.
 
 #### ⚙️ Ease of Deployment
 
@@ -109,7 +109,7 @@ clf.predict(['so cool!!'])
 ```
 
 ### ✨ Train the task
-Buy you can also include examples to improve the results by calling the method `train()`
+But you can also include examples to improve the results by calling the method `train()`.
 
 
 ```python
@@ -127,7 +127,7 @@ clf.predict(['so cool!!'])
 
 ### ✨ Save a trained task
 
-One the model is trained it can be saved locally
+Once the model is trained it can be saved locally...
 
 ```python
 clf.save_model("hello_world.meteo")
@@ -136,7 +136,7 @@ clf.save_model("hello_world.meteo")
 
 ### ✨ Load a trained task
 
-and loaded again to make new predictions
+... and loaded again to make new predictions.
 
 ```python
 from promptmeteo import DocumentClassifier
@@ -154,7 +154,7 @@ clf.predict(['so cool!!'])
 [['positive']]
 ```
 
-Models can also be loaded without instantiating the class by using load_model as a function instead of a method:
+Models can also be loaded without instantiating the class by using `load_model()` as a function instead of a method:
 
 ```python
 from promptmeteo import DocumentClassifier
@@ -172,7 +172,7 @@ More examples can be seen in the directory [examples](./examples).
 ## 🚗 Usage
 
 ### ⚙️ Configure credentials
-Create a ```.env``` with the following variables depending on the LLM provider
+Create a ```.env``` with the following variables depending on the LLM provider.
 
 #### Google Cloud
 First you should create a [Service Account](https://cloud.google.com/vertex-ai/docs/general/custom-service-account#configure) with the role: ``Vertex AI User.``
