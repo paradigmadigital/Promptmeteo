@@ -10,8 +10,9 @@ format:
 	black promptmeteo/
 	black tests/
 
-dev:
+docs:
 	pip install -e ".[docs]"
+	sphinx-apidoc -f -o docs/source/ promptmeteo
 
 html:
 	$(MAKE) -C docs html
