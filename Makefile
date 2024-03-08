@@ -10,10 +10,11 @@ format:
 	black promptmeteo/
 	black tests/
 
-docs:
-	mkdocs build
-	mkdocs serve
-	mkdocs gh-deploy
+dev:
+	pip install -e ".[docs]"
+
+html:
+	$(MAKE) -C docs html
 
 clean:
 	find . -name '*.pyc' -exec rm -f {} +
