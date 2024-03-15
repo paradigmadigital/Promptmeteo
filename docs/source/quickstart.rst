@@ -10,7 +10,7 @@ You can make a prediction directly indicating the model and calling the method `
 
 .. code-block:: python
 
-   from promptmeteo import DocumentClassifier
+    from promptmeteo import DocumentClassifier
 
     clf = DocumentClassifier(
             language            = 'en',
