@@ -10,7 +10,7 @@ format:
 	black promptmeteo/
 	black tests/
 
-docs:
+docsetup:
 	pip install -e ".[docs]"
 	sphinx-apidoc -f -o docs/source/ promptmeteo
 
