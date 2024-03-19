@@ -53,7 +53,7 @@ dev = [
     "flake8",
 ]
 docs = [
-    "sphinx==7.2.6",
+    "sphinx==7.1.2",
     "furo==2024.1.29",
     "numpydoc==1.6.0",
     "sphinxcontrib-napoleon==0.7",
