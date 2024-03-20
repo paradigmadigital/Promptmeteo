@@ -19,7 +19,7 @@ Promptmeteo aims to address the aforementioned issues by dividing the prompt def
 🏠 Prebuilt tasks
 ^^^^^^^^^^^^^^^^^^
 
-The project incorporates high-level objects designed to address various NLP tasks, including text classification, Named Entity Recognition, and code generation. These objects only require configuration parameters for execution, eliminating the need to parse the output from the Language Model Models (LLMs).
+The project incorporates high-level objects designed to address various NLP tasks, including text classification, named entity recognition, and code generation. These objects only require configuration parameters for execution, eliminating the need to parse the output from the LLMs.
 
 ⚙️ Ease of Deployment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
