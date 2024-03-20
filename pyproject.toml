@@ -57,6 +57,8 @@ docs = [
     "furo==2024.1.29",
     "numpydoc==1.6.0",
     "sphinxcontrib-napoleon==0.7",
+    "pandoc==2.3",
+    "nbsphinx==0.9.3",
 ]
 openai = [
     "openai==0.27.8",

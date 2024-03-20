@@ -22,3 +22,14 @@ Promptmeteo is a Python library for prompt engineering built over LangChain. It 
    :caption: Classes
 
    classes
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Example notebooks
+   
+   notebooks/01_promptmeteo_usage
+   notebooks/03_sentiment_analysis.ipynb
+   notebooks/04_test_flant5_classification_prompts.ipynb
+   notebooks/05_test_openai_classification_prompts.ipynb
+   notebooks/06_test_openai_api-generation.ipynb
