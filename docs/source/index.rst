@@ -6,7 +6,7 @@
 Promptmeteo 🔥🧔
 =======================================
 
-Promptmeteo is a Python library for Prompt Engineering built over LangChain. It simplifies the utilization of Language Model Models (LLMs) for various tasks through a low-code interface. To achieve this, Promptmeteo can employ different LLM models and dynamically generate prompts for specific tasks based on just a few configuration parameters.
+Promptmeteo is a Python library for prompt engineering built over LangChain. It simplifies the utilization of large language models (LLMs) for various tasks through a low-code interface. To achieve this, Promptmeteo can employ different LLM models and dynamically generate prompts for specific tasks based on just a few configuration parameters.
 
 .. toctree::
    :maxdepth: 2
