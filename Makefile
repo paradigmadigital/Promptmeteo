@@ -25,7 +25,7 @@ clean:
 	find . -name '__pycache__' -exec rm -fr {} +
 	rm -f .coverage
 	rm -f .coverage.*
-	rm -rf ./build
+	rm -rf ./docs/build
 	rm -rf ./.pytest_cache
 
 test:
