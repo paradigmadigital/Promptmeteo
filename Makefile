@@ -10,10 +10,13 @@ format:
 	black promptmeteo/
 	black tests/
 
-docs:
-	mkdocs build
-	mkdocs serve
-	mkdocs gh-deploy
+docsetup:
+	pip install -e ".[docs]"
+	pip install -e ".[aws]"
+	sphinx-apidoc -f -o docs/source/ promptmeteo
+
+html:
+	$(MAKE) -C docs html
 
 clean:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -22,7 +25,7 @@ clean:
 	find . -name '__pycache__' -exec rm -fr {} +
 	rm -f .coverage
 	rm -f .coverage.*
-	rm -rf ./build
+	rm -rf ./docs/build
 	rm -rf ./.pytest_cache
 
 test:

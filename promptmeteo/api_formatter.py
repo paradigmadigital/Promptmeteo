@@ -43,9 +43,62 @@ from .validations import version_validation
 
 
 class APIFormatter(BaseUnsupervised):
+    """ API Formatter Task.
 
-    """
-    API Generator Task.
+    This class initializes the API Formatter Task to correct and format APIs.
+
+    Parameters
+    ----------
+    language : str
+        Language for the API descriptions.
+    model_name : str
+        Name of the model to be used for API generation.
+    model_provider_name : str
+        Name of the model provider.
+    api_version : str
+        Version of the API.
+    api_protocol : str
+        Protocol of the API.
+    api_style_instructions : Optional[List[str]]
+        Instructions for API style.
+    **kwargs : dict
+        Additional keyword arguments.
+
+    Raises
+    ------
+    ValueError
+        If `api_protocol` is not in the allowed protocols or if `api_version`
+        is not in the correct format.
+
+    Example
+    -------
+
+    >>> from promptmeteo import APIFormatter
+
+    >>> model = APIFormatter(
+    ...     language='en',
+    ...     api_version = '3.0.3',
+    ...     api_protocol = 'REST',
+    ...     api_style_instructions = [
+    ...         'Use always camel case.',
+    ...         'Do not use acronyms.'
+    ...         ],
+    ...     model_provider_name='openai',
+    ...     model_name='gpt-3.5-turbo-16k',
+    ...     model_provider_token=model_token,
+    ...     external_info={
+    ...                     "servers": [
+    ...                         {
+    ...                             "url": "http://localhost:8080/",
+    ...                             "description": "Local environment",
+    ...                         }
+    ...                     ],
+    ...                 }
+    ...     )
+
+    >>> model.train(api_code)
+
+    >>> model.predict(api)
     """
 
     TASK_TYPE = TaskTypes.API_CORRECTION.value
@@ -62,35 +115,6 @@ class APIFormatter(BaseUnsupervised):
         api_style_instructions: List[str] = None,
         **kwargs,
     ) -> None:
-        """
-        Example
-        -------
-
-        >>> from promptmeteo import APIFormatter
-
-        >>> model = APIFormatter(
-        >>>     language='en',
-        >>>     api_version = '3.0.3',
-        >>>     api_protocol = 'REST',
-        >>>     api_style_instructions = [
-        >>>         'Use always camel case.',
-        >>>         'Do not use acronyms.'
-        >>>         ],
-        >>>     model_provider_name='openai',
-        >>>     model_name='gpt-3.5-turbo-16k',
-        >>>     model_provider_token=model_token,
-        >>>     external_info={
-        >>>                     "servers": [
-        >>>                         {
-        >>>                             "url": "http://localhost:8080/",
-        >>>                             "description": "Local environment",
-        >>>                         }
-        >>>                     ],
-        >>>                 }
-        >>>     )
-
-        >>> model.predict(api)
-        """
 
         if api_protocol not in self.ALLOWED_PROTOCOLS:
             raise ValueError(
@@ -140,19 +164,17 @@ class APIFormatter(BaseUnsupervised):
         api_codes: List[str],
     ) -> Self:
         """
-        Train the APIFormatter to extract entities anda parameteres.
+        Train the APIFormatter to extract entities and parameters.
 
         Parameters
         ----------
-
         api_codes : List[str]
-
+            List of API codes.
 
         Returns
         -------
-
-        self
-
+        APIFormatter
+            Returns the trained APIFormatter object.
         """
 
         _api_codes = deepcopy(api_codes)
@@ -203,15 +225,13 @@ class APIFormatter(BaseUnsupervised):
 
         Parameters
         ----------
-
         model_path : str
-
+            Path to the model artifact.
 
         Returns
         -------
-
-        self : Promptmeteo
-
+        APIFormatter
+            Returns the loaded APIFormatter object.
         """
 
         model_dir = os.path.dirname(model_path)
@@ -259,20 +279,19 @@ class APIFormatter(BaseUnsupervised):
     @add_docstring_from(BaseUnsupervised.predict)
     def predict(self, api_codes: List[str], external_info: dict) -> List[str]:
         """
-        Receibe a list of API codes and return a list with the corrected APIs.
+        Receive a list of API codes and return a list with the corrected APIs.
 
         Parameters
         ----------
-
         api_codes : List[str]
-        external_info: dict
-
+            List of API codes.
+        external_info : dict
+            External information to be added to the APIs.
 
         Returns
         -------
-
         List[str]
-
+            List of corrected APIs.
         """
 
         _api_codes = deepcopy(api_codes)
@@ -362,7 +381,22 @@ class APIFormatter(BaseUnsupervised):
         return api
 
     @staticmethod
-    def _add_external_information(api: str, replacements: dict):
+    def _add_external_information(api: str, replacements: dict) -> str:
+        """
+        Add external information to the APIs.
+
+        Parameters
+        ----------
+        api : str
+            API YAML string.
+        replacements : dict
+            External information to be added.
+
+        Returns
+        -------
+        str
+            Updated API YAML string.
+        """
         def replace_values(orig_dict, replace_dict):
             for k, v in replace_dict.items():
                 if k in orig_dict:

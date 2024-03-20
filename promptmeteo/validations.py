@@ -29,11 +29,44 @@ from .constants import REST_PROTOCOL
 
 
 def validate_version_rest(api_version):
-    # Lógica de validación para el protocolo REST
+    """
+    Validates the version number for REST protocol.
+
+    Parameters
+    ----------
+    api_version : str
+        The version number to validate.
+
+    Returns
+    -------
+    bool
+        True if the version number is valid, False otherwise.
+    """
     return not re.compile(r"\d{1}\.\d\.\d").fullmatch(api_version)
 
 
 def version_validation(api_version, api_protocol):
+    """
+    Validates the version based on the provided protocol.
+
+    Parameters
+    ----------
+    api_version : str
+        The version number to validate.
+    api_protocol : str
+        The protocol to use for validation.
+
+    Returns
+    -------
+    bool
+        True if the version number is valid for the given protocol, False otherwise.
+
+    Raises
+    ------
+    ValueError
+        If the provided protocol is not supported.
+    """
+
     if api_protocol == REST_PROTOCOL:
         return validate_version_rest(api_version)
     else:

@@ -42,10 +42,24 @@ from .validations import version_validation
 
 
 class Summarizer(BaseUnsupervised):
-
     """
     Class for text summarization
+
+    This class represents a model for text summarization.
+
+    Example
+    -------
+    >>> from promptmeteo import Summarizer
+    >>> model = Summarizer(
+    ...     language="es",
+    ...     prompt_domain="A partir del siguiente texto:",
+    ...     model_name="anthropic.claude-v2",
+    ...     model_provider_name="bedrock"
+    ... )
+
+    >>> model.predict([text])
     """
+
     TASK_TYPE = TaskTypes.SUMMARIZATION.value
         
     @add_docstring_from(BaseUnsupervised.__init__)
@@ -54,43 +68,27 @@ class Summarizer(BaseUnsupervised):
         **kwargs,
     ) -> None:
         """
-        Example
-        -------
+        Initialize the Summarizer model.
 
-        >>> from promptmeteo import Summarizer
-
-        >>> model = Summarizer(
-        >>>                     language="es",
-        >>>                     prompt_domain="A partir del siguiente texto:",
-        >>>                     model_name="anthropic.claude-v2",
-        >>>                     model_provider_name = "bedrock"
-        >>>                    )
-        >>> model.predict([text])
+        Parameters
+        ----------
+        **kwargs : dict
+            Additional keyword arguments.
         """
+
         super(Summarizer, self).__init__(**kwargs)
-
-        
-
-        
 
     @add_docstring_from(BaseUnsupervised.train)
     def train(
         self,
     ) -> Self:
         """
-        Train the APIFormatter to extract entities anda parameteres.
-
-        Parameters
-        ----------
-
-        api_codes : List[str]
-
+        Train the Summarizer model.
 
         Returns
         -------
-
-        self
-
+        self : Summarizer
+            The trained Summarizer model.
         """
         super(Summarizer, self).train(examples=[""])
 
@@ -107,15 +105,13 @@ class Summarizer(BaseUnsupervised):
 
         Parameters
         ----------
-
         model_path : str
-
+            The path to the saved model artifact.
 
         Returns
         -------
-
-        self : Promptmeteo
-
+        self : Summarizer
+            The loaded Summarizer model.
         """
 
         model_dir = os.path.dirname(model_path)

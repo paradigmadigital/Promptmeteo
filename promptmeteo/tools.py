@@ -26,22 +26,30 @@ def add_docstring_from(parent_function):
     Decorator function used to concatenate a docstring from another function
     at the beginning.
 
+    Parameters
+    ----------
+    parent_function : function
+        The function whose docstring will be used.
+
+    Returns
+    -------
+    decorator : function
+        The decorator function.
+
     Example
     -------
-
     >>> def foo():
-    >>>     '''documentation for foo'''
-    >>>     pass
+    ...     '''documentation for foo'''
+    ...     pass
 
     >>> @add_docstring_from(foo)
     >>> def bar():
-    >>>     '''additional notes for bar'''
-    >>>     pass
+    ...     '''additional notes for bar'''
+    ...     pass
 
     >>> print(bar.__doc__)
-    documentation for foo
-
-    additional notes for bar
+    >>> documentation for foo
+    >>> additional notes for bar
     """
 
     def decorator(inherit_function):
