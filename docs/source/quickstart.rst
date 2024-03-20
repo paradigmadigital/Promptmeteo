@@ -28,7 +28,7 @@ You can make a prediction directly indicating the model and calling the method `
 ✨ Train the task
 -------------------------
 
-You can also include examples to improve the results by calling the method `train()`
+You can also include examples to improve the results by calling the method `train()`.
 
 .. code-block:: python
 
@@ -46,7 +46,7 @@ You can also include examples to improve the results by calling the method `trai
 ✨ Save a trained task
 -------------------------
 
-Once the model is trained it can be saved locally
+Once the model is trained it can be saved locally...
 
 .. code-block:: console
 
@@ -55,7 +55,7 @@ Once the model is trained it can be saved locally
 ✨ Load a trained task
 -------------------------
 
-and loaded again to make new predictions
+... and loaded again to make new predictions.
 
 .. code-block:: python
 
@@ -75,7 +75,7 @@ and loaded again to make new predictions
     [['positive']]
 
 
-Models can also be loaded without instantiating the class by using load_model as a function instead of a method:
+Models can also be loaded without instantiating the class by using `.load_model()` as a function instead of a method:
 
 .. code-block:: python
 
