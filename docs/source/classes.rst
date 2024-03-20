@@ -1,3 +1,6 @@
+👻 Classes
+==============================
+
 .. autoclass:: promptmeteo.APIGenerator
    :members:
 

@@ -12,6 +12,7 @@ format:
 
 docsetup:
 	pip install -e ".[docs]"
+	pip install -e ".[aws]"
 	sphinx-apidoc -f -o docs/source/ promptmeteo
 
 html:
