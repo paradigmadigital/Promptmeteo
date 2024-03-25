@@ -1,10 +1,7 @@
 import os
-import tempfile
 
 import pytest
 
-from promptmeteo.tasks import Task
-from promptmeteo.tasks import TaskBuilder
 from promptmeteo.base import BaseUnsupervised
 
 

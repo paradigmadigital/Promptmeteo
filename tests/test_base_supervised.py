@@ -63,18 +63,18 @@ class TestBaseSupervised:
                 f"type `List[str]`. Instead they got: `{type(examples)}`"
             )
 
-        with pytest.raises(ValueError) as error:
+        with pytest.raises(ValueError):
             pred = BaseSupervised(
                 language="es",
                 model_provider_name="fake-llm",
                 model_name="fake-static",
             ).predict([1, 2, 3])
 
-        assert error.value.args[0] == (
-            "BaseSupervised error in function `predict()`. "
-            "Arguments `examples` are expected to be of type "
-            "`List[str]`. Some values seem no to be of type `str`."
-        )
+            assert error.value.args[0] == (
+                "BaseSupervised error in function `predict()`. "
+                "Arguments `examples` are expected to be of type "
+                "`List[str]`. Some values seem no to be of type `str`."
+            )
 
     def test_wrong_train(self):
         """
