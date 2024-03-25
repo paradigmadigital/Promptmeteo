@@ -43,7 +43,7 @@ from .validations import version_validation
 
 
 class APIFormatter(BaseUnsupervised):
-    """ API Formatter Task.
+    """API Formatter Task.
 
     This class initializes the API Formatter Task to correct and format APIs.
 
@@ -397,6 +397,7 @@ class APIFormatter(BaseUnsupervised):
         str
             Updated API YAML string.
         """
+
         def replace_values(orig_dict, replace_dict):
             for k, v in replace_dict.items():
                 if k in orig_dict:

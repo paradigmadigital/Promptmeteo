@@ -33,7 +33,6 @@ from .bedrock import BedrockLLM
 
 
 class ModelProvider(str, Enum):
-
     """
     LLM providers currently supported by Promptmeteo
     """
@@ -47,7 +46,6 @@ class ModelProvider(str, Enum):
 
 
 class ModelFactory:
-
     """
     The ModelFactory class is used to create a BaseModel object from the given
     configuration.
@@ -59,7 +57,7 @@ class ModelFactory:
         ModelProvider.PROVIDER_2: HFHubApiLLM,
         ModelProvider.PROVIDER_3: HFPipelineLLM,
         ModelProvider.PROVIDER_3: GoogleVertexAILLM,
-        ModelProvider.PROVIDER_5: BedrockLLM
+        ModelProvider.PROVIDER_5: BedrockLLM,
     }
 
     @classmethod
@@ -90,7 +88,7 @@ class ModelFactory:
 
         elif model_provider_name == ModelProvider.PROVIDER_4.value:
             model_cls = GoogleVertexAILLM
-            
+
         elif model_provider_name == ModelProvider.PROVIDER_5.value:
             model_cls = BedrockLLM
 

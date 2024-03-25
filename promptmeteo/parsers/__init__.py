@@ -31,7 +31,6 @@ from .json_parser import JSONParser
 
 
 class ParserTypes(str, Enum):
-
     """
     Enum of availables parsers.
     """
@@ -47,7 +46,6 @@ class ParserTypes(str, Enum):
 
 
 class ParserFactory:
-
     """
     Factory of Parsers.
     """
@@ -80,10 +78,10 @@ class ParserFactory:
 
         elif task_type == ParserTypes.PARSER_6.value:
             parser_cls = ApiParser
-            
+
         elif task_type == ParserTypes.PARSER_7.value:
             parser_cls = JSONParser
-            
+
         elif task_type == ParserTypes.PARSER_8.value:
             parser_cls = DummyParser
 

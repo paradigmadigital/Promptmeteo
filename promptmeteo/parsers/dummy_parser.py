@@ -26,7 +26,6 @@ from .base import BaseParser
 
 
 class DummyParser(BaseParser):
-
     """
     Dummy parser, returns what it receives.
     """

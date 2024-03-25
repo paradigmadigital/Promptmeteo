@@ -33,7 +33,6 @@ from .tools import add_docstring_from
 
 
 class DocumentClassifier(BaseSupervised):
-
     """
     DocumentClassifier Task
 

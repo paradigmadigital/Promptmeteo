@@ -26,7 +26,6 @@ from .tools import add_docstring_from
 
 
 class DocumentQA(BaseUnsupervised):
-
     """
     Question Answering over Documents Task
 

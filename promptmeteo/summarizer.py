@@ -1,5 +1,5 @@
-#%%
-#!/usr/bin/python3
+# %%
+# !/usr/bin/python3
 #  Copyright (c) 2023 Paradigma Digital S.L.
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,26 +19,19 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
-import re
 import tarfile
 import tempfile
 import json
 import os
 
-import yaml
-from copy import deepcopy
-from typing import List
-
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
-from langchain.prompts import PromptTemplate
 
 from .base import BaseUnsupervised
-from .tasks import TaskTypes, TaskBuilder
+from .tasks import TaskTypes
 from .tools import add_docstring_from
-from .validations import version_validation
 
 
 class Summarizer(BaseUnsupervised):
@@ -61,7 +54,7 @@ class Summarizer(BaseUnsupervised):
     """
 
     TASK_TYPE = TaskTypes.SUMMARIZATION.value
-        
+
     @add_docstring_from(BaseUnsupervised.__init__)
     def __init__(
         self,

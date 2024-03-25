@@ -30,7 +30,6 @@ from .base import BaseModel
 
 
 class ModelTypes(str, Enum):
-
     """
     Enum of available model types.
     """
@@ -50,13 +49,11 @@ class ModelTypes(str, Enum):
 
 
 class ModelEnum(Enum):
-
     """
     Model Parameters Enum
     """
 
     class FlanT5Xxl:
-
         """
         Flan-t5-xxl default params
         """
@@ -66,7 +63,6 @@ class ModelEnum(Enum):
 
 
 class HFHubApiLLM(BaseModel):
-
     """
     HuggingFace API call.
     """

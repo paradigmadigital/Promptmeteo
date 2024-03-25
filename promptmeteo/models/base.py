@@ -21,20 +21,21 @@
 #  THE SOFTWARE.
 
 from abc import ABC
+from typing import Optional
+
 from langchain.llms.base import BaseLLM
 from langchain.schema import HumanMessage
 from langchain.embeddings.base import Embeddings
 
 
 class BaseModel(ABC):
-
     """
     Model Interface.
     """
 
-    def __init__(self):
-        self._llm: BaseLLM = None
-        self._embeddings: Embeddings = None
+    def __init__(self, **kwargs):
+        self._llm: Optional[BaseLLM] = kwargs.get("llm", None)
+        self._embeddings: Optional[Embeddings] = kwargs.get("embeddings", None)
 
     @property
     def llm(
@@ -59,10 +60,10 @@ class BaseModel(ABC):
         """
 
         try:
-            return self._llm(prompt=sample)
+            return self.llm(prompt=sample)
 
         except TypeError:
-            return self._llm([HumanMessage(content=sample)]).content
+            return self.llm([HumanMessage(content=sample)]).content
 
         except Exception as error:
             raise RuntimeError(

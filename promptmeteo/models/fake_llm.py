@@ -35,7 +35,6 @@ from .base import BaseModel
 
 
 class FakeStaticLLM(LLM):
-
     """
     Fake Static LLM wrapper for testing purposes.
     """
@@ -82,7 +81,6 @@ class FakeStaticLLM(LLM):
 
 
 class FakePromptCopyLLM(LLM):
-
     """
     Fake Prompt Copy LLM wrapper for testing purposes.
     """
@@ -127,7 +125,6 @@ class FakePromptCopyLLM(LLM):
 
 
 class FakeListLLM(LLM):
-
     """
     Fake LLM wrapper for testing purposes.
     """
@@ -178,7 +175,6 @@ class FakeListLLM(LLM):
 
 
 class ModelTypes(Enum):
-
     """
     FakeLLM Model Types.
     """

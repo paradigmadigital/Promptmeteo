@@ -40,7 +40,6 @@ from ..selector import SelectorFactory
 
 
 class TaskTypes(str, Enum):
-
     """
     Enum with all the available task types
     """
@@ -54,7 +53,6 @@ class TaskTypes(str, Enum):
 
 
 class TaskBuilder:
-
     """
     Builder of Tasks.
     """

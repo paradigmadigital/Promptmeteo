@@ -32,7 +32,6 @@ from .base import BaseModel
 
 
 class ModelTypes(str, Enum):
-
     """
     Enum of available model types.
     """
@@ -55,13 +54,11 @@ class ModelTypes(str, Enum):
 
 
 class ModelEnum(Enum):
-
     """
     Model types with their parameters.
     """
 
     class TextBison001:
-
         """
         Default parameters for text-bison model.
         """
@@ -70,7 +67,6 @@ class ModelEnum(Enum):
         model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
 
     class TextBison:
-
         """
         Default parameters for text-bison model in their latest version
         """
@@ -79,7 +75,6 @@ class ModelEnum(Enum):
         model_kwargs = {"temperature": 0.4, "max_tokens": 256, "max_retries": 3}
 
     class TextBison32k:
-
         """
         Default parameters for text-bison-32 model in their latest version
         """
@@ -89,7 +84,6 @@ class ModelEnum(Enum):
 
 
 class GoogleVertexAILLM(BaseModel):
-
     """
     Google VertexAI LLM model.
     """

@@ -31,7 +31,6 @@ from .base import BaseModel
 
 
 class ModelTypes(str, Enum):
-
     """
     Enum of available model types.
     """
@@ -48,13 +47,11 @@ class ModelTypes(str, Enum):
 
 
 class ModelParams(Enum):
-
     """
     Model Parameters.
     """
 
     class MODEL_1:
-
         """
         Parameters Model 1.
         """
@@ -65,7 +62,6 @@ class ModelParams(Enum):
 
 
 class HFPipelineLLM(BaseModel):
-
     """
     HuggingFace Local Pipeline.
     """

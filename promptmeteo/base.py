@@ -44,7 +44,6 @@ from .selector.base import SelectorAlgorithms
 
 
 class Base(ABC):
-
     """
     Promptmeteo is a tool powered by LLMs, capable of solving NLP tasks such as
     text classification and Named Entity Recognition. Its interface resembles
@@ -347,7 +346,6 @@ class Base(ABC):
 
 
 class BaseSupervised(Base):
-
     """
     Base class for supervised training tasks.
     """
