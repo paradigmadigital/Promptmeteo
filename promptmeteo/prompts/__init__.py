@@ -92,7 +92,6 @@ def get_files_taxonomy(sep: str = "_"):
 
 
 class PromptFactory:
-
     """
     Factory of Prompts
     """

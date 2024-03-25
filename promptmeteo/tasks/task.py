@@ -31,7 +31,6 @@ from ..selector import (
 
 
 class Task:
-
     """
     Base Task interface.
     """

@@ -26,7 +26,6 @@ from .base import BaseParser
 
 
 class ClassificationParser(BaseParser):
-
     """
     Parser for the classification task.
     """

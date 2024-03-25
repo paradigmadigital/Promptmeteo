@@ -71,9 +71,9 @@ class TestBaseSupervised:
             ).predict([1, 2, 3])
 
             assert error.value.args[0] == (
-                f"BaseSupervised error in function `predict()`. "
-                f"Arguments `examples` are expected to be of type "
-                f"`List[str]`. Some values seem no to be of type `str`."
+                "BaseSupervised error in function `predict()`. "
+                "Arguments `examples` are expected to be of type "
+                "`List[str]`. Some values seem no to be of type `str`."
             )
 
     def test_wrong_train(self):

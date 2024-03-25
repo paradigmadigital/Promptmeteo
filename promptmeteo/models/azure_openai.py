@@ -33,7 +33,6 @@ from .base import BaseModel
 
 
 class ModelTypes(str, Enum):
-
     """
     Enum of available model types.
     """
@@ -54,13 +53,11 @@ class ModelTypes(str, Enum):
 
 
 class ModelEnum(Enum):
-
     """
     Model types with their parameters.
     """
 
     class GPT35TurboInstruct:
-
         """
         Default parameters for TextDavinci003 model.
         """
@@ -76,7 +73,6 @@ class ModelEnum(Enum):
         }
 
     class GPT35Turbo:
-
         """
         Default parameters for GPT35Turbo model.
         """
@@ -93,7 +89,6 @@ class ModelEnum(Enum):
 
 
 class AzureOpenAILLM(BaseModel):
-
     """
     OpenAI LLM model.
     """

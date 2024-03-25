@@ -32,7 +32,6 @@ from .base import BaseModel
 
 
 class ModelTypes(str, Enum):
-
     """
     Enum of available model types.
     """
@@ -52,13 +51,11 @@ class ModelTypes(str, Enum):
 
 
 class ModelEnum(Enum):
-
     """
     Model Parameters.
     """
 
     class AnthropicClaudeV2:
-
         """
         Default parameters for Anthropic Claude V2
         """
@@ -67,16 +64,15 @@ class ModelEnum(Enum):
         embedding = HuggingFaceEmbeddings
         model_task: str = "text2text-generation"
         params: dict = {
-            'max_tokens_to_sample': 2048,
-            'temperature': 0.3,
-            'top_k': 250,
-            'top_p': 0.999,
-            'stop_sequences': ['Human:']
+            "max_tokens_to_sample": 2048,
+            "temperature": 0.3,
+            "top_k": 250,
+            "top_p": 0.999,
+            "stop_sequences": ["Human:"],
         }
 
 
 class BedrockLLM(BaseModel):
-
     """
     Bedrock LLM model.
     """
@@ -86,7 +82,7 @@ class BedrockLLM(BaseModel):
         model_name: Optional[str] = "",
         model_params: Optional[Dict] = None,
         model_provider_token: Optional[str] = "",
-        **kwargs
+        **kwargs,
     ) -> None:
         """
         Make predictions using a model from OpenAI.
@@ -98,7 +94,7 @@ class BedrockLLM(BaseModel):
                 f"`model_name`={model_name} not in supported model names: "
                 f"{[i.name for i in ModelTypes]}"
             )
-        self.boto3_bedrock = boto3.client('bedrock-runtime', **kwargs)
+        self.boto3_bedrock = boto3.client("bedrock-runtime", **kwargs)
         super(BedrockLLM, self).__init__()
 
         # Model name
@@ -117,7 +113,7 @@ class BedrockLLM(BaseModel):
         self._llm = ModelEnum[model].value.client(
             model_id=model_name,
             model_kwargs=self.model_params,
-            client =  self.boto3_bedrock
+            client=self.boto3_bedrock,
         )
 
         embedding_name = "sentence-transformers/all-MiniLM-L6-v2"

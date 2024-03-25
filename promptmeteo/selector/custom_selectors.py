@@ -1,8 +1,8 @@
 """Custom selectors"""
+
 from typing import Any, Dict, List, Optional, Type
 import random
 from langchain_core.example_selectors.base import BaseExampleSelector
-from langchain_core.pydantic_v1 import BaseModel, Extra
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.vectorstores import VectorStore
 from langchain_core.embeddings import Embeddings
@@ -83,8 +83,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
                 f"be greater than number of classes ({len(class_list)} classes)"
                 f"for balanced examples selection"
             )
-                
-        
+
         if input_keys:
             string_examples = [
                 " ".join(sorted_values({k: eg[k] for k in input_keys}))
@@ -112,12 +111,14 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         final_examples = []
         new_class_list = self.class_list.copy()
         random.shuffle(new_class_list)
-        new_class_list =(self.class_list*ceil(self.k/len(set(self.class_list))))[:self.k]
-        
-        dict_k_per_class = {i:new_class_list.count(i) for i in new_class_list}
-        
+        new_class_list = (
+            self.class_list * ceil(self.k / len(set(self.class_list)))
+        )[: self.k]
+
+        dict_k_per_class = {i: new_class_list.count(i) for i in new_class_list}
+
         # Get the docs with the highest similarity.
-        for cl,k in dict_k_per_class.items():
+        for cl, k in dict_k_per_class.items():
             if self.input_keys:
                 input_variables = {
                     key: input_variables[key] for key in self.input_keys

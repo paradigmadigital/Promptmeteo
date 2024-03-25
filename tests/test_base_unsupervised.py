@@ -1,10 +1,7 @@
 import os
-import tempfile
 
 import pytest
 
-from promptmeteo.tasks import Task
-from promptmeteo.tasks import TaskBuilder
 from promptmeteo.base import BaseUnsupervised
 
 
@@ -129,8 +126,8 @@ class TestBaseUnsupervised:
             )
 
             assert error.value.args[0] == (
-                f"TypeError: BaseUnsupervised.train() got an unexpected "
-                f"keyword argument 'annotations'"
+                "TypeError: BaseUnsupervised.train() got an unexpected "
+                "keyword argument 'annotations'"
             )
 
     def test_load_model(self):

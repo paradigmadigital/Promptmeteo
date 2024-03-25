@@ -163,21 +163,21 @@ class BasePrompt(ABC):
         """
 
         prompt_variables = dict(
-            __PROMPT_SAMPLE__=self.PROMPT_SAMPLE
-            if hasattr(self, "PROMPT_SAMPLE")
-            else "",
+            __PROMPT_SAMPLE__=(
+                self.PROMPT_SAMPLE if hasattr(self, "PROMPT_SAMPLE") else ""
+            ),
             __PROMPT_LABELS__="",
             __PROMPT_DOMAIN__="",
             __PROMPT_DETAIL__="",
-            __SHOT_EXAMPLES__=self.SHOT_EXAMPLES
-            if hasattr(self, "SHOT_EXAMPLES")
-            else "",
-            __ANSWER_FORMAT__=self.ANSWER_FORMAT
-            if hasattr(self, "ANSWER_FORMAT")
-            else "",
-            __CHAIN_THOUGHT__=self.CHAIN_THOUGHT
-            if hasattr(self, "CHAIN_THOUGHT")
-            else "",
+            __SHOT_EXAMPLES__=(
+                self.SHOT_EXAMPLES if hasattr(self, "SHOT_EXAMPLES") else ""
+            ),
+            __ANSWER_FORMAT__=(
+                self.ANSWER_FORMAT if hasattr(self, "ANSWER_FORMAT") else ""
+            ),
+            __CHAIN_THOUGHT__=(
+                self.CHAIN_THOUGHT if hasattr(self, "CHAIN_THOUGHT") else ""
+            ),
         )
 
         # Labels
@@ -193,8 +193,9 @@ class BasePrompt(ABC):
         )
 
         # Domain
-        prompt_variables["__PROMPT_DOMAIN__"] = self.PROMPT_DOMAIN.format(__DOMAIN__=self._prompt_domain)
-
+        prompt_variables["__PROMPT_DOMAIN__"] = self.PROMPT_DOMAIN.format(
+            __DOMAIN__=self._prompt_domain
+        )
 
         # Detail
         prompt_detail = (
@@ -202,8 +203,9 @@ class BasePrompt(ABC):
             if isinstance(self._prompt_detail, list)
             else self._prompt_detail
         )
-        prompt_variables["__PROMPT_DETAIL__"] = self.PROMPT_DETAIL.format(__DETAIL__=prompt_detail)
-
+        prompt_variables["__PROMPT_DETAIL__"] = self.PROMPT_DETAIL.format(
+            __DETAIL__=prompt_detail
+        )
 
         return PromptTemplate.from_template(
             PromptTemplate.from_template(self.TEMPLATE).format(

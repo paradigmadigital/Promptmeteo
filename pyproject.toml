@@ -27,7 +27,7 @@ dependencies = [
 [tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
-where = ["promptmeteo"]
+where = ["."]
 
 [tool.black]
 line-length = 80

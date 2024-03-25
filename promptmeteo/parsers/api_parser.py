@@ -26,7 +26,6 @@ from .base import BaseParser, ParserException
 
 
 class ApiParser(BaseParser):
-
     """
     Dummy parser, returns what it receives.
     """

@@ -21,14 +21,12 @@
 #  THE SOFTWARE.
 
 from typing import List
-import re
 from .base import BaseParser
 import regex
 import json
 
 
 class JSONParser(BaseParser):
-
     """
     Parser for potential JSON outputs
     """
@@ -48,7 +46,6 @@ class JSONParser(BaseParser):
             return json_output
         except:
             return ""
-            
 
     def _preprocess(
         self,
@@ -59,9 +56,9 @@ class JSONParser(BaseParser):
         such as end-of-line presence and beginning and finishing with empty
         space.
         """
-        pattern = regex.compile(r'\{(?:[^{}]|(?R))*\}')
+        pattern = regex.compile(r"\{(?:[^{}]|(?R))*\}")
         str_json = pattern.findall(text)[0]
-        
-        str_json = str_json.replace("'",'"')
+
+        str_json = str_json.replace("'", '"')
 
         return str_json

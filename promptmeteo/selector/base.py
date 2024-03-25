@@ -43,7 +43,6 @@ from .custom_selectors import BalancedSemanticSamplesSelector
 
 
 class SelectorAlgorithms(str, Enum):
-
     """
     Enum with the avaialable selector algorithms.
     """
@@ -54,7 +53,6 @@ class SelectorAlgorithms(str, Enum):
 
 
 class BaseSelector(ABC):
-
     """
     Base Selector Interface
     """
