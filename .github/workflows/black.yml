@@ -1,4 +1,4 @@
-name: Lint
+name: Black Formatter
 
 on: [push, pull_request]
 
@@ -13,12 +13,14 @@ jobs:
           options: "--line-length 80 --verbose --diff --color"
           src: "./promptmeteo"
       - name: Commit changes
+        if: steps.verify_diff.outputs.changed == 'true'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           git add .
           git commit -m "Apply Black formatting"
       - name: Push changes
+        if: steps.verify_diff.outputs.changed == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
