@@ -1,9 +1,9 @@
 name: Black Formatter
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  lint:
+  black_formatter:
     name: black formatter
     runs-on: ubuntu-latest
     steps:
