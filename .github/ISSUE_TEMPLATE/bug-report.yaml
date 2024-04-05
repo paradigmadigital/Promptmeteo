@@ -32,7 +32,7 @@ body:
     attributes:
       label: Environment
       description: |
-        Information about your environment where you see the bug.
+        Information about the environment where you saw the bug.
     validations:
       required: true
 
