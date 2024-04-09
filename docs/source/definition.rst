@@ -41,6 +41,35 @@ Promptmeteo integrates different LLMs through LangChain. This includes models th
 
 Establishing a concrete format for creating prompts in Promptmeteo (`.prompt`) not only facilitates programmatic use but also enables versioning of prompts. This approach aids in understanding changes when they occur and allows for the definition of code tests oriented toward prompt testing. This testing encompasses aspects such as validating language use and ensuring the prompt size is appropriate for the model.
 
+.. code-block:: yaml
+
+    TEMPLATE:
+        "I need you to help me with a text classification task.
+        {__PROMPT_DOMAIN__}
+        {__PROMPT_LABELS__}
+
+        {__CHAIN_THOUGHT__}
+        {__ANSWER_FORMAT__}"
+
+    PROMPT_DOMAIN:
+        "The texts you will be processing are from the {__DOMAIN__} domain."
+
+    PROMPT_LABELS:
+        "I want you to classify the texts into one of the following categories:
+        {__LABELS__}."
+
+    PROMPT_DETAIL:
+        ""
+
+    CHAIN_THOUGHT:
+        "Please provide a step-by-step argument for your answer, explain why you
+        believe your final choice is justified."
+
+    ANSWER_FORMAT:
+        "In your response, include only the name of the class as a single word, in
+        lowercase, without punctuation, and without adding any other statements or
+        words."
+
 
 📋 Current capacilities
 ----------------------------
