@@ -37,7 +37,7 @@ Any interaction must be under the directives of the [Code of conduct](CODE_OF_CO
 
 ## Develop
 
-Clone the repository and create a new branch based on [semantic messages](https://www.conventionalcommits.org/en/v1.0.0/#summary>) (_feat/feature_, _chore_, etc):
+Clone the repository and create a new branch based on [semantic messages](https://www.conventionalcommits.org/en/v1.0.0/#summary) (_feat/feature_, _chore_, etc):
 
 ```bash
 git clone git@github.com:paradigmadigital/Promptmeteo.git
