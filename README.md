@@ -23,7 +23,7 @@ Secondly, crafting concrete prompts for each task is not only a laborious task b
 
 # ⚡ Use
 
-Find all tutorials, a quick start and much more information in [our official documentation](https://paradigmadigital.github.io/promptmeteo-docs/>).
+Find all tutorials, a quick start and much more information in [our official documentation](https://paradigmadigital.github.io/promptmeteo-docs/).
 
 # Contribute
 
