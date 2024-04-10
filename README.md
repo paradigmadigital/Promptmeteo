@@ -30,7 +30,7 @@ Find all tutorials, a quick start and much more information in [our official doc
 We encourage you:
 
 * to [open issues](https://github.com/paradigmadigital/Promptmeteo/issues/)
-* to [contact us](https://github.com/paradigmadigital/Promptmeteo/graphs/contributors>) to talk about the library
+* to [contact us](https://github.com/paradigmadigital/Promptmeteo/graphs/contributors) to talk about the library
 * to [develop open issues or fix bugs](https://github.com/paradigmadigital/Promptmeteo/issues?q=is%3Aissue+is%3Aopen+>)
 
 Any interaction must be under the directives of the [Code of conduct](CODE_OF_CONDUCT.md), but TL;DR: Be **respectful and kind, and remember that anybody makes mistakes**.
